@@ -35,7 +35,7 @@ void setup() {
   {
     brushlessPtr  = new brushless();  // This is critical  - create a new class here only
   }
-  
+  brushlessPtr->startup(1);
   Serial.println("init stop");
 }
 

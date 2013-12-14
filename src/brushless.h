@@ -7,6 +7,15 @@
 #define BRUSHLESS_h
 
 
+typedef struct _startup_data{
+   int max;
+   int min;
+   float dec;
+   int currentValue;
+   int resto;
+} *startupData;
+
+
 class brushless {
 
   public:
@@ -19,6 +28,8 @@ class brushless {
     int getRefreshRate();
     int getDuty();
     int eventHandler();
+    int startup(int verbose);
+    void startupcalc(startupData valueData,int slow);
     //void iterate();
 
   private:

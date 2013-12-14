@@ -34,9 +34,9 @@ brushless::brushless(){
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
 
-  frequency   = 800;
-  duty        =  75;
-  refreshRate = 178;
+  frequency   = 900;
+  duty        =  90;
+  refreshRate = 120;
 
   cpmCounter  = 0;
   stato       = 0;
@@ -67,6 +67,95 @@ int brushless::timer1_init(){
   TIMSK1 = _BV(OCIE1B);  //signal handler association
 }
 
+
+void brushless::startupcalc(startupData valueData,int slow)
+ { 
+   //start_values ritorno;
+   int delta= valueData->currentValue - valueData->min;
+   float minus = (valueData->currentValue - valueData->min) * valueData->dec;
+   if (minus >= 1)
+   {
+     valueData->currentValue = valueData->currentValue - floor(minus);
+   }
+   else
+   {
+     if (slow == 1)
+     {
+       valueData->resto = valueData->resto + minus;
+       if (valueData->resto >=1)
+       {
+         valueData->currentValue = valueData->currentValue - floor(valueData->resto);
+         valueData->resto = valueData->resto - floor(valueData->resto);
+       }
+ 
+     }
+     else if ( slow == 0 )
+     {
+       valueData->currentValue = valueData->currentValue - 1;
+     }
+   }   
+ }
+
+
+
+ int brushless::startup(int verbose){ 
+   Serial.println("Init. startup");
+ 
+
+startupData freqData = (startupData)malloc(sizeof(_startup_data));
+freqData->max = 900;
+freqData->min = 320;
+freqData->dec = 0.1;
+freqData->currentValue = 900;
+freqData->resto = 0;
+
+startupData dutyData = (startupData)malloc(sizeof(_startup_data));
+dutyData->max = 90;
+dutyData->min = 65;
+dutyData->dec = 0.2;
+dutyData->currentValue = 90;
+dutyData->resto = 0;
+
+startupData refreshData = (startupData)malloc(sizeof(_startup_data));
+refreshData->max = 120;
+refreshData->min = 30;
+refreshData->dec = 0.1;
+refreshData->currentValue = 120;
+refreshData->resto = 0;
+
+   
+ 
+   while ((freqData->currentValue > freqData->min) || (dutyData->currentValue > dutyData->min)||(refreshData->currentValue > refreshData->min))
+   {
+ 
+     if (freqData->currentValue > freqData->min)
+     {
+       startupcalc(freqData, 1);
+       setFrequency(freqData->currentValue);
+     }
+ 
+     if (dutyData->currentValue > dutyData->min )
+     {
+       startupcalc(dutyData,1);
+       setDuty(dutyData->currentValue);
+     }
+ 
+     if (refreshData->currentValue > refreshData->min )
+     {
+       startupcalc(refreshData,1);
+       setRefreshRate(refreshData->currentValue);
+     }
+     if (verbose == 1)  
+     {
+       Serial.print(freqData->currentValue );
+       Serial.print(",");
+       Serial.print(dutyData->currentValue );
+       Serial.print(",");
+       Serial.println(refreshData->currentValue );
+     }
+     delay(150);
+   }
+}
 
 int brushless::getFrequency(){
   return frequency;
