@@ -106,21 +106,21 @@ startupData freqData = (startupData)malloc(sizeof(_startup_data));
 freqData->max = 900;
 freqData->min = 320;
 freqData->dec = 0.1;
-freqData->currentValue = 900;
+freqData->currentValue = freqData->max;
 freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
 dutyData->max = 90;
 dutyData->min = 65;
 dutyData->dec = 0.2;
-dutyData->currentValue = 90;
+dutyData->currentValue = dutyData->max;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
 refreshData->max = 120;
 refreshData->min = 30;
 refreshData->dec = 0.1;
-refreshData->currentValue = 120;
+refreshData->currentValue = refreshData->max;
 refreshData->resto = 0;
 
    
