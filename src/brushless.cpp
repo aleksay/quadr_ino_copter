@@ -71,8 +71,8 @@ int brushless::timer1_init(){
 void brushless::startupcalc(startupData valueData,int slow)
  { 
    //start_values ritorno;
-   int delta= valueData->currentValue - valueData->min;
-   float minus = (valueData->currentValue - valueData->min) * valueData->dec;
+   int delta = valueData->currentValue - valueData->min;
+   float minus = delta * valueData->dec;
    if (minus >= 1)
    {
      valueData->currentValue = valueData->currentValue - floor(minus);
@@ -82,6 +82,8 @@ void brushless::startupcalc(startupData valueData,int slow)
      if (slow == 1)
      {
        valueData->resto = valueData->resto + minus;
+       Serial.print("RESTO:");
+       Serial.println(valueData->resto);
        if (valueData->resto >=1)
        {
          valueData->currentValue = valueData->currentValue - floor(valueData->resto);
