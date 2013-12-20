@@ -12,7 +12,7 @@ typedef struct _startup_data{
    int min;
    float dec;
    int currentValue;
-   int resto;
+   float resto;
 } *startupData;
 
 
