@@ -7,13 +7,17 @@
 
 #define F_CPU 16000000UL
 
+#ifdef DEBUG
+#define DEBUG_ON
+#endif
+
+
 brushless *brushlessPtr   = NULL;
 serialComm *serialCommPtr = NULL;
-Command lastCommand;
+Command latestCommand;
 
-
+// Software reset 
 void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
-
 void wdt_init(void)
 {
     MCUSR = 0;
@@ -26,47 +30,61 @@ void wdt_init(void)
 void setup() {
 
   Serial.begin(9600);
-  Serial.println("init ");
+
+#ifdef DEBUG_ON
+  Serial.println("Serial initialized. ");
+#endif
+
+   // Initialize serial communications
   if (serialCommPtr == NULL)
   {
-    serialCommPtr = new serialComm();  // This is critical  - create a new class here only
+    serialCommPtr = new serialComm(); 
   }
+#ifdef DEBUG_ON
+  Serial.println("SerialComm object initialized. ");
+#endif
+
+   // Initialize brushless communications
   if (brushlessPtr == NULL)
   {
-    brushlessPtr  = new brushless();  // This is critical  - create a new class here only
+    brushlessPtr  = new brushless();
   }
-  brushlessPtr->startup(1);
-  Serial.println("init stop");
+  brushlessPtr->startup();
+#ifdef DEBUG_ON
+  Serial.println("Brushless object initialized. ");
+#endif
+
+
 }
 
 void loop() { 
 
+// Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
-
-    lastCommand = serialCommPtr->getCommand();    
-    commandMap(lastCommand);
+    latestCommand = serialCommPtr->getCommand();
+    setCommand(latestCommand);
   }
 }
 
-void commandMap(Command currentCommand){
+void setCommand(Command command){
   
-  int r = -10;               //return value holder
+  int r = -10;
 
-  switch(currentCommand->type){
+  switch(command->type){
 
   case 'f':
     r = -10;
-    r = brushlessPtr->setFrequency(currentCommand->value);
+    r = brushlessPtr->setFrequency(command->value);
     break;
 
   case 'd':
     r = -10;
-    r = brushlessPtr->setDuty(currentCommand->value);
+    r = brushlessPtr->setDuty(command->value);
     break;
 
   case 'r':
     r = -10;
-    r = brushlessPtr->setRefreshRate(currentCommand->value);
+    r = brushlessPtr->setRefreshRate(command->value);
     break;
     
 
@@ -88,11 +106,13 @@ void commandMap(Command currentCommand){
   }
 }
 
+
+// Register brushless object event handler to ISR for Timer 1
 ISR(TIMER1_COMPB_vect) {
   brushlessPtr->eventHandler();
-
 }
 
+// Callback function for reserved Arduino keyword serial polling
 void serialEvent(){
   serialCommPtr->eventHandler();
 }

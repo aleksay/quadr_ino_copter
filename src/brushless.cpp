@@ -16,7 +16,6 @@
 #endif
 
 #define NUM_STATES 6
-//#define DEBUG
 
 byte states[NUM_STATES] = {
   B01000100,
@@ -28,8 +27,11 @@ byte states[NUM_STATES] = {
 
 brushless::brushless(){
 
-//  Serial.print("Entering constructor for: ");
-//  Serial.println(__FUNCTION__);
+
+#ifdef DEBUG_ON
+  Serial.print("Entering constructor for: ");
+  Serial.println(__FUNCTION__);
+#endif
 
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
@@ -50,7 +52,7 @@ int brushless::timer1_init(){
   pinMode(10,OUTPUT);
   pinMode(9,OUTPUT);
   /*
-    Prescaler is configged like this:
+    Prescaler is configured like this:
 
    (1 << CS10): divide by 1, 64, 1024
    (1 << WGM13): 16 bit Phase+Frequency correct, TOP =ICR1
@@ -68,11 +70,11 @@ int brushless::timer1_init(){
 }
 
 
-void brushless::startupcalc(startupData valueData,int slow)
+void brushless::startupcalc(startupData valueData, int slow)
  { 
    //start_values ritorno;
-   int delta = valueData->currentValue - valueData->min;
-   float minus = delta * valueData->dec;
+   int delta = valueData->currentValue - valueData->end;
+   float minus = delta * valueData->decrement;
    if (minus >= 1)
    {
      valueData->currentValue = valueData->currentValue - floor(minus);
@@ -100,62 +102,65 @@ void brushless::startupcalc(startupData valueData,int slow)
 
 
 
- int brushless::startup(int verbose){ 
-   Serial.println("Init. startup");
+ int brushless::startup(){ 
+
+#ifdef DEBUG_ON  
+  Serial.print("Entering brushless::startup ");
+#endif
  
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
-freqData->max = 900;
-freqData->min = 320;
-freqData->dec = 0.1;
-freqData->currentValue = freqData->max;
+freqData->start = 900;
+freqData->end = 320;
+freqData->decrement = 0.1;
+freqData->currentValue = freqData->start;
 freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
-dutyData->max = 90;
-dutyData->min = 65;
-dutyData->dec = 0.2;
-dutyData->currentValue = dutyData->max;
+dutyData->start = 90;
+dutyData->end = 65;
+dutyData->decrement = 0.2;
+dutyData->currentValue = dutyData->start;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
-refreshData->max = 120;
-refreshData->min = 30;
-refreshData->dec = 0.1;
-refreshData->currentValue = refreshData->max;
+refreshData->start = 120;
+refreshData->end = 30;
+refreshData->decrement = 0.1;
+refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
 
    
  
-   while ((freqData->currentValue > freqData->min) || (dutyData->currentValue > dutyData->min)||(refreshData->currentValue > refreshData->min))
+   while ((freqData->currentValue > freqData->end) || (dutyData->currentValue > dutyData->end)||(refreshData->currentValue > refreshData->end))
    {
  
-     if (freqData->currentValue > freqData->min)
+     if (freqData->currentValue > freqData->end)
      {
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
  
-     if (dutyData->currentValue > dutyData->min )
+     if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
      }
  
-     if (refreshData->currentValue > refreshData->min )
+     if (refreshData->currentValue > refreshData->end )
      {
        startupcalc(refreshData,1);
        setRefreshRate(refreshData->currentValue);
      }
-     if (verbose == 1)  
-     {
+
+  #ifdef DEBUG_ON
        Serial.print(freqData->currentValue );
        Serial.print(",");
        Serial.print(dutyData->currentValue );
        Serial.print(",");
        Serial.println(refreshData->currentValue );
-     }
-     delay(150);
+  #endif   
+   delay(150);
    }
 }
 
@@ -179,26 +184,23 @@ int brushless::setFrequency(int val){
 
   int diff = val - frequency;
 
-//    Serial.print(__FUNCTION__);
-//    Serial.print(" :diff is:");
-//    Serial.println(diff);
 
   if(diff == 0){
-    Serial.print("setFrequency exit: same value ");
+    Serial.print("setFrequency error: same value ");
     Serial.println(frequency);
     return frequency;
   }
   if(diff > 0){
     for(int i=0;i<diff;i++){
       ICR1      = ++frequency;
-      setDuty(duty);
+      setDuty(duty); // duty must be updated after modifying frequency
  //    Serial.println(frequency);
     }
   }
   if(diff < 0){
     for(int i=diff;i<0;i++){
       ICR1      = --frequency;
-      setDuty(duty);
+      setDuty(duty);// duty must be updated after modifying frequency
   //    Serial.println(frequency);
     }
   }

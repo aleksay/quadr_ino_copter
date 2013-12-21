@@ -8,9 +8,9 @@
 
 
 typedef struct _startup_data{
-   int max;
-   int min;
-   float dec;
+   int start;
+   int end;
+   float decrement;
    int currentValue;
    float resto;
 } *startupData;
@@ -28,7 +28,7 @@ class brushless {
     int getRefreshRate();
     int getDuty();
     int eventHandler();
-    int startup(int verbose);
+    int startup();
     void startupcalc(startupData valueData,int slow);
     //void iterate();
 

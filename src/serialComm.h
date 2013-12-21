@@ -3,10 +3,11 @@
 
 #include <WString.h>
 
-typedef struct _command{
+typedef struct _command
+{
   char type;
   unsigned int value;
-}*Command;
+} *Command;
 
 class serialComm {
 

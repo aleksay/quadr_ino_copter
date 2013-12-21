@@ -3,9 +3,12 @@
 
 
 serialComm::serialComm(){
-  
-//  Serial.print("Entering constructor for: ");
-//  Serial.println(__FUNCTION__);
+
+#ifdef DEBUG_ON  
+  Serial.print("Entering constructor for: ");
+  Serial.println(__FUNCTION__);
+#endif
+
 
   bufferLength          = 0;
   
@@ -23,13 +26,12 @@ serialComm::serialComm(){
 void serialComm::eventHandler() {
   
   char inChar = NULL;
-  
   while (Serial.available()) {
 
-    // get the new byte:
+    // get the new byte
     inChar         = (char)Serial.read(); 
-
-    // add it to the inputString:
+    
+    // concatenate to the  input string
     inputBuffer   += inChar;
 
     // if the incoming character is a newline, set a flag
