@@ -61,7 +61,7 @@ int brushless::timer1_init(){
 
   ICR1   = frequency;
   OCR1B  = map(duty,0,255,0,frequency);
-  OCR1A  = map(duty,0,255,0,frequency);
+  //OCR1A  = map(duty,0,255,0,frequency); PENSO SIA PIU SEMPLICE UTILIZZARE UN SOLO CANALE PER HIGH E LOW
 
   TCCR1B = (1 << CS10) | (1 << WGM13);
   TCCR1A = (1 << COM1B1) | (1 << COM1B0) | (1 << COM1A1) | (1 << COM1A0);
@@ -84,8 +84,10 @@ void brushless::startupcalc(startupData valueData, int slow)
      if (slow == 1)
      {
        valueData->resto = valueData->resto + minus;
-       Serial.print("RESTO:");
-       Serial.println(valueData->resto);
+       #ifdef DEBUG_ON
+		   Serial.print("RESTO:");
+		   Serial.println(valueData->resto);
+	   #endif
        if (valueData->resto >=1)
        {
          valueData->currentValue = valueData->currentValue - floor(valueData->resto);
@@ -140,13 +142,13 @@ refreshData->resto = 0;
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
- 
+	delay(15); 
      if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
      }
- 
+	delay(15);
      if (refreshData->currentValue > refreshData->end )
      {
        startupcalc(refreshData,1);
@@ -182,30 +184,25 @@ int brushless::setFrequency(int val){
    per ora passiamo tutto
    */
 
-  int diff = val - frequency;
-
-
-  if(diff == 0){
+  if(val == frequency){ //skip if the value is the same
     Serial.print("setFrequency error: same value ");
     Serial.println(frequency);
     return frequency;
   }
-  if(diff > 0){
-    for(int i=0;i<diff;i++){
-      ICR1      = ++frequency;
-      setDuty(duty); // duty must be updated after modifying frequency
- //    Serial.println(frequency);
-    }
+  
+  if (frequency > val){
+  frequency = val; // Assign the value set to frequency
+  setDuty(duty);   // to avoid duty out of range duty is decreased before the frequency 
+  ICR1 = frequency;
   }
-  if(diff < 0){
-    for(int i=diff;i<0;i++){
-      ICR1      = --frequency;
-      setDuty(duty);// duty must be updated after modifying frequency
-  //    Serial.println(frequency);
-    }
+  
+  if (frequency < val){
+  frequency = val; // Assign the value set to frequency
+  ICR1 = frequency;
+  setDuty(duty);
   }
 
-  return ICR1;
+  return frequency;
 }
 
 int brushless::setDuty(int val){
@@ -214,8 +211,8 @@ int brushless::setDuty(int val){
 
   duty  = val;
   OCR1B = map(duty,0,255,0,frequency);
-  OCR1A = map(duty,0,255,0,frequency);
-  return OCR1B;
+  //OCR1A = map(duty,0,255,0,frequency);
+  return duty;
 
 }
 
@@ -224,29 +221,17 @@ int brushless::setRefreshRate(int val){
   /*
   necessaria un analisi sperimentale di questo valore
    */
-
-
-  int diff = val - refreshRate;
-
-  if(diff == 0){
-    Serial.print("setRefreshRate exit: same value ");
+  if(val == refreshRate){ //skip if the value is the same
+    Serial.print("setRefreshRate error: same value ");
     Serial.println(refreshRate);
-    return 0;
+    return refreshRate;
   }
+   
+  refreshRate = val; // set the new refresh rate
+  
 
-  if(diff > 0){
-    for(int i=0;i<diff;i++){
-      refreshRate = ++refreshRate;
-//      Serial.println(refreshRate);
-    }
-  }
-  if(diff < 0){
-    for(int i=diff;i<=0;i++){
-      refreshRate = --refreshRate;
-//      Serial.println(refreshRate);
-    }
-  }
-  return 0;
+
+  return refreshRate;
 }
 
 

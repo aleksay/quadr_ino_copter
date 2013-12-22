@@ -89,12 +89,14 @@ void setCommand(Command command){
     
 
   case 'p':
+	Serial.println("--QUERY--");
     Serial.print("f");
     Serial.println(brushlessPtr->getFrequency());
     Serial.print("d");
     Serial.println(brushlessPtr->getDuty());
     Serial.print("r");
     Serial.println(brushlessPtr->getRefreshRate());
+	Serial.println("----");
     break;
 
   case 'R':
