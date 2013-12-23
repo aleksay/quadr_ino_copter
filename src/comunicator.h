@@ -1,5 +1,5 @@
-#ifndef SERIALCOMM_h
-#define SERIALCOMM_h
+#ifndef COMUNICATOR_h
+#define COMUNICATOR_h
 
 #include <WString.h>
 
@@ -8,11 +8,11 @@ typedef struct _command{
   unsigned int value;
 }*Command;
 
-class serialComm {
+class comunicator {
 
 public:
 
-  serialComm();
+  comunicator();
   int getHaveCommand();
   Command getCommand();
   void eventHandler();

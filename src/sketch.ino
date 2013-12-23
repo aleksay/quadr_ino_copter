@@ -2,13 +2,13 @@
 #include <avr/wdt.h>
 
 #include "brushless.h"
-#include "serialComm.h"
+#include "comunicator.h"
 
 
 #define F_CPU 16000000UL
 
 brushless *brushlessPtr   = NULL;
-serialComm *serialCommPtr = NULL;
+comunicator *serialCommPtr = NULL;
 Command lastCommand;
 
 
@@ -29,7 +29,7 @@ void setup() {
   Serial.println("init ");
   if (serialCommPtr == NULL)
   {
-    serialCommPtr = new serialComm();  // This is critical  - create a new class here only
+    serialCommPtr = new comunicator();  // This is critical  - create a new class here only
   }
   if (brushlessPtr == NULL)
   {

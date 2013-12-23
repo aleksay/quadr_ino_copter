@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include "serialComm.h"
+#include "comunicator.h"
 
 
-serialComm::serialComm(){
+comunicator::comunicator(){
   
 //  Serial.print("Entering constructor for: ");
 //  Serial.println(__FUNCTION__);
@@ -20,7 +20,7 @@ serialComm::serialComm(){
 
 }
 
-void serialComm::eventHandler() {
+void comunicator::eventHandler() {
   
   char inChar = NULL;
   
@@ -54,7 +54,7 @@ void serialComm::eventHandler() {
   }
 }
 
-Command serialComm::getCommand(){
+Command comunicator::getCommand(){
 
   Command tmpCommand    = (Command)malloc(sizeof(_command));
   tmpCommand->type      = currentCommand->type;
@@ -68,7 +68,7 @@ Command serialComm::getCommand(){
   return tmpCommand;
 }
 
-int serialComm::getHaveCommand(){
+int comunicator::getHaveCommand(){
   return haveCommand;
 }
 
