@@ -1,5 +1,9 @@
-#include <Arduino.h>
 #include "comunicator.h"
+
+#include "usart.cpp"
+
+
+usart* usart_module = NULL;
 
 
 comunicator::comunicator(){
@@ -18,16 +22,17 @@ comunicator::comunicator(){
   currentCommand->type  = '\n';
   currentCommand->value = 0;
 
+  usart_module = new usart(9600);
 }
 
 void comunicator::eventHandler() {
   
   char inChar = NULL;
   
-  while (Serial.available()) {
+  while (usart_module->available()) {
 
     // get the new byte:
-    inChar         = (char)Serial.read(); 
+    inChar         = (char)usart_module->read(); 
 
     // add it to the inputString:
     inputBuffer   += inChar;

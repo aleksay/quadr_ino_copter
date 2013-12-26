@@ -1,7 +1,9 @@
 #ifndef COMUNICATOR_h
 #define COMUNICATOR_h
 
+#include <Arduino.h>
 #include <WString.h>
+
 
 typedef struct _command{
   char type;
