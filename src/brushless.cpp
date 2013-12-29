@@ -59,12 +59,12 @@ int brushless::timer1_init(){
 
   ICR1   = frequency;
   OCR1B  = map(duty,0,255,0,frequency);
-  //OCR1A  = map(duty,0,255,0,frequency); PENSO SIA PIU SEMPLICE UTILIZZARE UN SOLO CANALE PER HIGH E LOW
+  
 
   TCCR1B = (1 << CS10) | (1 << WGM13);
   TCCR1A = _BV(COM1B1); // SET ONE PWM CHANNEL TO NON-INVERTING DUTY CYCLE   
   
-  //with this set two pwm channel to inverting duty cycle | (1 << COM1B0) | (1 << COM1A1) | (1 << COM1A0);
+  
 
   TIMSK1 = _BV(OCIE1B);  //signal handler association
 }
@@ -180,7 +180,6 @@ int brushless::setFrequency(int val){
   /*
    in questo punto sarebbe bello determinare un range di
    valori utili e mapparlo su una scala di valori semplici tipo 0 - 100
-
    per ora passiamo tutto
    */
 
