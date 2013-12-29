@@ -1,3 +1,4 @@
+
 /*
 
 
@@ -6,6 +7,9 @@
 #ifndef BRUSHLESS_h
 #define BRUSHLESS_h
 
+#include <Arduino.h>
+#include <WString.h>
+#include "serialComm.h"
 
 typedef struct _startup_data{
    int start;

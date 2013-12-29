@@ -6,12 +6,10 @@
  I pin 5,6 e 7 devono essere invece collegati direttamente ai mosfet della parte inferiore.
 
  */
-#include <Arduino.h>
+
 #include "brushless.h"
 
-#ifndef F_CPU
-#define F_CPU 8000000.0
-#endif
+
 
 #define NUM_STATES 6
 
@@ -25,11 +23,11 @@ byte states[NUM_STATES] = {
 
 brushless::brushless(){
 
-
-#ifdef DEBUG_ON
-  Serial.print("Entering constructor for: ");
-  Serial.println(__FUNCTION__);
+#ifndef F_CPU
+serialComm::logToSerial("F_CPU undefined", 0)
 #endif
+
+ serialComm::logToSerial( String("Entering constructor for: ") + __func__, 6);
 
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
@@ -84,10 +82,6 @@ void brushless::startupcalc(startupData valueData, int slow)
      if (slow == 1)
      {
        valueData->resto = valueData->resto + minus;
-       #ifdef DEBUG_ON
-		   Serial.print("RESTO:");
-		   Serial.println(valueData->resto);
-	   #endif
        if (valueData->resto >=1)
        {
          valueData->currentValue = valueData->currentValue - floor(valueData->resto);
@@ -106,9 +100,8 @@ void brushless::startupcalc(startupData valueData, int slow)
 
  int brushless::startup(){ 
 
-#ifdef DEBUG_ON  
-  Serial.print("Entering brushless::startup ");
-#endif
+  char numstr[21]; // for holding temporary string
+  serialComm::logToSerial(String("Entering brushless::") + __func__ , 5);
  
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
@@ -155,13 +148,16 @@ refreshData->resto = 0;
        setRefreshRate(refreshData->currentValue);
      }
 
-  #ifdef DEBUG_ON
-       Serial.print(freqData->currentValue );
-       Serial.print(",");
-       Serial.print(dutyData->currentValue );
-       Serial.print(",");
-       Serial.println(refreshData->currentValue );
-  #endif   
+ 
+
+  String tempString = String(itoa(freqData->currentValue, numstr, 10 )) + "," +
+                      itoa(dutyData->currentValue, numstr, 10 ) + "," +
+                      itoa(refreshData->currentValue, numstr, 10 );
+ 
+ serialComm::logToSerial(tempString , 6 );
+
+
+
    delay(150);
    }
 }
@@ -182,11 +178,15 @@ int brushless::setFrequency(int val){
    valori utili e mapparlo su una scala di valori semplici tipo 0 - 100
    per ora passiamo tutto
    */
+  char numstr[21]; // for holding temporary string
 
   if(val == frequency){ //skip if the value is the same
-    Serial.print("setFrequency error: same value ");
-    Serial.println(frequency);
-    return frequency;
+
+  String tempString =String("setFrequency error: same value ") +
+                      itoa(frequency, numstr, 10 );
+ 
+   serialComm::logToSerial(tempString , 0);
+    return frequency; 
   }
   
   if (frequency > val){
@@ -220,9 +220,14 @@ int brushless::setRefreshRate(int val){
   /*
   necessaria un analisi sperimentale di questo valore
    */
+  char numstr[21]; // for holding temporary string
+
   if(val == refreshRate){ //skip if the value is the same
-    Serial.print("setRefreshRate error: same value ");
-    Serial.println(refreshRate);
+  String tempString =String("setRefreshRate error: same value ") +
+                      itoa(refreshRate, numstr, 10 );
+ 
+   serialComm::logToSerial(tempString , 2);
+
     return refreshRate;
   }
    

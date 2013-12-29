@@ -1,13 +1,10 @@
-#include <Arduino.h>
 #include "serialComm.h"
 
 
 serialComm::serialComm(){
+ 
+  serialComm::logToSerial(String("Entering constructor for: ") + __func__, 5);
 
-#ifdef DEBUG_ON  
-  Serial.print("Entering constructor for: ");
-  Serial.println(__FUNCTION__);
-#endif
 
 
   bufferLength          = 0;
@@ -73,4 +70,25 @@ Command serialComm::getCommand(){
 int serialComm::getHaveCommand(){
   return haveCommand;
 }
+
+int serialComm::logToSerial(String logString, int logPriority){
+
+  if (logPriority < logLevel ){
+    Serial.println(logString);
+  }
+
+  return 0;
+}
+
+int serialComm::printToSerial(String logString){
+
+  Serial.println(logString);
+  return 0;
+
+}
+
+
+
+
+
 

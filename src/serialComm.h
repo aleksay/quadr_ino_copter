@@ -1,7 +1,10 @@
 #ifndef SERIALCOMM_h
 #define SERIALCOMM_h
-
+#include <Arduino.h>
 #include <WString.h>
+
+
+ static int logLevel= 4; // change me to desired logging level
 
 typedef struct _command
 {
@@ -18,6 +21,8 @@ public:
   Command getCommand();
   void eventHandler();
   void iterate();
+  static int logToSerial(String logString, int logPriority);
+  static int printToSerial(String logString);
 
 private:
   String inputBuffer;

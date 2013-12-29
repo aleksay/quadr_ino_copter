@@ -1,19 +1,18 @@
 
 #include <avr/wdt.h>
+#include <Arduino.h>
+#include <WString.h>
 
 #include "brushless.h"
 #include "serialComm.h"
 
+#define F_CPU 8000000UL  //Uncomment for arduino Fio
+//#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
 
-#define F_CPU 16000000UL
-
-#ifdef DEBUG
-#define DEBUG_ON
-#endif
-
-
+// Initialization of objects
 brushless *brushlessPtr   = NULL;
 serialComm *serialCommPtr = NULL;
+// Initialization of struct
 Command latestCommand;
 
 // Software reset 
@@ -31,18 +30,18 @@ void setup() {
 
   Serial.begin(9600);
 
-#ifdef DEBUG_ON
-  Serial.println("Serial initialized. ");
-#endif
+
+  serialComm::logToSerial("Serial initialized. " , 3);
+
 
    // Initialize serial communications
   if (serialCommPtr == NULL)
   {
     serialCommPtr = new serialComm(); 
   }
-#ifdef DEBUG_ON
-  Serial.println("SerialComm object initialized. ");
-#endif
+
+  serialComm::logToSerial("SerialComm object initialized. ", 3);
+
 
    // Initialize brushless communications
   if (brushlessPtr == NULL)
@@ -50,9 +49,9 @@ void setup() {
     brushlessPtr  = new brushless();
   }
   brushlessPtr->startup();
-#ifdef DEBUG_ON
-  Serial.println("Brushless object initialized. ");
-#endif
+
+  serialComm::logToSerial("Brushless object initialized. ", 3);
+
 
 
 }
@@ -67,7 +66,9 @@ void loop() {
 }
 
 void setCommand(Command command){
-  
+
+
+  char numstr[21]; // for holding temporary string  
   int r = -10;
 
   switch(command->type){
@@ -87,16 +88,12 @@ void setCommand(Command command){
     r = brushlessPtr->setRefreshRate(command->value);
     break;
     
-
   case 'p':
-	Serial.println("--QUERY--");
-    Serial.print("f");
-    Serial.println(brushlessPtr->getFrequency());
-    Serial.print("d");
-    Serial.println(brushlessPtr->getDuty());
-    Serial.print("r");
-    Serial.println(brushlessPtr->getRefreshRate());
-	Serial.println("----");
+	serialComm::printToSerial ( "--QUERY--");
+	serialComm::printToSerial( String("f") + itoa(brushlessPtr->getFrequency(), numstr, 10 )  );
+	serialComm::printToSerial( String("d") + itoa(brushlessPtr->getDuty(), numstr, 10 )  );
+	serialComm::printToSerial( String("r") + itoa(brushlessPtr->getRefreshRate(), numstr, 10 )  );
+	serialComm::printToSerial ( "----"); 
     break;
 
   case 'R':
