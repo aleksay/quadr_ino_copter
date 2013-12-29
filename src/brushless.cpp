@@ -1,11 +1,9 @@
-
 /*
 
  Il circuito prevede che i pin 2 3 e 4 siano collegati ai
  pin di comando dei buffer gate il cui input e' il segnale pwm generato dal timer.
  I 3 gate vanno connessi ai mosfet nella parte superiore.
  I pin 5,6 e 7 devono essere invece collegati direttamente ai mosfet della parte inferiore.
-
 
  */
 #include <Arduino.h>
@@ -64,7 +62,9 @@ int brushless::timer1_init(){
   //OCR1A  = map(duty,0,255,0,frequency); PENSO SIA PIU SEMPLICE UTILIZZARE UN SOLO CANALE PER HIGH E LOW
 
   TCCR1B = (1 << CS10) | (1 << WGM13);
-  TCCR1A = (1 << COM1B1) | (1 << COM1B0) | (1 << COM1A1) | (1 << COM1A0);
+  TCCR1A = _BV(COM1B1); // SET ONE PWM CHANNEL TO NON-INVERTING DUTY CYCLE   
+  
+  //with this set two pwm channel to inverting duty cycle | (1 << COM1B0) | (1 << COM1A1) | (1 << COM1A0);
 
   TIMSK1 = _BV(OCIE1B);  //signal handler association
 }
