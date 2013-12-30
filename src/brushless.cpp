@@ -107,7 +107,7 @@ void brushless::startupcalc(startupData valueData, int slow)
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
 freqData->start = 1000;
 freqData->end = 280;
-freqData->decrement = 0.8;
+freqData->decrement = 0.08;
 freqData->currentValue = freqData->start;
 freqData->resto = 0;
 
@@ -121,7 +121,7 @@ dutyData->resto = 0;
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
 refreshData->start = 120;
 refreshData->end = 30;
-refreshData->decrement = 0.8;
+refreshData->decrement = 0.08;
 refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
 
