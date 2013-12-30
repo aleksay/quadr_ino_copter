@@ -32,9 +32,9 @@ communicator::logToSerial("F_CPU undefined", 0)
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
 
-  frequency   = 1100;
-  duty        =  250;
-  refreshRate = 150;
+  frequency   = 280;
+  duty        = 215;
+  refreshRate = 350;
 
   cpmCounter  = 0;
   stato       = 0;
@@ -105,21 +105,21 @@ void brushless::startupcalc(startupData valueData, int slow)
  
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
-freqData->start = 1000;
-freqData->end = 280;
+freqData->start = 280;
+freqData->end = 200;
 freqData->decrement = 0.08;
 freqData->currentValue = freqData->start;
 freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
-dutyData->start = 250;
-dutyData->end = 215;
+dutyData->start = 215;
+dutyData->end = 190;
 dutyData->decrement = 0.1;
 dutyData->currentValue = dutyData->start;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
-refreshData->start = 120;
+refreshData->start = 350;
 refreshData->end = 30;
 refreshData->decrement = 0.08;
 refreshData->currentValue = refreshData->start;
@@ -129,14 +129,14 @@ refreshData->resto = 0;
  
    while ((freqData->currentValue > freqData->end) || (dutyData->currentValue > dutyData->end)||(refreshData->currentValue > refreshData->end))
    {
- 
+/* 
      if (freqData->currentValue > freqData->end)
      {
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
 	delay(15); 
-     if (dutyData->currentValue > dutyData->end )
+*/     if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
