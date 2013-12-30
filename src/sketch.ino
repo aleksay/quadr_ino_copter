@@ -10,8 +10,9 @@
 //#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
 
 // Initialization of objects
-brushless *brushlessPtr   = NULL;
+brushless *brushlessPtr     = NULL;
 communicator *serialCommPtr = NULL;
+
 // Initialization of struct
 Command latestCommand;
 
@@ -35,18 +36,14 @@ void setup() {
 
   communicator::logToSerial("SerialComm object initialized. ", 3);
 
-
    // Initialize brushless communications
   if (brushlessPtr == NULL)
   {
     brushlessPtr  = new brushless();  // This is critical  - create a new class here only
   }
+
   brushlessPtr->startup();
-
   communicator::logToSerial("Brushless object initialized. ", 3);
-
-
-
 }
 
 void loop() { 
@@ -81,7 +78,6 @@ void setCommand(Command command){
     r = brushlessPtr->setRefreshRate(command->value);
     break;
     
-
   case 'p':
 	communicator::printToSerial ( "--QUERY--");
 	communicator::printToSerial( String("f") + itoa(brushlessPtr->getFrequency(), numstr, 10 )  );
@@ -99,7 +95,6 @@ void setCommand(Command command){
   }
 }
 
-
 // Register brushless object event handler to ISR for Timer 1
 ISR(TIMER1_COMPB_vect) {
   brushlessPtr->eventHandler();
@@ -110,8 +105,4 @@ ISR(TIMER1_COMPB_vect) {
 void serialEvent(){
   serialCommPtr->eventHandler();
 }
-
-
-
-
 

@@ -1,6 +1,5 @@
-
 /*
-
+Header file for brshless control module
 
 */
 
@@ -19,11 +18,9 @@ typedef struct _startup_data{
    float resto;
 } *startupData;
 
-
 class brushless {
 
   public:
-
     brushless();
     int setFrequency(int val);
     int setRefreshRate(int val);
@@ -37,9 +34,8 @@ class brushless {
     //void iterate();
 
   private:
-
     volatile unsigned int cpmCounter;
-    volatile int          stato;
+    volatile          int stato;
     volatile unsigned int frequency;//holds register value
     volatile unsigned int refreshRate;
     volatile unsigned int duty;//holds register value

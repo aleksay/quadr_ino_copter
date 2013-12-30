@@ -3,7 +3,7 @@
 #include "usart.cpp"
 
 
-usart* usart_module = NULL;
+usart* usart_module     = NULL;
 
 
 communicator::communicator(){
@@ -21,7 +21,8 @@ communicator::communicator(){
   currentCommand->type  = '\n';
   currentCommand->value = 0;
 
-  usart_module = new usart(9600);
+  usart_module          = new usart(9600);
+
   if(usart_module != NULL)
   	communicator::logToSerial("Serial initialized. " , 3);
 }
@@ -52,8 +53,8 @@ void communicator::eventHandler() {
         i++;
       }
 
-      currentCommand->type  = inputBuffer[0];
-      currentCommand->value = atoi(inputStringValue);
+      currentCommand->type    = inputBuffer[0];
+      currentCommand->value   = atoi(inputStringValue);
 
       haveCommand  = 1;
     } 
@@ -93,9 +94,4 @@ int communicator::printToSerial(String logString){
   return 0;
 
 }
-
-
-
-
-
 

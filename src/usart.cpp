@@ -9,8 +9,7 @@ class usart: public comDevice
 {
 public:
 
-	usart(int baud)
-	{
+	usart(int baud){
 		Serial.begin(baud);
 	}
 	char read(){
