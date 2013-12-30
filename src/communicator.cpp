@@ -22,6 +22,8 @@ communicator::communicator(){
   currentCommand->value = 0;
 
   usart_module = new usart(9600);
+  if(usart_module != NULL)
+  	communicator::logToSerial("Serial initialized. " , 3);
 }
 
 void communicator::eventHandler() {

@@ -27,13 +27,7 @@ void wdt_init(void)
 
 void setup() {
 
-  Serial.begin(9600);
-
-
-  communicator::logToSerial("Serial initialized. " , 3);
-
-
-   // Initialize serial communications
+  // Initialize serial communications
   if (serialCommPtr == NULL)
   {
     serialCommPtr = new communicator(); 
