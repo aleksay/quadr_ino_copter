@@ -12,8 +12,8 @@
 
 
 #define NUM_STATES 6
-#define RAMP_INIT_FREQUENCY 280
-#define RAMP_INIT_DUTY 215
+#define RAMP_INIT_FREQUENCY 260
+#define RAMP_INIT_DUTY 245
 #define RAMP_INIT_REFREASHRATE 350
 
 
@@ -118,18 +118,18 @@ freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
 dutyData->start = RAMP_INIT_DUTY;
-dutyData->end = 190;
+dutyData->end = 150;
 dutyData->decrement = 0.1;
 dutyData->currentValue = dutyData->start;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
 refreshData->start = RAMP_INIT_REFREASHRATE;
-refreshData->end = 30;
+refreshData->end = 26;
 refreshData->decrement = 0.2;
 refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
-
+delay(500);
    
  
    while ( //(freqData->currentValue > freqData->end) ||  correzione bug startup
@@ -148,7 +148,7 @@ refreshData->resto = 0;
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
      }
-	delay(15);
+	//delay(15);
      if (refreshData->currentValue > refreshData->end )
      {
        startupcalc(refreshData,1);
@@ -167,8 +167,8 @@ refreshData->resto = 0;
  communicator::logToSerial(tempString , 3 );
 
 
-
-   delay(150);
+delay(50);
+   
    }
 }
 
