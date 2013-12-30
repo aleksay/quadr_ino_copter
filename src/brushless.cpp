@@ -132,7 +132,9 @@ refreshData->resto = 0;
 
    
  
-   while ((freqData->currentValue > freqData->end) || (dutyData->currentValue > dutyData->end)||(refreshData->currentValue > refreshData->end))
+   while ( //(freqData->currentValue > freqData->end) ||  correzione bug startup
+				  (dutyData->currentValue > dutyData->end) ||
+					(refreshData->currentValue > refreshData->end))
    {
 /* 
      if (freqData->currentValue > freqData->end)
