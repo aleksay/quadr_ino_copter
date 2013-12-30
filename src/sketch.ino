@@ -67,7 +67,7 @@ void loop() {
 void setCommand(Command command){
 
 
-  char numstr[21]; // for holding temporary string  
+  
   int r = -10;
 
   switch(command->type){
@@ -90,9 +90,9 @@ void setCommand(Command command){
 
   case 'p':
 	communicator::printToSerial ( "--QUERY--");
-	communicator::printToSerial( String("f") + itoa(brushlessPtr->getFrequency(), numstr, 10 )  );
-	communicator::printToSerial( String("d") + itoa(brushlessPtr->getDuty(), numstr, 10 )  );
-	communicator::printToSerial( String("r") + itoa(brushlessPtr->getRefreshRate(), numstr, 10 )  );
+	communicator::printToSerial( String("f") + String(brushlessPtr->getFrequency())  );
+	communicator::printToSerial( String("d") + String(brushlessPtr->getDuty())  );
+	communicator::printToSerial( String("r") + String(brushlessPtr->getRefreshRate())  );
 	communicator::printToSerial ( "----"); 
     break;
 

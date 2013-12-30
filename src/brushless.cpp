@@ -105,7 +105,7 @@ void brushless::startupcalc(startupData valueData, int slow)
 
  int brushless::startup(){ 
 
-  char numstr[21]; // for holding temporary string
+  
   communicator::logToSerial(String("Entering brushless::") + __func__ , 5);
  
 
@@ -157,9 +157,9 @@ refreshData->resto = 0;
 
  
 
-  String tempString = String("f") +itoa(freqData->currentValue, numstr, 10 ) + ",d"
-                                  +itoa(dutyData->currentValue, numstr, 10 ) + ",r" 
-                                  +itoa(refreshData->currentValue, numstr, 10 );
+  String tempString = String("f") +String(freqData->currentValue) + ",d"
+                                  +String(dutyData->currentValue) + ",r" 
+                                  +String(refreshData->currentValue);
 
 
 
@@ -188,12 +188,12 @@ int brushless::setFrequency(int val){
    valori utili e mapparlo su una scala di valori semplici tipo 0 - 100
    per ora passiamo tutto
    */
-  char numstr[21]; // for holding temporary string
+  
 
   if(val == frequency){ //skip if the value is the same
 
   String tempString =String("setFrequency error: same value ") +
-                      itoa(frequency, numstr, 10 );
+                      String(frequency);
  
    communicator::logToSerial(tempString , 0);
     return frequency; 
@@ -230,11 +230,11 @@ int brushless::setRefreshRate(int val){
   /*
   necessaria un analisi sperimentale di questo valore
    */
-  char numstr[21]; // for holding temporary string
+  
 
   if(val == refreshRate){ //skip if the value is the same
   String tempString =String("setRefreshRate error: same value ") +
-                      itoa(refreshRate, numstr, 10 );
+                      String(refreshRate);
  
    communicator::logToSerial(tempString , 2);
 
