@@ -1,5 +1,6 @@
-#ifndef SERIALCOMM_h
-#define SERIALCOMM_h
+#ifndef COMUNICATOR_h
+#define COMUNICATOR_h
+
 #include <Arduino.h>
 #include <WString.h>
 
@@ -12,11 +13,11 @@ typedef struct _command
   unsigned int value;
 } *Command;
 
-class serialComm {
+class communicator {
 
 public:
 
-  serialComm();
+  communicator();
   int getHaveCommand();
   Command getCommand();
   void eventHandler();

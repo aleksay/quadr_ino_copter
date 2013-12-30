@@ -4,14 +4,14 @@
 #include <WString.h>
 
 #include "brushless.h"
-#include "serialComm.h"
+#include "communicator.h"
 
 #define F_CPU 8000000UL  //Uncomment for arduino Fio
 //#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
 
 // Initialization of objects
 brushless *brushlessPtr   = NULL;
-serialComm *serialCommPtr = NULL;
+communicator *serialCommPtr = NULL;
 // Initialization of struct
 Command latestCommand;
 
@@ -21,7 +21,6 @@ void wdt_init(void)
 {
     MCUSR = 0;
     wdt_disable();
-
     return;
 }
 
@@ -31,26 +30,26 @@ void setup() {
   Serial.begin(9600);
 
 
-  serialComm::logToSerial("Serial initialized. " , 3);
+  communicator::logToSerial("Serial initialized. " , 3);
 
 
    // Initialize serial communications
   if (serialCommPtr == NULL)
   {
-    serialCommPtr = new serialComm(); 
+    serialCommPtr = new communicator(); 
   }
 
-  serialComm::logToSerial("SerialComm object initialized. ", 3);
+  communicator::logToSerial("SerialComm object initialized. ", 3);
 
 
    // Initialize brushless communications
   if (brushlessPtr == NULL)
   {
-    brushlessPtr  = new brushless();
+    brushlessPtr  = new brushless();  // This is critical  - create a new class here only
   }
   brushlessPtr->startup();
 
-  serialComm::logToSerial("Brushless object initialized. ", 3);
+  communicator::logToSerial("Brushless object initialized. ", 3);
 
 
 
@@ -88,12 +87,13 @@ void setCommand(Command command){
     r = brushlessPtr->setRefreshRate(command->value);
     break;
     
+
   case 'p':
-	serialComm::printToSerial ( "--QUERY--");
-	serialComm::printToSerial( String("f") + itoa(brushlessPtr->getFrequency(), numstr, 10 )  );
-	serialComm::printToSerial( String("d") + itoa(brushlessPtr->getDuty(), numstr, 10 )  );
-	serialComm::printToSerial( String("r") + itoa(brushlessPtr->getRefreshRate(), numstr, 10 )  );
-	serialComm::printToSerial ( "----"); 
+	communicator::printToSerial ( "--QUERY--");
+	communicator::printToSerial( String("f") + itoa(brushlessPtr->getFrequency(), numstr, 10 )  );
+	communicator::printToSerial( String("d") + itoa(brushlessPtr->getDuty(), numstr, 10 )  );
+	communicator::printToSerial( String("r") + itoa(brushlessPtr->getRefreshRate(), numstr, 10 )  );
+	communicator::printToSerial ( "----"); 
     break;
 
   case 'R':
@@ -109,6 +109,7 @@ void setCommand(Command command){
 // Register brushless object event handler to ISR for Timer 1
 ISR(TIMER1_COMPB_vect) {
   brushlessPtr->eventHandler();
+
 }
 
 // Callback function for reserved Arduino keyword serial polling

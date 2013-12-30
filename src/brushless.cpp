@@ -24,10 +24,10 @@ byte states[NUM_STATES] = {
 brushless::brushless(){
 
 #ifndef F_CPU
-serialComm::logToSerial("F_CPU undefined", 0)
+communicator::logToSerial("F_CPU undefined", 0)
 #endif
 
- serialComm::logToSerial( String("Entering constructor for: ") + __func__, 6);
+ communicator::logToSerial( String("Entering constructor for: ") + __func__, 6);
 
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
@@ -101,7 +101,7 @@ void brushless::startupcalc(startupData valueData, int slow)
  int brushless::startup(){ 
 
   char numstr[21]; // for holding temporary string
-  serialComm::logToSerial(String("Entering brushless::") + __func__ , 5);
+  communicator::logToSerial(String("Entering brushless::") + __func__ , 5);
  
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
@@ -154,7 +154,7 @@ refreshData->resto = 0;
                       itoa(dutyData->currentValue, numstr, 10 ) + "," +
                       itoa(refreshData->currentValue, numstr, 10 );
  
- serialComm::logToSerial(tempString , 6 );
+ communicator::logToSerial(tempString , 6 );
 
 
 
@@ -185,7 +185,7 @@ int brushless::setFrequency(int val){
   String tempString =String("setFrequency error: same value ") +
                       itoa(frequency, numstr, 10 );
  
-   serialComm::logToSerial(tempString , 0);
+   communicator::logToSerial(tempString , 0);
     return frequency; 
   }
   
@@ -226,7 +226,7 @@ int brushless::setRefreshRate(int val){
   String tempString =String("setRefreshRate error: same value ") +
                       itoa(refreshRate, numstr, 10 );
  
-   serialComm::logToSerial(tempString , 2);
+   communicator::logToSerial(tempString , 2);
 
     return refreshRate;
   }

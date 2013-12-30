@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 #include <WString.h>
-#include "serialComm.h"
+#include "communicator.h"
 
 typedef struct _startup_data{
    int start;

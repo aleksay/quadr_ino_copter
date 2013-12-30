@@ -1,11 +1,14 @@
-#include "serialComm.h"
+#include "communicator.h"
+
+#include "usart.cpp"
 
 
-serialComm::serialComm(){
- 
-  serialComm::logToSerial(String("Entering constructor for: ") + __func__, 5);
+usart* usart_module = NULL;
 
 
+communicator::communicator(){
+  
+  communicator::logToSerial(String("Entering constructor for: ") + __func__, 5);
 
   bufferLength          = 0;
   
@@ -18,15 +21,17 @@ serialComm::serialComm(){
   currentCommand->type  = '\n';
   currentCommand->value = 0;
 
+  usart_module = new usart(9600);
 }
 
-void serialComm::eventHandler() {
+void communicator::eventHandler() {
   
   char inChar = NULL;
-  while (Serial.available()) {
+  
+  while (usart_module->available()) {
 
     // get the new byte
-    inChar         = (char)Serial.read(); 
+    inChar         = (char)usart_module->read(); 
     
     // concatenate to the  input string
     inputBuffer   += inChar;
@@ -53,7 +58,7 @@ void serialComm::eventHandler() {
   }
 }
 
-Command serialComm::getCommand(){
+Command communicator::getCommand(){
 
   Command tmpCommand    = (Command)malloc(sizeof(_command));
   tmpCommand->type      = currentCommand->type;
@@ -67,11 +72,11 @@ Command serialComm::getCommand(){
   return tmpCommand;
 }
 
-int serialComm::getHaveCommand(){
+int communicator::getHaveCommand(){
   return haveCommand;
 }
 
-int serialComm::logToSerial(String logString, int logPriority){
+int communicator::logToSerial(String logString, int logPriority){
 
   if (logPriority < logLevel ){
     Serial.println(logString);
@@ -80,7 +85,7 @@ int serialComm::logToSerial(String logString, int logPriority){
   return 0;
 }
 
-int serialComm::printToSerial(String logString){
+int communicator::printToSerial(String logString){
 
   Serial.println(logString);
   return 0;
