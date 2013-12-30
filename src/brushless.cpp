@@ -24,29 +24,29 @@ byte states[NUM_STATES] = {
 brushless::brushless(){
 
 #ifndef F_CPU
-communicator::logToSerial("F_CPU undefined", 0)
+  communicator::logToSerial("F_CPU undefined", 0)
 #endif
 
- communicator::logToSerial( String("Entering constructor for: ") + __func__, 6);
+  communicator::logToSerial( String("Entering constructor for: ") + __func__, 6);
 
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
 
   frequency   = 1100;
   duty        =  250;
-  refreshRate = 150;
+  refreshRate =  150;
 
   cpmCounter  = 0;
   stato       = 0;
 
   timer1_init();
-
 }
 
 int brushless::timer1_init(){
 
   pinMode(10,OUTPUT);
-  pinMode(9,OUTPUT);
+  pinMode( 9,OUTPUT);
+
   /*
     Prescaler is configured like this:
 
@@ -57,12 +57,9 @@ int brushless::timer1_init(){
 
   ICR1   = frequency;
   OCR1B  = map(duty,0,255,0,frequency);
-  
 
   TCCR1B = (1 << CS10) | (1 << WGM13);
-  TCCR1A = _BV(COM1B1); // SET ONE PWM CHANNEL TO NON-INVERTING DUTY CYCLE   
-  
-  
+  TCCR1A = _BV(COM1B1);
 
   TIMSK1 = _BV(OCIE1B);  //signal handler association
 }
@@ -71,8 +68,9 @@ int brushless::timer1_init(){
 void brushless::startupcalc(startupData valueData, int slow)
  { 
    //start_values ritorno;
-   int delta = valueData->currentValue - valueData->end;
+   int delta   = valueData->currentValue - valueData->end;
    float minus = delta * valueData->decrement;
+   
    if (minus >= 1)
    {
      valueData->currentValue = valueData->currentValue - floor(minus);
@@ -81,13 +79,12 @@ void brushless::startupcalc(startupData valueData, int slow)
    {
      if (slow == 1)
      {
-       valueData->resto = valueData->resto + minus;
+       valueData->resto      = valueData->resto + minus;
        if (valueData->resto >=1)
        {
          valueData->currentValue = valueData->currentValue - floor(valueData->resto);
-         valueData->resto = valueData->resto - floor(valueData->resto);
+         valueData->resto        = valueData->resto        - floor(valueData->resto);
        }
- 
      }
      else if ( slow == 0 )
      {
@@ -96,72 +93,61 @@ void brushless::startupcalc(startupData valueData, int slow)
    }   
  }
 
-
-
  int brushless::startup(){ 
 
   char numstr[21]; // for holding temporary string
   communicator::logToSerial(String("Entering brushless::") + __func__ , 5);
  
 
-startupData freqData = (startupData)malloc(sizeof(_startup_data));
-freqData->start = 1000;
-freqData->end = 280;
-freqData->decrement = 0.08;
-freqData->currentValue = freqData->start;
-freqData->resto = 0;
+  startupData freqData   = (startupData)malloc(sizeof(_startup_data));
+  freqData->start        = 1000;
+  freqData->end          = 280;
+  freqData->decrement    = 0.08;
+  freqData->currentValue = freqData->start;
+  freqData->resto        = 0;
 
-startupData dutyData = (startupData)malloc(sizeof(_startup_data));
-dutyData->start = 250;
-dutyData->end = 215;
-dutyData->decrement = 0.1;
-dutyData->currentValue = dutyData->start;
-dutyData->resto = 0;
+  startupData dutyData   = (startupData)malloc(sizeof(_startup_data));
+  dutyData->start        = 250;
+  dutyData->end          = 215;
+  dutyData->decrement    = 0.1;
+  dutyData->currentValue = dutyData->start;
+  dutyData->resto        = 0;
 
-startupData refreshData = (startupData)malloc(sizeof(_startup_data));
-refreshData->start = 120;
-refreshData->end = 30;
-refreshData->decrement = 0.08;
-refreshData->currentValue = refreshData->start;
-refreshData->resto = 0;
-
-   
+  startupData refreshData   = (startupData)malloc(sizeof(_startup_data));
+  refreshData->start        = 120;
+  refreshData->end          = 30;
+  refreshData->decrement    = 0.08;
+  refreshData->currentValue = refreshData->start;
+  refreshData->resto = 0;
  
-   while ((freqData->currentValue > freqData->end) || (dutyData->currentValue > dutyData->end)||(refreshData->currentValue > refreshData->end))
+   while ((freqData->currentValue > freqData->end) || 
+	  (dutyData->currentValue > dutyData->end) ||
+	  (refreshData->currentValue > refreshData->end))
    {
- 
-     if (freqData->currentValue > freqData->end)
+      if (freqData->currentValue > freqData->end)
      {
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
-	delay(15); 
+     delay(15); 
      if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
      }
-	delay(15);
+     delay(15);
      if (refreshData->currentValue > refreshData->end )
      {
        startupcalc(refreshData,1);
        setRefreshRate(refreshData->currentValue);
      }
 
- 
-
   String tempString = String("f") +itoa(freqData->currentValue, numstr, 10 ) + ",d"
                                   +itoa(dutyData->currentValue, numstr, 10 ) + ",r" 
                                   +itoa(refreshData->currentValue, numstr, 10 );
 
-
-
- 
- communicator::logToSerial(tempString , 3 );
-
-
-
-   delay(150);
+  communicator::logToSerial(tempString , 3 );
+  delay(150);
    }
 }
 
@@ -176,32 +162,24 @@ int brushless::getRefreshRate(){
 }
 
 int brushless::setFrequency(int val){
-  /*
-   in questo punto sarebbe bello determinare un range di
-   valori utili e mapparlo su una scala di valori semplici tipo 0 - 100
-   per ora passiamo tutto
-   */
-  char numstr[21]; // for holding temporary string
-
-  if(val == frequency){ //skip if the value is the same
-
-  String tempString =String("setFrequency error: same value ") +
-                      itoa(frequency, numstr, 10 );
- 
-   communicator::logToSerial(tempString , 0);
+  
+  if(val == frequency){      //skip if the value is the same
+    char numstr[21];           // for holding temporary string
+    String tempString = String("setFrequency error: same value ") + itoa(frequency, numstr, 10 );
+    communicator::logToSerial(tempString , 0);
     return frequency; 
   }
   
   if (frequency > val){
-  frequency = val; // Assign the value set to frequency
-  setDuty(duty);   // to avoid duty out of range duty is decreased before the frequency 
-  ICR1 = frequency;
+    frequency = val;        // Assign the value set to frequency
+    setDuty(duty);          // to avoid duty out of range duty is decreased before the frequency 
+    ICR1      = frequency;
   }
   
   if (frequency < val){
-  frequency = val; // Assign the value set to frequency
-  ICR1 = frequency;
-  setDuty(duty);
+    frequency = val;        // Assign the value set to frequency
+    ICR1      = frequency;
+    setDuty(duty);
   }
 
   return frequency;
@@ -213,30 +191,18 @@ int brushless::setDuty(int val){
 
   duty  = val;
   OCR1B = map(duty,0,255,0,frequency);
-  //OCR1A = map(duty,0,255,0,frequency);
   return duty;
-
 }
 
 int brushless::setRefreshRate(int val){
 
-  /*
-  necessaria un analisi sperimentale di questo valore
-   */
-  char numstr[21]; // for holding temporary string
-
-  if(val == refreshRate){ //skip if the value is the same
-  String tempString =String("setRefreshRate error: same value ") +
-                      itoa(refreshRate, numstr, 10 );
- 
-   communicator::logToSerial(tempString , 2);
-
+  if(val == refreshRate){             //skip if the value is the same
+    char numstr[21];                  // for holding temporary string
+    String tempString = String("setRefreshRate error: same value ") + itoa(refreshRate, numstr, 10);
+    communicator::logToSerial(tempString , 2);
     return refreshRate;
   }
-   
-  refreshRate = val; // set the new refresh rate
-  
-
+  refreshRate = val;                  // set the new refresh rate
 
   return refreshRate;
 }
