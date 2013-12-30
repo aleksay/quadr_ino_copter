@@ -32,9 +32,9 @@ communicator::logToSerial("F_CPU undefined", 0)
   DDRD       |= B11111100;  // set pin [2,7] as output
   PORTD       = states[0];  // set up first state on pins 2,6
 
-  frequency   = 900;
-  duty        =  90;
-  refreshRate = 120;
+  frequency   = 1100;
+  duty        =  250;
+  refreshRate = 150;
 
   cpmCounter  = 0;
   stato       = 0;
@@ -105,23 +105,23 @@ void brushless::startupcalc(startupData valueData, int slow)
  
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
-freqData->start = 900;
-freqData->end = 320;
-freqData->decrement = 0.1;
+freqData->start = 1000;
+freqData->end = 280;
+freqData->decrement = 0.8;
 freqData->currentValue = freqData->start;
 freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
-dutyData->start = 90;
-dutyData->end = 65;
-dutyData->decrement = 0.2;
+dutyData->start = 250;
+dutyData->end = 215;
+dutyData->decrement = 0.1;
 dutyData->currentValue = dutyData->start;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
 refreshData->start = 120;
 refreshData->end = 30;
-refreshData->decrement = 0.1;
+refreshData->decrement = 0.8;
 refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
 
@@ -150,11 +150,14 @@ refreshData->resto = 0;
 
  
 
-  String tempString = String(itoa(freqData->currentValue, numstr, 10 )) + "," +
-                      itoa(dutyData->currentValue, numstr, 10 ) + "," +
-                      itoa(refreshData->currentValue, numstr, 10 );
+  String tempString = String("f") +itoa(freqData->currentValue, numstr, 10 ) + ",d"
+                                  +itoa(dutyData->currentValue, numstr, 10 ) + ",r" 
+                                  +itoa(refreshData->currentValue, numstr, 10 );
+
+
+
  
- communicator::logToSerial(tempString , 6 );
+ communicator::logToSerial(tempString , 3 );
 
 
 
