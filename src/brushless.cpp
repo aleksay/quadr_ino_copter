@@ -12,9 +12,15 @@
 
 
 #define NUM_STATES 6
-#define RAMP_INIT_FREQUENCY 260
-#define RAMP_INIT_DUTY 245
-#define RAMP_INIT_REFREASHRATE 350
+
+#define RAMP_INIT_FREQUENCY 200
+#define RAMP_INIT_DUTY 235
+#define RAMP_INIT_REFREASHRATE 400
+
+#define RAMP_FIN_FREQUENCY 200
+#define RAMP_FIN_DUTY 180
+#define RAMP_FIN_REFREASHRATE 34
+
 
 
 
@@ -111,39 +117,39 @@ void brushless::startupcalc(startupData valueData, int slow)
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
 freqData->start = RAMP_INIT_FREQUENCY;
-freqData->end = 200;
+freqData->end = RAMP_FIN_FREQUENCY;  //200;
 freqData->decrement = 0.08;
 freqData->currentValue = freqData->start;
 freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
 dutyData->start = RAMP_INIT_DUTY;
-dutyData->end = 150;
+dutyData->end = RAMP_FIN_DUTY; //180;
 dutyData->decrement = 0.1;
 dutyData->currentValue = dutyData->start;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
 refreshData->start = RAMP_INIT_REFREASHRATE;
-refreshData->end = 26;
+refreshData->end = RAMP_FIN_REFREASHRATE; //38;
 refreshData->decrement = 0.2;
 refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
-delay(500);
+delay(400);
    
  
-   while ( //(freqData->currentValue > freqData->end) ||  correzione bug startup
+   while ( (freqData->currentValue > freqData->end) || // correzione bug startup
 				  (dutyData->currentValue > dutyData->end) ||
 					(refreshData->currentValue > refreshData->end))
    {
-/* 
+
      if (freqData->currentValue > freqData->end)
      {
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
-	delay(15); 
-*/     if (dutyData->currentValue > dutyData->end )
+//	delay(15); 
+     if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
@@ -157,9 +163,9 @@ delay(500);
 
  
 
-  String tempString = String("f") +itoa(freqData->currentValue, numstr, 10 ) + ",d"
-                                  +itoa(dutyData->currentValue, numstr, 10 ) + ",r" 
-                                  +itoa(refreshData->currentValue, numstr, 10 );
+  String tempString = String("f") +String(freqData->currentValue) + String(",d")
+                                  +String(dutyData->currentValue) + String(",r") 
+                                  +String(refreshData->currentValue);
 
 
 
@@ -167,7 +173,7 @@ delay(500);
  communicator::logToSerial(tempString , 3 );
 
 
-delay(50);
+delay(16);
    
    }
 }
