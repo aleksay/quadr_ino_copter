@@ -106,7 +106,6 @@ void brushless::startupcalc(startupData valueData, int slow)
 
  int brushless::startup(){ 
 
-  char numstr[21]; // for holding temporary string
   communicator::logToSerial(String("Entering brushless::") + __func__ , 5);
  
 
@@ -132,10 +131,11 @@ refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
 
    
- 
-   while ((freqData->currentValue > freqData->end) || 
-	  (dutyData->currentValue > dutyData->end) ||
-	  (refreshData->currentValue > refreshData->end))
+  //freqData code is commented to disable frequency ramp
+
+   while ( //(freqData->currentValue > freqData->end) ||
+	 ( dutyData->currentValue    > dutyData->end) ||
+	 ( refreshData->currentValue > refreshData->end))
    {
 /* 
      if (freqData->currentValue > freqData->end)
@@ -143,7 +143,8 @@ refreshData->resto = 0;
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
-	   delay(15); */
+	   delay(15); 
+*/
      if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
@@ -158,11 +159,11 @@ refreshData->resto = 0;
 
  
 
-  String tempString = String("f") +String(freqData->currentValue) + ",d"
-                                  +String(dutyData->currentValue) + ",r" 
-                                  +String(refreshData->currentValue);
-  communicator::logToSerial(tempString , 3 );
-  delay(150);
+    String tempString = String("f") +String(freqData->currentValue) + ",d"
+                                    +String(dutyData->currentValue) + ",r" 
+                                    +String(refreshData->currentValue);
+    communicator::logToSerial(tempString , 3 );
+    delay(150);
    }
 }
 
