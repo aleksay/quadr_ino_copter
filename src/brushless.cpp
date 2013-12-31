@@ -13,13 +13,13 @@
 
 #define NUM_STATES 6
 
-#define RAMP_INIT_FREQUENCY 200
-#define RAMP_INIT_DUTY 235
-#define RAMP_INIT_REFREASHRATE 400
+#define RAMP_INIT_FREQUENCY 260
+#define RAMP_INIT_DUTY 245
+#define RAMP_INIT_REFREASHRATE 350
 
-#define RAMP_FIN_FREQUENCY 200
-#define RAMP_FIN_DUTY 180
-#define RAMP_FIN_REFREASHRATE 34
+#define RAMP_FIN_FREQUENCY 260
+#define RAMP_FIN_DUTY 150
+#define RAMP_FIN_REFREASHRATE 26
 
 
 
@@ -135,7 +135,7 @@ refreshData->end = RAMP_FIN_REFREASHRATE;
 refreshData->decrement = 0.2;
 refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
-delay(400);
+delay(500);
    
 
 
@@ -168,7 +168,7 @@ delay(400);
                                     +String(dutyData->currentValue) + ",r" 
                                     +String(refreshData->currentValue);
     communicator::logToSerial(tempString , 3 );
-    delay(16);
+    delay(50);
    }
 }
 
