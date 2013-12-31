@@ -12,9 +12,15 @@
 
 
 #define NUM_STATES 6
-#define RAMP_INIT_FREQUENCY 280
-#define RAMP_INIT_DUTY 215
-#define RAMP_INIT_REFREASHRATE 350
+
+#define RAMP_INIT_FREQUENCY 200
+#define RAMP_INIT_DUTY 235
+#define RAMP_INIT_REFREASHRATE 400
+
+#define RAMP_FIN_FREQUENCY 200
+#define RAMP_FIN_DUTY 180
+#define RAMP_FIN_REFREASHRATE 34
+
 
 
 
@@ -78,7 +84,6 @@ void brushless::startupcalc(startupData valueData, int slow)
    //start_values ritorno;
    int delta = valueData->currentValue - valueData->end;
    float minus = delta * valueData->decrement;
-   
    if (minus >= 1)
    {
      valueData->currentValue = valueData->currentValue - floor(minus);
@@ -106,51 +111,51 @@ void brushless::startupcalc(startupData valueData, int slow)
 
  int brushless::startup(){ 
 
+
   communicator::logToSerial(String("Entering brushless::") + __func__ , 5);
  
 
 startupData freqData = (startupData)malloc(sizeof(_startup_data));
 freqData->start = RAMP_INIT_FREQUENCY;
-freqData->end = 200;
+freqData->end = RAMP_FIN_FREQUENCY;
 freqData->decrement = 0.08;
 freqData->currentValue = freqData->start;
 freqData->resto = 0;
 
 startupData dutyData = (startupData)malloc(sizeof(_startup_data));
 dutyData->start = RAMP_INIT_DUTY;
-dutyData->end = 190;
+dutyData->end = RAMP_FIN_DUTY;
 dutyData->decrement = 0.1;
 dutyData->currentValue = dutyData->start;
 dutyData->resto = 0;
 
 startupData refreshData = (startupData)malloc(sizeof(_startup_data));
 refreshData->start = RAMP_INIT_REFREASHRATE;
-refreshData->end = 30;
+refreshData->end = RAMP_FIN_REFREASHRATE;
 refreshData->decrement = 0.2;
 refreshData->currentValue = refreshData->start;
 refreshData->resto = 0;
-
+delay(400);
    
-  //freqData code is commented to disable frequency ramp
 
-   while ( //(freqData->currentValue > freqData->end) ||
+
+   while ( (freqData->currentValue > freqData->end) ||
 	 ( dutyData->currentValue    > dutyData->end) ||
 	 ( refreshData->currentValue > refreshData->end))
    {
-/* 
+
      if (freqData->currentValue > freqData->end)
      {
        startupcalc(freqData, 1);
        setFrequency(freqData->currentValue);
      }
-	   delay(15); 
-*/
+
      if (dutyData->currentValue > dutyData->end )
      {
        startupcalc(dutyData,1);
        setDuty(dutyData->currentValue);
      }
-     delay(15);
+
      if (refreshData->currentValue > refreshData->end )
      {
        startupcalc(refreshData,1);
@@ -163,7 +168,7 @@ refreshData->resto = 0;
                                     +String(dutyData->currentValue) + ",r" 
                                     +String(refreshData->currentValue);
     communicator::logToSerial(tempString , 3 );
-    delay(150);
+    delay(16);
    }
 }
 
