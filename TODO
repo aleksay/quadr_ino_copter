@@ -1,0 +1,30 @@
+BRANCH Strartup->Code_revision TODO List:
+
+1) Interfaccia Brushless -> chip -> atmega328pFamily
+
+	  automa_init
+		automa_iterate (for manual iteraction)
+		timerNumMode_init
+		startup_iterate
+		get/setFrequency (if supported)
+		get/setDuty
+		get/setAutomaRate
+
+	internal:
+
+		_writeRegister (handler for XXX sync writing) 
+		_automa_iterate (for automated iteraction bemf/startup )
+
+
+2) Iterazioni
+
+		Brushless prende un comando e lo analizza.
+  	Restituisce delle stringhe di messaggio (log level solo in skentch)
+  
+  	Semaforo: quando il motore e in ramp-mode 
+  	non esegue i comandi di set e da un messaggio di errore
+
+  	Iterazione: 
+    	quando il motore e in ramp-mode esegue i calcoli per fare la rampa
+    	quando il motore e in bemf-mode elabora i comandi (set/get) 
+
