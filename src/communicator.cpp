@@ -3,6 +3,15 @@
 #include "usart.cpp"
 
 
+//questo e' oro...approfondire!
+#ifdef DEBUG
+#define debug(msg) fputs(__FILE__ ":" num2str(__LINE__) " - " msg, stderr)
+#else
+#define debug(msg)
+#endif
+
+
+
 usart* usart_module     = NULL;
 
 
