@@ -10,7 +10,7 @@
 #include "brushless.h"
 
 #include "timer.cpp"
-#include "mosfetSequencecontroler.h"
+#include "mosfetSequencecontroller.h"
 
 #define NUM_STATES 6
 

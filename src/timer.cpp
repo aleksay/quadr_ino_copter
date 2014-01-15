@@ -1,36 +1,28 @@
 #ifndef Timer_h
 #define Timer_h
 
-#include "atmegax8.h"
+#include "timer.h"
 
-#define DEFAULT_INITIAL_FREQ 800
-#define DEFAULT_INITIAL_DUTY 50
-#define DEFAULT_INITIAL_PRESCALER 256
+//  Timer::Timer(int _frequency,int _duty, int _prescaler){		
 
+//		frequency  = _frequency;
+//		setDuty(_duty);
+ //   prescaler  = _prescaler;
 
-class Timer {
+//		_timer1_fastPwm_ocr1atop_init()  
 
-public:
+//	}
 
-  Timer(int _frequency,int _duty, int _prescaler){		
+//	Timer::Timer(int _frequency,int _duty){		
+//		frequency  = _frequency;
+//		setDuty(_duty);
+ //   prescaler  = DEFAULT_INITIAL_PRESCALER;
 
-		frequency  = _frequency;
-		setDuty(_duty);
-    prescaler  = _prescaler;
+//		_timer1_fastPwm_ocr1atop_init()  
+ // }
 
-		_timer1_fastPwm_ocr1atop_init()  
-
-	}
-
-	Timer(int _frequency,int _duty){		
-		frequency  = _frequency;
-		setDuty(_duty);
-    prescaler  = DEFAULT_INITIAL_PRESCALER;
-
-		_timer1_fastPwm_ocr1atop_init()  
-  }
-
-  Timer(){		
+  Timer::Timer()
+{		
 
 		frequency  = DEFAULT_INITIAL_FREQ;
 		setDuty(DEFAULT_INITIAL_DUTY);
@@ -39,7 +31,7 @@ public:
 		_timer1_fastPwm_ocr1atop_init()
 	}
 
-	int _timer1_fastPwm_ocr1atop_init();
+	int Timer::_timer1_fastPwm_ocr1atop_init();
 		
 		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
   	SET_TIMER1_DUTY_CHAN_B(_dutyVal);
@@ -52,10 +44,10 @@ public:
 
   } 
  
-	int start(){ SET_TIMER1_START(prescaler); }
-	int start(int _prescaler){ SET_TIMER1_START(_prescaler); }
+	int Timer::start(){ SET_TIMER1_START(prescaler); }
+	int Timer::start(int _prescaler){ SET_TIMER1_START(_prescaler); }
 
-  int setFrequency(int val){
+  int Timer::setFrequency(int val){
 		
 		if(val == frequency){ return -1; }
 
@@ -71,7 +63,7 @@ public:
   	}
 	}
 
-  int setDuty(int val){
+  int Timer::setDuty(int val){
 		
 		if(val < 0 || val >= 100) return -1;
 
@@ -79,8 +71,8 @@ public:
   	_dutyVal = map(duty,0,100,0,frequency);		
 	}
 
-  int getFrequency(){ return frequency; }
-  int getDuty(){ return duty;}
+  int Timer::getFrequency(){ return frequency; }
+  int Timer::getDuty(){ return duty;}
   
 
 	ISR(TIMER1_OVF_vect){
@@ -91,13 +83,6 @@ public:
 
 	
 
-	
-private:
-	int frequency;
-  int duty;
-	int _dutyVal;
-	int prescaler;
-};
 
 
 #endif
