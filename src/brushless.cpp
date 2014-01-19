@@ -22,78 +22,70 @@
 #define RAMP_FIN_DUTY 150
 #define RAMP_FIN_REFREASHRATE 26
 
-
 timer *timer1_pwm = NULL;
 mosfetSequencecontroller * automa = NULL;
 
-brushless::brushless(){
+startupData freqData;
+startupData dutyData;
+startupData refreshData;
+
+brushless::brushless() {
 
 	timer1_pwm = new timer();
-  automa     = new mosfetSequencecontroller();	
+	automa = new mosfetSequencecontroller();
 
 	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
-  timer1_pwm->setDuty(RAMP_INIT_DUTY);
+	timer1_pwm->setDuty(RAMP_INIT_DUTY);
 
-  automa->setAutomaRate(RAMP_INIT_REFREASHRATE)
+	automa->setAutomaRate(RAMP_INIT_REFREASHRATE);
 
 	timer1_pwm->start();
 	automa->init();
 
-  cpmCounter  = 0;
-  
+	cpmCounter = 0;
+
 }
 
-void brushless::startupcalc(startupData valueData, int slow)
- { 
-   //start_values ritorno;
-   int delta = valueData->currentValue - valueData->end;
-   float minus = delta * valueData->decrement;
-   if (minus >= 1)
-   {
-     valueData->currentValue = valueData->currentValue - floor(minus);
-   }
-   else
-   {
-     if (slow == 1)
-     {
-       valueData->resto = valueData->resto + minus;
-       if (valueData->resto >=1)
-       {
-         valueData->currentValue = valueData->currentValue - floor(valueData->resto);
-         valueData->resto        = valueData->resto        - floor(valueData->resto);
-       }
- 
-     }
-     else if ( slow == 0 )
-     {
-       valueData->currentValue = valueData->currentValue - 1;
-     }
-   }   
+void brushless::startupcalc(startupData valueData, int slow) {
+	//start_values ritorno;
+	int delta = valueData->currentValue - valueData->end;
+	float minus = delta * valueData->decrement;
+	if (minus >= 1) {
+		valueData->currentValue = valueData->currentValue - floor(minus);
+	} else {
+		if (slow == 1) {
+			valueData->resto = valueData->resto + minus;
+			if (valueData->resto >= 1) {
+				valueData->currentValue = valueData->currentValue	- floor(valueData->resto);
+				valueData->resto = valueData->resto - floor(valueData->resto);
+			}
+
+		} else if (slow == 0) {
+			valueData->currentValue = valueData->currentValue - 1;
+		}
+	}
 }
 
 
+int brushless::startup() {
 
-int brushless::startup(){ 
+	communicator::logToSerial(String("Entering brushless::") + __func__, 5);
 
-
-  communicator::logToSerial(String("Entering brushless::") + __func__ , 5);
- 
-
-	startupData freqData = (startupData)malloc(sizeof(_startup_data));
+	freqData = (startupData) malloc(sizeof(_startup_data));
 	freqData->start = RAMP_INIT_FREQUENCY;
 	freqData->end = RAMP_FIN_FREQUENCY;
 	freqData->decrement = 0.08;
 	freqData->currentValue = freqData->start;
 	freqData->resto = 0;
 
-	startupData dutyData = (startupData)malloc(sizeof(_startup_data));
+	dutyData = (startupData) malloc(sizeof(_startup_data));
 	dutyData->start = RAMP_INIT_DUTY;
 	dutyData->end = RAMP_FIN_DUTY;
 	dutyData->decrement = 0.1;
 	dutyData->currentValue = dutyData->start;
 	dutyData->resto = 0;
 
-	startupData refreshData = (startupData)malloc(sizeof(_startup_data));
+  refreshData = (startupData) malloc(sizeof(_startup_data));
 	refreshData->start = RAMP_INIT_REFREASHRATE;
 	refreshData->end = RAMP_FIN_REFREASHRATE;
 	refreshData->decrement = 0.2;
@@ -104,79 +96,79 @@ int brushless::startup(){
 
 }
 
-int startupping = 0;
-int commandRead = 0;
-String latestMessage;
 
-void iterate(){
+
+void brushless::iterate() {
 
 	//if startup mode do startup
-  
-  if(startupping){
-    if ( (freqData->currentValue > freqData->end) ||
-           ( dutyData->currentValue > dutyData->end) ||
-        ( refreshData->currentValue > refreshData->end))
-    {
 
-       if (freqData->currentValue > freqData->end)
-       {
-         startupcalc(freqData, 1);
-         setFrequency(freqData->currentValue);
-       }
+	if (startupping) {
+		if ((freqData->currentValue > freqData->end)
+				|| (dutyData->currentValue > dutyData->end)
+				|| (refreshData->currentValue > refreshData->end)) {
 
-       if (dutyData->currentValue > dutyData->end )
-       {
-         startupcalc(dutyData,1);
-         setDuty(dutyData->currentValue);
-       }
+			if (freqData->currentValue > freqData->end) {
+				startupcalc(freqData, 1);
+				timer1_pwm->setFrequency(freqData->currentValue);
+			}
 
-       if (refreshData->currentValue > refreshData->end )
-       {
-         startupcalc(refreshData,1);
-         setRefreshRate(refreshData->currentValue);
-       }
+			if (dutyData->currentValue > dutyData->end) {
+				startupcalc(dutyData, 1);
+				timer1_pwm->setDuty(dutyData->currentValue);
+			}
 
-    delay(50);
-   }else
-   {
-      startupping = 0;
-   }
+			if (refreshData->currentValue > refreshData->end) {
+				startupcalc(refreshData, 1);
+				automa->setAutomaRate(refreshData->currentValue);
+			}
 
-  }
-  // else parse latestcommand
-  else
-  {
- 	if(!commandRead){
-		parse(latestCommand);
-		commandRead = 1;
+			delay(50);
+		} else {
+			startupping = 0;
+		}
+
 	}
-   }
-  
- }
-
-
-int setCommand(Command command){
-	latestCommand = command;
-        commandRead = 0;
+	// else parse latestcommand
+	else if (!commandRead) {
+			parseCommand(latestCommand);
+			commandRead = 1;
+	}
 }
-String getResponse(){
+
+
+String brushless::parseCommand(Command command){
+	
+  int r = -10;
+
+  switch(command->type){
+
+  case 'f':
+    return String(timer1_pwm->setFrequency(command->value));
+  case 'd':
+    return String(timer1_pwm->setDuty(command->value));
+  case 'r':
+    return String(automa->setAutomaRate(command->value));
+    
+  case 'p':
+		return String( "--QUERY--\n") +
+		 			 String("f") + String(timer1_pwm->getFrequency())   + String("\n") +
+           String("d") + String(timer1_pwm->getDuty())        + String("\n") +
+           String("r") + String(automa->getAutomaRate()) + String("\n") +
+		       String( "----"); 
+    break;
+
+  default:
+  break;  
+  }
+}
+
+int brushless::setCommand(Command command) {
+	latestCommand = command;
+	commandRead = 0;
+}
+String brushless::getResponse() {
 	return latestMessage;
 }
 
 
-
-
-
-
-
-ISR(TIMER1_COMPB_vect) { 
-
-		cpmCounter++;
-
-		if(cpmCounter >= refreshRate){
-
-			automa->iterate();
-			cpmCounter = 0;
-		}
-}
 

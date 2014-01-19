@@ -24,7 +24,7 @@ public:
 	int getPrescaler();
 private:
 
-	int _timer1_fastPwm_ocr1atop_init();
+	int  _timer1_fastPwm_ocr1atop_init();
   void _timer1_ovf_handler(); 
 
 	int frequency;

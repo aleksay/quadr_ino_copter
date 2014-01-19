@@ -77,8 +77,7 @@
 #define SET_AUTOMA_PORTD DDRD |= 0b11111100 
 #define NUM_STATES 6
 
-PROGMEM const byte states[NUM_STATES] = { 0b01000100, 0b10000100, 0b10001000,
-		0b00101000, 0b00110000, 0b01010000 };
+
 
 #define AUTOMA_ITERATE(state) PORTD=states[state]
 

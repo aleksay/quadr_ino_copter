@@ -76,9 +76,8 @@ int timer::setPrescaler(int _prescaler){
 			SET_TIMER1_PRESCALER_1024;
 			prescaler = 1024;
 			return 0;			
+	}
 	return 1;
-}
-
 }
 
 int timer::getPrescaler(){return prescaler;}
@@ -126,7 +125,8 @@ int timer::getDuty() {
 
 //ISR(TIMER1_OVF_vect){
 void timer::_timer1_ovf_handler(){
-		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency); SET_TIMER1_DUTY_CHAN_B(_dutyVal);
+	  SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
+	  SET_TIMER1_DUTY_CHAN_B(_dutyVal);
 }
 
 #endif
