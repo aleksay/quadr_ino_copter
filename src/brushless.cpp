@@ -9,9 +9,6 @@
 
 #include "brushless.h"
 
-#include "timer.cpp"
-#include "mosfetSequencecontroller.h"
-
 #define NUM_STATES 6
 
 #define RAMP_INIT_FREQUENCY 260
@@ -42,7 +39,7 @@ brushless::brushless() {
 	timer1_pwm->start();
 	automa->init();
 
-	cpmCounter = 0;
+	//cpmCounter = 0;
 
 }
 

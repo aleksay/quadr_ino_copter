@@ -9,6 +9,8 @@
 #include <Arduino.h>
 #include <WString.h>
 #include "communicator.h"
+#include "timer.h"
+#include "mosfetSequencecontroller.h"
 
 typedef struct _startup_data {
 	int start;
@@ -44,11 +46,11 @@ public:
 	String getResponse();
 
 private:
-	volatile unsigned int cpmCounter;
-	volatile int stato;
-	volatile unsigned int frequency; //holds register value
-	volatile unsigned int refreshRate;
-	volatile unsigned int duty; //holds register value
+//	volatile unsigned int cpmCounter;
+//	volatile int stato;
+//	volatile unsigned int frequency; //holds register value
+//	volatile unsigned int refreshRate;
+//	volatile unsigned int duty; //holds register value
 	Command latestCommand;
 	int startupping = 0;
   int commandRead = 0;
