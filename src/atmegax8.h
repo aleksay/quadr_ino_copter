@@ -12,7 +12,7 @@
  SET_TIMER1_PRESCALER_256;
  */
 
-#define _TIMER1_RESET TCCR1B=0;TCCR1A=0;TCNT1=0;
+#define TIMER1_RESET TCCR1B=0;TCCR1A=0;TCNT1=0
 
 /*
  CS12 CS11 CS10 Description
@@ -30,7 +30,7 @@
 #define SET_TIMER1_PRESCALER_256  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10)
 #define SET_TIMER1_PRESCALER_1024 TCCR1B |= (1 << CS12) | (0 << CS11) | (1 << CS10)
 
-#define SET_TIMER1_START(prescaler) cli(); SET_TIMER1_PRESCALER_##prescaler; sei()
+//#define SET_TIMER1_START(prescaler) SET_TIMER1_PRESCALER_##prescaler; 
 
 /*
  WGM13 | WGM12 | WGM11 | WGM10 | Timer/Counter Mode of Operation | TOP | Update of OCR1x at | TOV1 Flag Set on
@@ -43,14 +43,14 @@
  14 1 1 1 0 Fast PWM ICR1 BOTTOM TOP
  15 1 1 1 1 Fast PWM OCR1A BOTTOM TOP
  */
-#define SET_TIMER1_MODE_CTC_OCR1A              cli(); _TIMER1_RESET TCCR1B |= (0 << WGM13) | (1 << WGM12);TCCR1A |= (0 << WGM11) | (0 << WGM10); sei()
-#define SET_TIMER1_MODE_PHASEFREQ_CORRECT_ICR1 cli(); _TIMER1_RESET TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (0 << WGM11) | (0 << WGM10); sei()
-#define SET_TIMER1_MODE_PHASEFREQ_CORRECT_OCR1A cli();_TIMER1_RESET TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (0 << WGM11) | (1 << WGM10); sei()
-#define SET_TIMER1_MODE_PHASE_CORRECT_ICR1      cli();_TIMER1_RESET TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (1 << WGM11) | (0 << WGM10); sei()
-#define SET_TIMER1_MODE_PHASE_CORRECT_OCR1A     cli();_TIMER1_RESET TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (1 << WGM11) | (1 << WGM10); sei()
-#define SET_TIMER1_MODE_CTC_ICR1                cli();_TIMER1_RESET TCCR1B |= (1 << WGM13) | (1 << WGM12);TCCR1A |= (0 << WGM11) | (0 << WGM10); sei()
-#define SET_TIMER1_MODE_FASTPWM_ICR1            cli();_TIMER1_RESET TCCR1B |= (1 << WGM13) | (1 << WGM12);TCCR1A |= (1 << WGM11) | (0 << WGM10); sei()
-#define SET_TIMER1_MODE_FASTPWM_OCR1A           cli();_TIMER1_RESET TCCR1B |= (1 << WGM13) | (1 << WGM12);TCCR1A |= (1 << WGM11) | (1 << WGM10); sei()
+#define SET_TIMER1_MODE_CTC_OCR1A               TCCR1B |= (0 << WGM13) | (1 << WGM12);TCCR1A |= (0 << WGM11) | (0 << WGM10)
+#define SET_TIMER1_MODE_PHASEFREQ_CORRECT_ICR1  TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (0 << WGM11) | (0 << WGM10)
+#define SET_TIMER1_MODE_PHASEFREQ_CORRECT_OCR1A TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (0 << WGM11) | (1 << WGM10)
+#define SET_TIMER1_MODE_PHASE_CORRECT_ICR1      TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (1 << WGM11) | (0 << WGM10)
+#define SET_TIMER1_MODE_PHASE_CORRECT_OCR1A     TCCR1B |= (1 << WGM13) | (0 << WGM12);TCCR1A |= (1 << WGM11) | (1 << WGM10)
+#define SET_TIMER1_MODE_CTC_ICR1                TCCR1B |= (1 << WGM13) | (1 << WGM12);TCCR1A |= (0 << WGM11) | (0 << WGM10)
+#define SET_TIMER1_MODE_FASTPWM_ICR1            TCCR1B |= (1 << WGM13) | (1 << WGM12);TCCR1A |= (1 << WGM11) | (0 << WGM10)
+#define SET_TIMER1_MODE_FASTPWM_OCR1A           TCCR1B |= (1 << WGM13) | (1 << WGM12);TCCR1A |= (1 << WGM11) | (1 << WGM10)
 
 /*
  Bit 5 – ICIE1:  Timer/Counter1, Input Capture Interrupt Enable
@@ -63,16 +63,24 @@
 #define SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A TIMSK1 |= (1 << OCIE1A)
 #define SET_TIMER1_INTERRUPT_OVERFLOW        TIMSK1 |= (1 << TOIE1 )
 
-#define SET_TIMER1_PINB DDRB = DDRB | 0b00000100;
-#define SET_TIMER1_PINA DDRB = DDRB | 0b00000010;
+#define SET_TIMER1_PINB DDRB = DDRB | 0b00000100
+#define SET_TIMER1_PINA DDRB = DDRB | 0b00000010
 /*COM1A1/COM1B1 COM1A0/COM1B0*/
-#define SET_TIMER1_PINOUT(pin,notInverting) cli(); SET_TIMER1_PIN##pin TCCR1A |= 1 << COM1##pin##1 | notInverting << COM1##pin##0 ; sei()
+#define SET_TIMER1_PINOUT(pin)   TCCR1A |= 1 << COM1##pin##1 
 #define UNSET_TIMER1_PINOUT(pin) TCCR1A &= ~(1 << COM1##pin##1) 
+
+#define SET_TIMER1_PINB_NOTINVERTING(notInverting) TCCR1A |= notInverting << COM1B0
+#define SET_TIMER1_PINA_NOTINVERTING(notInverting) TCCR1A |= notInverting << COM1A0
 
 #define SET_TIMER1_FREQUENCY_ICR1TOP(val) ICR1 = val
 #define SET_TIMER1_FREQUENCY_OCR1ATOP(val) OCR1A = val
 #define SET_TIMER1_DUTY_CHAN_B(val) OCR1B = val
 #define SET_TIMER1_DUTY_CHAN_A(val) OCR1A = val
+
+
+
+
+
 
 #define SET_AUTOMA_PORTD DDRD |= 0b11111100 
 #define NUM_STATES 6
