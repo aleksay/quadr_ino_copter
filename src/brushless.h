@@ -37,6 +37,7 @@ private:
 	int startupping = 0;
   int commandRead = 0;
   String latestMessage;
+	
 
 
 	String parseCommand(Command command);

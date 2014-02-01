@@ -2,19 +2,11 @@
 
 #include "usart.cpp"
 
-//questo e' oro...approfondire!
-#ifdef DEBUG
-#define debug(msg) fputs(__FILE__ ":" num2str(__LINE__) " - " msg, stderr)
-#else
-#define debug(msg)
-#endif
 
 usart* usart_module = NULL;
 
 communicator::communicator() {
 
-	communicator::logToSerial(String("Entering constructor for: ") + __func__,
-			5);
 
 	bufferLength = 0;
 
@@ -28,9 +20,11 @@ communicator::communicator() {
 	currentCommand->value = 0;
 
 	usart_module = new usart(9600);
+	
+  debug(String("Entering constructor for: ") + __func__,3)
 
 	if (usart_module != NULL)
-		communicator::logToSerial("Serial initialized. ", 3);
+		debug("Serial initialized. ", 3);
 }
 
 void communicator::eventHandler() {

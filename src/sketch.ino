@@ -34,25 +34,38 @@ void setup() {
     serialCommPtr = new communicator(); 
   }
 
-  communicator::logToSerial("SerialComm object initialized. ", 3);
+  debug("SerialComm object initialized. ", 3);
 
    // Initialize brushless communications
   if (brushlessPtr == NULL)
   {
     brushlessPtr  = new brushless();  // This is critical  - create a new class here only
   }
-
-  brushlessPtr->startup();
-  communicator::logToSerial("Brushless object initialized. ", 3);
+  brushlessPtr->start();
+ // brushlessPtr->startup();
+ debug("Brushless object initialized. ", 3);
 }
+
+int commandExecute = 0;
 
 void loop() { 
 
 // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
+	
+	//	 communicator::logToSerial("Setting Command", 3);
     latestCommand = serialCommPtr->getCommand();
+    debug("Received command type: " + String(latestCommand->type) + " value: " + String(latestCommand->value), 3);
     brushlessPtr->setCommand(latestCommand);
+		commandExecute = 1;
   }
+
+	brushlessPtr->iterate();
+
+	if(commandExecute == 1){
+    communicator::logToSerial(brushlessPtr->getResponse(), 3);
+		commandExecute = 0;
+	}
 }
 
 

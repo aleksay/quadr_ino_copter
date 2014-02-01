@@ -11,8 +11,8 @@
 
 #define NUM_STATES 6
 
-#define RAMP_INIT_FREQUENCY 260
-#define RAMP_INIT_DUTY 245
+#define RAMP_INIT_FREQUENCY 2600
+#define RAMP_INIT_DUTY 50
 #define RAMP_INIT_REFREASHRATE 350
 
 #define RAMP_FIN_FREQUENCY 260
@@ -26,28 +26,23 @@ startupData freqData;
 startupData dutyData;
 startupData refreshData;
 
+volatile int cpmCounter = 0;
+
 brushless::brushless() {
-//Serial.println("new timer");
+
 	timer1_pwm = new timer();
-if(timer1_pwm == NULL) Serial.println("new timer failed IIII");
-//Serial.println("new automa");
 	automa		 = new mosfetSequencecontroller();
-if(automa == NULL) Serial.println("new automa failed IIII");
 	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
 	timer1_pwm->setDuty(RAMP_INIT_DUTY);
 
 	automa->setAutomaRate(RAMP_INIT_REFREASHRATE);
 
-//	timer1_pwm->start();
 	automa->init();
-
 
 	latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
-	//cpmCounter = 0;
 
 }
-volatile int cpmCounter = 0;
 ISR(TIMER1_COMPB_vect) {
  cpmCounter++;
 
@@ -84,7 +79,7 @@ void brushless::startupcalc(startupData valueData, int slow) {
 
 int brushless::startup() {
 
-	communicator::logToSerial(String("Entering brushless::") + __func__, 5);
+	debug(String("Entering brushless::") + __func__, 5);
 
 	freqData = (startupData) malloc(sizeof(_startup_data));
 	freqData->start = RAMP_INIT_FREQUENCY;
@@ -147,8 +142,8 @@ void brushless::iterate() {
 
 	}
 	// else parse latestcommand
-	else if (!commandRead) {
-			parseCommand(latestCommand);
+	else if (commandRead == 0) {
+			latestMessage = parseCommand(latestCommand);
 			commandRead = 1;
 	}
 }
@@ -156,32 +151,42 @@ void brushless::iterate() {
 
 String brushless::parseCommand(Command command){
 	
-  int r = -10;
+  //int r = -10;
 
   switch(command->type){
 
   case 'f':
-    return String(timer1_pwm->setFrequency(command->value));
+		timer1_pwm->setFrequency(command->value);
+	  return String(timer1_pwm->getFrequency());
   case 'd':
-    return String(timer1_pwm->setDuty(command->value));
+    timer1_pwm->setDuty(command->value);
+	  return String(timer1_pwm->getDuty());
   case 'r':
-    return String(automa->setAutomaRate(command->value));
-    
+    automa->setAutomaRate(command->value);
+	  return String(automa->getAutomaRate());
   case 'p':
+//		communicator::logToSerial(String( "--QUERY--\n") +
+//		 			 String("f") + String(timer1_pwm->getFrequency())   + String("\n") +
+//           String("d") + String(timer1_pwm->getDuty())        + String("\n") +
+//           String("r") + String(automa->getAutomaRate())			+ String("\n") +
+//		       String( "----"),3);
 		return String( "--QUERY--\n") +
 		 			 String("f") + String(timer1_pwm->getFrequency())   + String("\n") +
            String("d") + String(timer1_pwm->getDuty())        + String("\n") +
            String("r") + String(automa->getAutomaRate())			+ String("\n") +
 		       String( "----"); 
-    break;
+    
 
   default:
-  break;  
+				commandRead = 1;
+     return String( "--D--");
+    
   }
 }
 
 int brushless::setCommand(Command command) {
 	latestCommand = command;
+
 	commandRead = 0;
 }
 String brushless::getResponse() {
@@ -191,7 +196,7 @@ String brushless::getResponse() {
 int brushless::start(){
 	
 Serial.println("timer1 start");
-timer1_pwm->start();
+timer1_pwm->start(8);
 
 }
 
