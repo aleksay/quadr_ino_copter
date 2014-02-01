@@ -7,13 +7,13 @@ timer::timer() {
 
 	frequency = DEFAULT_INITIAL_FREQ;
 	setDuty(DEFAULT_INITIAL_DUTY);
+  prescaler = 0;
 	_timer1_fastPwm_ocr1atop_init();
- // setPrescaler(DEFAULT_INITIAL_PRESCALER);
+ 
 }
 
 int timer::_timer1_fastPwm_icr1top_init() {
   
- // cli();
   SET_TIMER1_PINB;
 	SET_TIMER1_FREQUENCY_ICR1TOP(frequency);
 	SET_TIMER1_DUTY_CHAN_B(_dutyVal);
@@ -22,9 +22,7 @@ int timer::_timer1_fastPwm_icr1top_init() {
   SET_TIMER1_MODE_FASTPWM_ICR1;
 	SET_TIMER1_PINB_NOTINVERTING(1);
 	SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
-//	SET_TIMER1_INTERRUPT_OVERFLOW;
   SET_TIMER1_PRESCALER_0;
-//	sei();
 
  return 0;
 }
@@ -40,17 +38,12 @@ int timer::_timer1_fastPwm_ocr1atop_init() {
 	SET_TIMER1_MODE_FASTPWM_OCR1A;
 	SET_TIMER1_PINB_NOTINVERTING(1);
 	SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
-//	SET_TIMER1_INTERRUPT_OVERFLOW;
- // SET_TIMER1_PRESCALER_0;
-
-//Serial.print(bitRead(TCCR1A,CS12));
-//Serial.print(bitRead(TCCR1A,CS11));
-//Serial.println(bitRead(TCCR1A,CS10));
 
   return 0;
 }
 
 int timer::start() {
+
 	setPrescaler(prescaler);
 	return 0;
 }
@@ -68,15 +61,8 @@ int timer::setPrescaler(int _prescaler){
 		case 0:
 			SET_TIMER1_PRESCALER_0;
 			prescaler = 0;
- 
-//Serial.print(bitRead(TCCR1A,CS12));
-//Serial.print(bitRead(TCCR1A,CS11));
-//Serial.println(bitRead(TCCR1A,CS10));
-
-
-     return 0;
-      break;
-		case 8:
+      return 0;
+    case 8:
 			SET_TIMER1_PRESCALER_8;
 			prescaler = 8;
       return 0;
@@ -108,13 +94,13 @@ int timer::setFrequency(int val) {
 
 	if (frequency > val) {
 
-		zDuty = setDuty(duty); // to avoid duty out of range duty is decreased before the frequency 
-		frequency = val;        // Assign the value set to frequency 
+		zDuty = setDuty(duty); 
+		frequency = val;       
     SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
 	}
 
 	if (frequency < val) {
-		frequency = val;        // Assign the value set to frequency
+		frequency = val;       
     zDuty = setDuty(duty);
     SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
 	}
@@ -141,7 +127,7 @@ int timer::getDuty() {
 	return duty;
 }
 
-//ISR(TIMER1_OVF_vect){
+
 void timer::_timer1_ovf_handler(){
 	  SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
 	  SET_TIMER1_DUTY_CHAN_B(_dutyVal);

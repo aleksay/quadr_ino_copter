@@ -3,15 +3,6 @@
 
 #include <Arduino.h>
 
-/* 
- One Of Correct Orders 
- SET_TIMER1_PINOUT(B,1)
- SET_TIMER1_FREQUENCY_OCR1ATOP(600);
- SET_TIMER1_DUTY_CHAN_B(400);
- SET_TIMER1_MODE_FASTPWM_OCR1A;
- SET_TIMER1_PRESCALER_256;
- */
-
 #define TIMER1_RESET TCCR1B=0;TCCR1A=0;TCNT1=0
 
 /*
@@ -30,7 +21,7 @@
 #define SET_TIMER1_PRESCALER_256  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10)
 #define SET_TIMER1_PRESCALER_1024 TCCR1B |= (1 << CS12) | (0 << CS11) | (1 << CS10)
 
-//#define SET_TIMER1_START(prescaler) SET_TIMER1_PRESCALER_##prescaler; 
+
 
 /*
  WGM13 | WGM12 | WGM11 | WGM10 | Timer/Counter Mode of Operation | TOP | Update of OCR1x at | TOV1 Flag Set on
@@ -77,16 +68,20 @@
 #define SET_TIMER1_DUTY_CHAN_B(val) OCR1B = val
 #define SET_TIMER1_DUTY_CHAN_A(val) OCR1A = val
 
+#define	automa_register_D
+//#define automa_register_B
 
 
+#ifdef automa_register_D
+	#define AUTOMA_PIN_INIT DDRD |= 0b00111111 
+	#define AUTOMA_ITERATE(state) PORTD=states[state]
+#endif
 
+#ifdef automa_register_B
+	#define AUTOMA_PIN_INIT DDRB |= 0b00111111 
+	#define AUTOMA_ITERATE(state) PORTB=states[state]
+#endif
 
-
-#define SET_AUTOMA_PORTD DDRD |= 0b11111100 
 #define NUM_STATES 6
-
-
-
-#define AUTOMA_ITERATE(state) PORTD=states[state]
 
 #endif

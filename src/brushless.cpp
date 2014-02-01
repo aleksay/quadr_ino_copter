@@ -27,20 +27,39 @@ startupData dutyData;
 startupData refreshData;
 
 brushless::brushless() {
-
+//Serial.println("new timer");
 	timer1_pwm = new timer();
-	automa = new mosfetSequencecontroller();
-
+if(timer1_pwm == NULL) Serial.println("new timer failed IIII");
+//Serial.println("new automa");
+	automa		 = new mosfetSequencecontroller();
+if(automa == NULL) Serial.println("new automa failed IIII");
 	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
 	timer1_pwm->setDuty(RAMP_INIT_DUTY);
 
 	automa->setAutomaRate(RAMP_INIT_REFREASHRATE);
 
-	timer1_pwm->start();
+//	timer1_pwm->start();
 	automa->init();
 
+
+	latestCommand = (Command)malloc(sizeof(_command));
+  latestCommand->type = 'n';
 	//cpmCounter = 0;
 
+}
+volatile int cpmCounter = 0;
+ISR(TIMER1_COMPB_vect) {
+ cpmCounter++;
+
+  if(cpmCounter >= automa->getAutomaRate()){
+
+    // iterazione attraverso gli stati dell'automa
+    automa->commutePole();
+    cpmCounter = 0;
+  }
+}
+ISR(TIMER1_OVF_vect){
+//	timer1_pwm->_timer1_ovf_handler();
 }
 
 void brushless::startupcalc(startupData valueData, int slow) {
@@ -56,7 +75,6 @@ void brushless::startupcalc(startupData valueData, int slow) {
 				valueData->currentValue = valueData->currentValue	- floor(valueData->resto);
 				valueData->resto = valueData->resto - floor(valueData->resto);
 			}
-
 		} else if (slow == 0) {
 			valueData->currentValue = valueData->currentValue - 1;
 		}
@@ -122,6 +140,9 @@ void brushless::iterate() {
 			delay(50);
 		} else {
 			startupping = 0;
+      free(freqData);
+			free(dutyData);
+      free(refreshData);
 		}
 
 	}
@@ -150,7 +171,7 @@ String brushless::parseCommand(Command command){
 		return String( "--QUERY--\n") +
 		 			 String("f") + String(timer1_pwm->getFrequency())   + String("\n") +
            String("d") + String(timer1_pwm->getDuty())        + String("\n") +
-           String("r") + String(automa->getAutomaRate()) + String("\n") +
+           String("r") + String(automa->getAutomaRate())			+ String("\n") +
 		       String( "----"); 
     break;
 
@@ -167,5 +188,10 @@ String brushless::getResponse() {
 	return latestMessage;
 }
 
+int brushless::start(){
+	
+Serial.println("timer1 start");
+timer1_pwm->start();
 
+}
 
