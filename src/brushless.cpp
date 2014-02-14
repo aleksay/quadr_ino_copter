@@ -8,16 +8,17 @@
  */
 
 #include "brushless.h"
+#include "timer1.cpp"
 
 #define NUM_STATES 6
 
-#define RAMP_INIT_FREQUENCY 2600
-#define RAMP_INIT_DUTY 50
-#define RAMP_INIT_REFREASHRATE 350
+#define RAMP_INIT_FREQUENCY 10000
+#define RAMP_INIT_DUTY 90
+#define RAMP_INIT_REFREASHRATE 10
 
-#define RAMP_FIN_FREQUENCY 260
-#define RAMP_FIN_DUTY 150
-#define RAMP_FIN_REFREASHRATE 26
+#define RAMP_FIN_FREQUENCY 2000
+#define RAMP_FIN_DUTY 50
+#define RAMP_FIN_REFREASHRATE 1
 
 timer *timer1_pwm = NULL;
 mosfetSequencecontroller * automa = NULL;
@@ -30,7 +31,7 @@ volatile int cpmCounter = 0;
 
 brushless::brushless() {
 
-	timer1_pwm = new timer();
+	timer1_pwm = new timer1();
 	automa		 = new mosfetSequencecontroller();
 	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
 	timer1_pwm->setDuty(RAMP_INIT_DUTY);
@@ -131,8 +132,8 @@ void brushless::iterate() {
 				startupcalc(refreshData, 1);
 				automa->setAutomaRate(refreshData->currentValue);
 			}
-
-			delay(50);
+			debug("f"+String(timer1_pwm->getFrequency())+" d"+String(timer1_pwm->getDuty())+" r"+String(automa->getAutomaRate()),3);
+			delay(100);
 		} else {
 			startupping = 0;
       free(freqData);

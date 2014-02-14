@@ -42,7 +42,7 @@ void setup() {
     brushlessPtr  = new brushless();  // This is critical  - create a new class here only
   }
   brushlessPtr->start();
- // brushlessPtr->startup();
+  brushlessPtr->startup();
  debug("Brushless object initialized. ", 3);
 }
 
