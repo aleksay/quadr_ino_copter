@@ -13,7 +13,7 @@
 brushless *brushlessPtr     = NULL;
 communicator *serialCommPtr = NULL;
 
-// Initialization of struct
+// Initialization of comman struct
 Command latestCommand;
 
 // Software reset 
@@ -36,14 +36,14 @@ void setup() {
 
   debug("SerialComm object initialized. ", 3);
 
-   // Initialize brushless communications
+   // Initialize brushless object
   if (brushlessPtr == NULL)
   {
-    brushlessPtr  = new brushless();  // This is critical  - create a new class here only
+    brushlessPtr  = new brushless();  
   }
-  brushlessPtr->start();
-  brushlessPtr->startup();
- debug("Brushless object initialized. ", 3);
+  brushlessPtr->start(); //set prescaler and start the iteration
+  brushlessPtr->startup(); //start-up ramp
+  debug("Brushless object initialized. ", 3);
 }
 
 int commandExecute = 0;
@@ -57,14 +57,14 @@ void loop() {
     latestCommand = serialCommPtr->getCommand();
     debug("Received command type: " + String(latestCommand->type) + " value: " + String(latestCommand->value), 3);
     brushlessPtr->setCommand(latestCommand);
-		commandExecute = 1;
+	commandExecute = 1;
   }
 
 	brushlessPtr->iterate();
 
 	if(commandExecute == 1){
-    communicator::logToSerial(brushlessPtr->getResponse(), 3);
-		commandExecute = 0;
+    communicator::logToSerial(brushlessPtr->getResponse(), 3); //non dobbiamo usare la funzione debug ???!!!
+	commandExecute = 0;
 	}
 }
 

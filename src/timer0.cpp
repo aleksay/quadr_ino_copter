@@ -15,7 +15,7 @@ public:
 		OCR0B = _dutyVal;
 
 		TCCR0A =  _BV(COM0B1) | _BV(COM0B0) | _BV(WGM00) ;
-    TCCR0B =  _BV(WGM02); 
+		TCCR0B =  _BV(WGM02); 
 	}
 
   	int start() {

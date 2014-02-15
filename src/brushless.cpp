@@ -31,7 +31,7 @@ volatile int cpmCounter = 0;
 
 brushless::brushless() {
 
-	timer1_pwm = new timer1();
+	timer1_pwm   = new timer1();
 	automa		 = new mosfetSequencecontroller();
 	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
 	timer1_pwm->setDuty(RAMP_INIT_DUTY);
@@ -41,7 +41,7 @@ brushless::brushless() {
 	automa->init();
 
 	latestCommand = (Command)malloc(sizeof(_command));
-  latestCommand->type = 'n';
+	latestCommand->type = 'n';
 
 }
 ISR(TIMER1_COMPB_vect) {
@@ -115,8 +115,8 @@ void brushless::iterate() {
 
 	if (startupping) {
 		if ((freqData->currentValue > freqData->end)
-				|| (dutyData->currentValue > dutyData->end)
-				|| (refreshData->currentValue > refreshData->end)) {
+		||  (dutyData->currentValue > dutyData->end)
+		||  (refreshData->currentValue > refreshData->end)) {
 
 			if (freqData->currentValue > freqData->end) {
 				startupcalc(freqData, 1);
@@ -136,9 +136,9 @@ void brushless::iterate() {
 			delay(100);
 		} else {
 			startupping = 0;
-      free(freqData);
+			free(freqData);
 			free(dutyData);
-      free(refreshData);
+			free(refreshData);
 		}
 
 	}
@@ -171,23 +171,22 @@ String brushless::parseCommand(Command command){
 //           String("d") + String(timer1_pwm->getDuty())        + String("\n") +
 //           String("r") + String(automa->getAutomaRate())			+ String("\n") +
 //		       String( "----"),3);
-		return String( "--QUERY--\n") +
-		 			 String("f") + String(timer1_pwm->getFrequency())   + String("\n") +
-           String("d") + String(timer1_pwm->getDuty())        + String("\n") +
-           String("r") + String(automa->getAutomaRate())			+ String("\n") +
-		       String( "----"); 
+		return  String( "--QUERY--\n") +
+				String("f") + String(timer1_pwm->getFrequency())   + String("\n") +
+				String("d") + String(timer1_pwm->getDuty())        + String("\n") +
+				String("r") + String(automa->getAutomaRate())			+ String("\n") +
+		        String( "----"); 
     
 
   default:
 				commandRead = 1;
-     return String( "--D--");
+				return String( "--D--");
     
   }
 }
 
 int brushless::setCommand(Command command) {
 	latestCommand = command;
-
 	commandRead = 0;
 }
 String brushless::getResponse() {
