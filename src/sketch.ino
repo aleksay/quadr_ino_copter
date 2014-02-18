@@ -20,9 +20,9 @@ Command latestCommand;
 void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
 void wdt_init(void)
 {
-    MCUSR = 0;
-    wdt_disable();
-    return;
+  MCUSR = 0;
+  wdt_disable();
+  return;
 }
 
 
@@ -43,7 +43,7 @@ void setup() {
   }
   brushlessPtr->start();
   brushlessPtr->startup();
- debug("Brushless object initialized. ", 3);
+  debug("Brushless object initialized. ", 3);
 }
 
 int commandExecute = 0;
@@ -54,7 +54,7 @@ void loop() {
   if(serialCommPtr->getHaveCommand() == 1){
 	
 	//	 communicator::logToSerial("Setting Command", 3);
-    latestCommand = serialCommPtr->getCommand();
+    latestCommand  = serialCommPtr->getCommand();
     debug("Received command type: " + String(latestCommand->type) + " value: " + String(latestCommand->value), 3);
     brushlessPtr->setCommand(latestCommand);
 		commandExecute = 1;
@@ -63,17 +63,10 @@ void loop() {
 	brushlessPtr->iterate();
 
 	if(commandExecute == 1){
-    communicator::logToSerial(brushlessPtr->getResponse(), 3);
+    debug(brushlessPtr->getResponse(), 3);
 		commandExecute = 0;
 	}
 }
-
-
-// Register brushless object event handler to ISR for Timer 1
-/*ISR(TIMER1_COMPB_vect) {*/
-/*  brushlessPtr->eventHandler();*/
-
-/*}*/
 
 // Callback function for reserved Arduino keyword serial polling
 void serialEvent(){

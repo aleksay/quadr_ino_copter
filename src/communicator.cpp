@@ -7,19 +7,18 @@ usart* usart_module = NULL;
 
 communicator::communicator() {
 
+	bufferLength 					= 0;
 
-	bufferLength = 0;
-
-	inputBuffer = "";
+	inputBuffer 					= "";
 	inputBuffer.reserve(20);
 
-	haveCommand = 0;
+	haveCommand 					= 0;
 
-	currentCommand = (Command) malloc(sizeof(_command));
-	currentCommand->type = '\n';
+	currentCommand 				= (Command) malloc(sizeof(_command));
+	currentCommand->type 	= '\n';
 	currentCommand->value = 0;
 
-	usart_module = new usart(9600);
+	usart_module 					= new usart(9600);
 	
   debug(String("Entering constructor for: ") + __func__,3)
 
@@ -34,26 +33,26 @@ void communicator::eventHandler() {
 	while (usart_module->available()) {
 
 		// get the new byte
-		inChar = (char) usart_module->read();
+		inChar 			 						= (char) usart_module->read();
 
 		// concatenate to the  input string
-		inputBuffer += inChar;
+		inputBuffer 				 	 += inChar;
 
 		// if the incoming character is a newline, set a flag
 		// extract integer value from string:
 		if (inChar == '\n') {
 
-			inChar = NULL;
-			bufferLength = inputBuffer.length();
+			inChar 		 						= NULL;
+			bufferLength 					= inputBuffer.length();
 			char inputStringValue[bufferLength - 1];
 
-			int i = 1;
+			int i 								= 1;
 			while (i < bufferLength - 1) {
 				inputStringValue[i - 1] = inputBuffer[i];
 				i++;
 			}
 
-			currentCommand->type = inputBuffer[0];
+			currentCommand->type  = inputBuffer[0];
 			currentCommand->value = atoi(inputStringValue);
 
 			haveCommand = 1;
@@ -63,13 +62,13 @@ void communicator::eventHandler() {
 
 Command communicator::getCommand() {
 
-	Command tmpCommand = (Command) malloc(sizeof(_command));
-	tmpCommand->type = currentCommand->type;
-	tmpCommand->value = currentCommand->value;
+	Command tmpCommand 		= (Command) malloc(sizeof(_command));
+	tmpCommand->type 			= currentCommand->type;
+	tmpCommand->value 		= currentCommand->value;
 
-	inputBuffer = "";
-	haveCommand = 0;
-	currentCommand->type = '\n';
+	inputBuffer 					= "";
+	haveCommand 					= 0;
+	currentCommand->type  = '\n';
 	currentCommand->value = 0;
 
 	return tmpCommand;
@@ -79,7 +78,9 @@ int communicator::getHaveCommand() {
 	return haveCommand;
 }
 
-int communicator::logToSerial(String logString, int logPriority) {
+//DEPRECATION
+int logToSerial(String logString, int logPriority) {
+//int communicator::logToSerial(String logString, int logPriority) {
 
 	if (logPriority < logLevel) {
 		Serial.println(logString);
@@ -88,7 +89,9 @@ int communicator::logToSerial(String logString, int logPriority) {
 	return 0;
 }
 
-int communicator::printToSerial(String logString) {
+//DEPRECATION
+int printToSerial(String logString) {
+//int communicator::printToSerial(String logString) {
 
 	Serial.println(logString);
 	return 0;

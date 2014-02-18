@@ -12,10 +12,9 @@ volatile int direction;
 
 
 mosfetSequencecontroller::mosfetSequencecontroller() {
-	state = DEFAULT_INITIAL_STATE;
-	rate = DEFAULT_INITIAL_RATE;
-	direction = 1;
- 
+	state 		= DEFAULT_INITIAL_STATE;
+	rate 			= DEFAULT_INITIAL_RATE;
+	direction = 1; 
 }
 
 int mosfetSequencecontroller::getAutomaState(){
@@ -32,7 +31,6 @@ int mosfetSequencecontroller::getAutomaState(int st){
 }
 
 int mosfetSequencecontroller::init() {
-
   AUTOMA_PIN_INIT;
 	AUTOMA_ITERATE(state);
 }

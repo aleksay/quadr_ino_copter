@@ -6,16 +6,22 @@ class timer0: public timer
 public:
 	timer0(){
 
+
+		frequency = DEFAULT_T0_INITIAL_FREQ;
+		setDuty(DEFAULT_T0_INITIAL_DUTY);
+		prescaler = DEFAULT_T0_INITIAL_PRESCALER;
+		_timer0_fastPwm_ocr1atop_init();
+
 		pinMode(5,OUTPUT);
     pinMode(6,OUTPUT);
 		frequency = 200;
-		duty = 50;
-		_dutyVal = 100;
-		OCR0A = frequency;
-		OCR0B = _dutyVal;
+		duty 			= 50;
+		_dutyVal 	= 100;
+		OCR0A 		= frequency;
+		OCR0B 		= _dutyVal;
 
-		TCCR0A =  _BV(COM0B1) | _BV(COM0B0) | _BV(WGM00) ;
-    TCCR0B =  _BV(WGM02); 
+		TCCR0A 		=  _BV(COM0B1) | _BV(COM0B0) | _BV(WGM00) ;
+    TCCR0B 		=  _BV(WGM02); 
 	}
 
   	int start() {

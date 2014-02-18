@@ -7,12 +7,9 @@ public:
 
 	comDevice() {
 	}
-	virtual char read() = 0;
+	virtual char read() 			= 0;
 	virtual int write(char c) = 0;
-	virtual int available() = 0;
-
-private:
-
+	virtual int available()		= 0;
 };
 
 #endif

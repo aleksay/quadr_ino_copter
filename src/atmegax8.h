@@ -41,7 +41,7 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER0_MODE_FASTPWM_OCR0A           TCCR0B |= (1 << WGM02);TCCR0A |= (1 << WGM01) | (1 << WGM00)
 
 #define SET_TIMER0_FREQUENCY(val) OCR0A = val
-#define SET_TIMER0_DUTY(val) OCR0B = val
+#define SET_TIMER0_DUTY(val) 			OCR0B = val
 
 #define SET_TIMER0_PINB DDRD = DDRD | 0b00100000
 #define SET_TIMER0_PINA DDRD = DDRD | 0b01000000
@@ -122,10 +122,10 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER1_PINB_NOTINVERTING(notInverting) TCCR1A |= notInverting << COM1B0
 #define SET_TIMER1_PINA_NOTINVERTING(notInverting) TCCR1A |= notInverting << COM1A0
 
-#define SET_TIMER1_FREQUENCY_ICR1TOP(val) ICR1 = val
-#define SET_TIMER1_FREQUENCY_OCR1ATOP(val) OCR1A = val
-#define SET_TIMER1_DUTY_CHAN_B(val) OCR1B = val
-#define SET_TIMER1_DUTY_CHAN_A(val) OCR1A = val
+#define SET_TIMER1_FREQUENCY_ICR1TOP(val) 	ICR1  = val
+#define SET_TIMER1_FREQUENCY_OCR1ATOP(val)  OCR1A = val
+#define SET_TIMER1_DUTY_CHAN_B(val) 				OCR1B = val
+#define SET_TIMER1_DUTY_CHAN_A(val) 				OCR1A = val
 
 
 /*
@@ -140,13 +140,13 @@ WGM02 WGM01 WGM00 Timer/Counter
 
 
 #ifdef automa_register_D
-	#define AUTOMA_PIN_INIT DDRD |= 0b00111111 
-	#define AUTOMA_ITERATE(state) PORTD=states[state]
+	#define AUTOMA_PIN_INIT 			DDRD |= 0b00111111 
+	#define AUTOMA_ITERATE(state) PORTD = states[state]
 #endif
 
 #ifdef automa_register_B
-	#define AUTOMA_PIN_INIT DDRB |= 0b00111111 
-	#define AUTOMA_ITERATE(state) PORTB=states[state]
+	#define AUTOMA_PIN_INIT				DDRB |= 0b00111111 
+	#define AUTOMA_ITERATE(state) PORTB = states[state]
 #endif
 
 #define NUM_STATES 6
