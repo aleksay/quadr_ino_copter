@@ -1,0 +1,129 @@
+#include "mosfetSequencecontroller.h"
+
+#include "atmegax8.h"
+
+
+#define DEFAULT_INITIAL_RATE 100
+#define DEFAULT_INITIAL_STATE 0
+
+volatile int state;
+volatile int rate;
+volatile int direction;
+volatile int bit=0;
+
+
+mosfetSequencecontroller::mosfetSequencecontroller() {
+	state = DEFAULT_INITIAL_STATE;
+	rate = DEFAULT_INITIAL_RATE;
+	direction = 1;
+ 
+}
+
+int mosfetSequencecontroller::getAutomaState(){
+	return states[state];
+}
+
+int mosfetSequencecontroller::getState(){
+	return state;
+}
+
+int mosfetSequencecontroller::getbit(){
+	return bit;
+}
+
+
+int mosfetSequencecontroller::getAutomaState(int st){  
+	return states[st];
+}
+
+int mosfetSequencecontroller::init() {
+
+  AUTOMA_PIN_INIT;
+  AUTOMA_ITERATE(state);
+}
+
+int mosfetSequencecontroller::commutePole() {
+
+	if (direction) {
+		state = ++state % NUM_STATES;
+		AUTOMA_ITERATE(state);
+	} else {
+    state = (--state +NUM_STATES)%NUM_STATES;
+    //state = abs(NUM_STATES - 1 + --state) % NUM_STATES;
+		AUTOMA_ITERATE(state);
+	}
+	return 0;
+}
+int mosfetSequencecontroller::setAutomaRate(int val) {
+	rate = val;
+}
+int mosfetSequencecontroller::getAutomaRate() {
+	return rate;
+}
+
+int mosfetSequencecontroller::setDirection(int clockwise) {
+	direction = clockwise;
+}
+int mosfetSequencecontroller::getDirection() {
+	return direction;
+}
+
+//volatile int cpmCounter = 0;
+ISR(TIMER1_COMPA_vect) {
+		
+//		AUTOMA_ITERATE(state);
+//		//state = ++state % NUM_STATES;
+//state=state++;
+//if (state==6)
+//{state=0;
+//}
+if (bit==0){
+PORTB=0b00010001;
+bit=1;
+}
+if (bit==1){
+PORTB=0b00100001;
+bit=2;
+}
+if (bit==2){
+PORTB=0b00100010;
+bit=0;
+}
+
+//					0b00010001,  //  68
+//					0b00100001,  // 132
+//					0b00100010,  // 136
+//					0b00001010,  //  40
+//					0b00001100,  //  48
+//					0b00010100
+ //cpmCounter++;
+
+  //if(cpmCounter >= automa->getAutomaRate()){
+
+    // iterazione attraverso gli stati dell'automa
+    //automa->commutePole();
+    //cpmCounter = 0;
+ // }
+}
+
+//ISR(TIMER1_COMPB_vect) {
+//	state = ++state % 6;
+//	AUTOMA_ITERATE(state);
+//}
+
+//ISR(TIMER1_OVF_vect) {
+//	state = ++state % NUM_STATES;
+//	AUTOMA_ITERATE(state);
+//}
+
+
+
+
+
+
+
+
+
+
+
+

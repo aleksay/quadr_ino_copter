@@ -3,13 +3,13 @@
 
 #include "Arduino.h"
 #include "atmegax8.h"
-													 // Decimal representation	
-const uint8_t states[NUM_STATES] = {	0b01000100,  //  68
-										0b10000100,  // 132
-										0b10001000,  // 136
-										0b00101000,  //  40
-										0b00110000,  //  48
-										0b01010000 };//  80
+
+const uint8_t states[NUM_STATES] = {	0b00010001,  //  68
+					0b00100001,  // 132
+					0b00100010,  // 136
+					0b00001010,  //  40
+					0b00001100,  //  48
+					0b00010100 };//  80
 
 class mosfetSequencecontroller {
 
@@ -23,6 +23,7 @@ public:
 	int commutePole();
 	int setAutomaRate(int val);
 	int getAutomaRate();
+	int getbit();
 	int getAutomaState();
 	int getState();
 	int getAutomaState(int st);

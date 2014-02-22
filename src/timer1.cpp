@@ -23,7 +23,7 @@ public:
 		TIMER1_RESET;
 		SET_TIMER1_PINOUT(B);  
 		SET_TIMER1_MODE_FASTPWM_ICR1;
-		SET_TIMER1_PINB_NOTINVERTING(1);
+		SET_TIMER1_PINB_NOTINVERTING(0);
 		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
 		SET_TIMER1_PRESCALER_0;
 
@@ -31,15 +31,17 @@ public:
 	}
 
 	int _timer1_fastPwm_ocr1atop_init() {
-
+		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
+		//SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
+		//SET_TIMER1_INTERRUPT_OVERFLOW;
 		SET_TIMER1_PINB;
 		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
 		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
 		TIMER1_RESET;
 		SET_TIMER1_PINOUT(B);
 		SET_TIMER1_MODE_FASTPWM_OCR1A;
-		SET_TIMER1_PINB_NOTINVERTING(1);
-		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
+		SET_TIMER1_PINB_NOTINVERTING(0);
+		
 
 		return 0;
 	}
@@ -88,6 +90,8 @@ public:
 	int getPrescaler(){return prescaler;}
 
 	int setFrequency(int val) {
+		if (val < 0 || val >= 65000)
+			return -1;
 
 		if (val == frequency) {
 			return -1;
@@ -95,25 +99,18 @@ public:
 
 		int zDuty = -10;
 
-		if (frequency > val) {
-
-			zDuty = setDuty(duty); 
-			frequency = val;       
-		  SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-		}
-
-		if (frequency < val) {
-			frequency = val;       
-		  zDuty = setDuty(duty);
-		  SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-		}
+		
+		frequency = val;       
+		
+		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
+		zDuty = setDuty(duty);
 	
 		return zDuty;
 	}
 
 	int setDuty(int val) {
 
-		if (val < 0 || val >= 100)
+		if (val < 0 || val > 100)
 			return -1;
 
 		duty = val;

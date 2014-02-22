@@ -9,6 +9,7 @@
 volatile int state;
 volatile int rate;
 volatile int direction;
+volatile int bit=0;
 
 
 mosfetSequencecontroller::mosfetSequencecontroller() {
@@ -26,15 +27,19 @@ int mosfetSequencecontroller::getState(){
 	return state;
 }
 
+int mosfetSequencecontroller::getbit(){
+	return bit;
+}
 
-int mosfetSequencecontroller::getAutomaState(int st){  //DUE FUNZIONI CON LO STESSO NOME ?! non c'è un modo per definire un valore di default ?
+
+int mosfetSequencecontroller::getAutomaState(int st){  
 	return states[st];
 }
 
 int mosfetSequencecontroller::init() {
 
   AUTOMA_PIN_INIT;
-	AUTOMA_ITERATE(state);
+  AUTOMA_ITERATE(state);
 }
 
 int mosfetSequencecontroller::commutePole() {
@@ -62,4 +67,19 @@ int mosfetSequencecontroller::setDirection(int clockwise) {
 int mosfetSequencecontroller::getDirection() {
 	return direction;
 }
+
+//volatile int cpmCounter = 0;
+ISR(TIMER1_COMPA_vect) {
+	state = ++state % NUM_STATES;
+	AUTOMA_ITERATE(state);
+}
+
+
+
+
+
+
+
+
+
 
