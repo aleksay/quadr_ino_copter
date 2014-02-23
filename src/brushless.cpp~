@@ -13,9 +13,6 @@
 
 #define NUM_STATES 6
 
-#define T0_FREQUENCY 200
-#define T0_DUTY 5
-
 #define RAMP_INIT_FREQUENCY 10000
 #define RAMP_INIT_DUTY 95
 #define RAMP_INIT_REFREASHRATE 1
@@ -24,7 +21,7 @@
 #define RAMP_FIN_DUTY 50
 #define RAMP_FIN_REFREASHRATE 1
 
-timer *timer1_pwm = NULL;
+timer1 *timer1_pwm = NULL;
 timer0 *timer0_pwm = NULL;
 mosfetSequencecontroller * automa = NULL;
 
@@ -192,10 +189,10 @@ String brushless::parseCommand(Command command){
 //           String("r") + String(automa->getAutomaRate())			+ String("\n") +
 //		       String( "----"),3);
 		return  String( "--QUERY--\n") +
-				String("f") + String(timer1_pwm->getFrequency())   	+ String("\n") +
-				String("d") + String(timer1_pwm->getDuty())     	+ String("\n") +
-				String("f0") + String(timer0_pwm->getFrequency())   	+ String("\n") +
-				String("d0") + String(timer0_pwm->getDuty())     	+ String("\n") +
+				String("f t1") + String(timer1_pwm->getFrequency())   	+ String("\n") +
+				String("d t1") + String(timer1_pwm->getDuty())     	+ String("\n") +
+				String("f t0") + String(timer0_pwm->getFrequency())   	+ String("\n") +
+				String("d t0") + String(timer0_pwm->getDuty())     	+ String("\n") +
 				String("r") + String(automa->getAutomaRate())		+ String("\n") +
 				String("b") + String(automa->getbit())			+ String("\n") +
 		        String( "----"); 

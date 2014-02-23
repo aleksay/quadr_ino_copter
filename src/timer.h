@@ -7,6 +7,10 @@
 #define DEFAULT_INITIAL_DUTY 80
 #define DEFAULT_INITIAL_PRESCALER 0
 
+#define T0_FREQUENCY 200
+#define T0_DUTY 5
+#define DEFAULT_T0_INITIAL_PRESCALER 0
+
 class timer {
 
 public:
