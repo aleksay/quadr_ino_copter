@@ -34,11 +34,11 @@ private:
 
 	Command latestCommand;
 	int startupping = 0;
-    int commandRead = 0;
-    String latestMessage;
-	
+	int commandRead = 0;
+	String latestMessage;
+
 	String parseCommand(Command command);
-  void startupcalc(startupData valueData, int slow);
+	void startupcalc(startupData valueData, int slow);
 };
 
 #endif

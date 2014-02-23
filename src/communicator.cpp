@@ -54,8 +54,8 @@ void communicator::eventHandler() {
 			}
 
 			currentCommand->type = inputBuffer[0];
-			currentCommand->value = atoi(inputStringValue);
-
+			currentCommand->value = strtol(inputStringValue,NULL,0);
+			
 			haveCommand = 1;
 		}
 	}

@@ -18,9 +18,9 @@ public:
 
 	virtual int start() = 0;
 	virtual int start(int prescaler) = 0;
-	virtual int setFrequency(int val) = 0;
+	virtual int setFrequency(unsigned int val) = 0;
 	virtual int setDuty(int val) = 0;
-    virtual int setPrescaler(int val) = 0;
+	virtual int setPrescaler(int val) = 0;
 	virtual int getFrequency() = 0;
 	virtual int getDuty() = 0;
 	virtual int getPrescaler() = 0;
