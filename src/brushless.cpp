@@ -12,10 +12,11 @@
 #include "timer0.cpp"
 
 
+
 #define NUM_STATES 6
 
 #define RAMP_INIT_FREQUENCY 10000
-#define RAMP_INIT_DUTY 95
+#define RAMP_INIT_DUTY 1
 #define RAMP_INIT_REFREASHRATE 1
 
 #define RAMP_FIN_FREQUENCY 600
@@ -167,7 +168,8 @@ String brushless::parseCommand(Command command){
   switch(command->type){
 
   case 'f':
-		timer1_pwm->setFrequency(command->value);
+	  
+	  timer1_pwm->setFrequency(command->value);
 	  return String(timer1_pwm->getFrequency());
   case 'd':
     timer1_pwm->setDuty(command->value);

@@ -1,6 +1,7 @@
 #ifndef Timer_h
 #define Timer_h
 #include "timer.h"
+#include "communicator.h"
 
 class timer1: public timer
 {
@@ -88,10 +89,12 @@ public:
 
 	int getPrescaler(){return prescaler;}
 
-	int setFrequency(int val) {
-		if (val < 0 || val >= 65000)
+	int setFrequency(unsigned int val) {
+		
+		if (val < 0 || val > 65000){
 			return -1;
-
+		}
+		
 		if (val == frequency) {
 			return -1;
 		}
@@ -100,7 +103,7 @@ public:
 
 		
 		frequency = val;       
-		
+
 		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
 		zDuty = setDuty(duty);
 	
@@ -111,7 +114,7 @@ public:
 
 		if (val < 0 || val > 100)
 			return -1;
-
+		
 		duty = val;
 		_dutyVal = map(duty, 0, 100, 0, frequency);
 		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
@@ -130,9 +133,9 @@ public:
 			SET_TIMER1_DUTY_CHAN_B(_dutyVal);
 	}
 private: 
-  int frequency;
+  	unsigned int frequency;
 	int duty;
-	int _dutyVal;
+	unsigned int _dutyVal;
 	int prescaler;
 };
 #endif

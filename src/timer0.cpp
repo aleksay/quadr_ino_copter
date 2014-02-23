@@ -97,7 +97,7 @@ public:
 	int getPrescaler(){return prescaler;}
 
 
-	int setFrequency(int val) {
+	int setFrequency(unsigned int val) {
 		if (val < 0 || val > 254)
 			return -1;
 
