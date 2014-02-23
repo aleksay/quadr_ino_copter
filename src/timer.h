@@ -3,6 +3,7 @@
 
 #include "atmegax8.h"
 
+
 #define DEFAULT_INITIAL_FREQ 500
 #define DEFAULT_INITIAL_DUTY 80
 #define DEFAULT_INITIAL_PRESCALER 0

@@ -1,6 +1,5 @@
 #ifndef Timer_h
 #define Timer_h
-
 #include "timer.h"
 
 class timer1: public timer
