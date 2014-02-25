@@ -26,7 +26,7 @@ int mosfetSequencecontroller::getState(){
 }
 
 
-int mosfetSequencecontroller::getAutomaState(int st){
+int mosfetSequencecontroller::getAutomaState(int st){  //DUE FUNZIONI CON LO STESSO NOME ?! non c'è un modo per definire un valore di default ?
 	return states[st];
 }
 

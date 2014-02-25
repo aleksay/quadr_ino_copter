@@ -34,6 +34,7 @@ public:
 	String getResponse();
 
 private:
+
 	Command latestCommand;
 	int 		startupping;
   int 		commandRead;

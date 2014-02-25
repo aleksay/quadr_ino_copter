@@ -184,7 +184,6 @@ int brushless::setCommand(Command command) {
 	latestCommand = command;
 	commandRead   = 0;
 }
-
 String brushless::getResponse() {
 	return latestMessage;
 }

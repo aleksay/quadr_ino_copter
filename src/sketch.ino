@@ -57,7 +57,7 @@ void loop() {
     latestCommand  = serialCommPtr->getCommand();
     debug("Received command type: " + String(latestCommand->type) + " value: " + String(latestCommand->value), 3);
     brushlessPtr->setCommand(latestCommand);
-		commandExecute = 1;
+	commandExecute = 1;
   }
 
 	brushlessPtr->iterate();
@@ -67,6 +67,13 @@ void loop() {
 		commandExecute = 0;
 	}
 }
+
+
+// Register brushless object event handler to ISR for Timer 1
+/*ISR(TIMER1_COMPB_vect) {*/
+/*  brushlessPtr->eventHandler();*/
+
+/*}*/
 
 // Callback function for reserved Arduino keyword serial polling
 void serialEvent(){
