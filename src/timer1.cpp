@@ -10,7 +10,7 @@ public:
 
 		frequency = DEFAULT_INITIAL_FREQ;
 		setDuty(DEFAULT_INITIAL_DUTY);
-		prescaler = 0;
+		prescaler = 64;
 		_timer1_fastPwm_ocr1atop_init();
 	 
 	}
@@ -21,7 +21,7 @@ public:
 		SET_TIMER1_FREQUENCY_ICR1TOP(frequency);
 		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
 		TIMER1_RESET;
-		SET_TIMER1_PINOUT(B);  
+		//SET_TIMER1_PINOUT(B);  
 		SET_TIMER1_MODE_FASTPWM_ICR1;
 		SET_TIMER1_PINB_NOTINVERTING(0);
 		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;

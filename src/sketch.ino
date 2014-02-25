@@ -59,7 +59,8 @@ void loop() {
     brushlessPtr->setCommand(latestCommand);
 	commandExecute = 1;
   }
-
+	
+	parseCommand(latestCommand);
 	brushlessPtr->iterate();
 
 	if(commandExecute == 1){
@@ -71,6 +72,18 @@ void loop() {
 
 	
 }
+
+
+void parseCommand(Command command){
+
+  switch(command->type){
+    case 'R':
+      wdt_init();
+      break;
+  }
+}
+
+
 
 
 // Register brushless object event handler to ISR for Timer 1
