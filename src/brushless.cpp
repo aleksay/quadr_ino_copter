@@ -15,11 +15,8 @@
 
 #define NUM_STATES 6
 
-<<<<<<< HEAD
-#define RAMP_INIT_FREQUENCY 10000
-=======
+
 #define RAMP_INIT_FREQUENCY 20000
->>>>>>> a36fde408a82f0f02f204a59047fcb0f0517dbc0
 #define RAMP_INIT_DUTY 1
 #define RAMP_INIT_REFREASHRATE 1
 
@@ -40,12 +37,12 @@ startupData refreshData;
 brushless::brushless() {
 
 	timer1_pwm   = new timer1();
-	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
-	timer1_pwm->setDuty(RAMP_INIT_DUTY);
+//	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
+//	timer1_pwm->setDuty(RAMP_INIT_DUTY);
 	
 	timer0_pwm   = new timer0();
-	timer0_pwm->setFrequency(T0_FREQUENCY);
-	timer0_pwm->setDuty(T0_DUTY);
+//	timer0_pwm->setFrequency(T0_FREQUENCY);
+//	timer0_pwm->setDuty(T0_DUTY);
 	//OCR0B
 
 	automa	     = new mosfetSequencecontroller();

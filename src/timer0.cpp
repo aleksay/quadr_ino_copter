@@ -23,9 +23,9 @@ class timer0: public timer
 public:
 	timer0(){
 
-		frequency = T0_FREQUENCY;
-		setDuty(T0_DUTY);
-		prescaler = DEFAULT_T0_INITIAL_PRESCALER;
+		frequency = DEFAULT_T0_FREQUENCY;
+		setDuty(DEFAULT_T0_DUTY);
+		prescaler = DEFAULT_T0_PRESCALER;
 		
 		OCR0A = frequency;
 		OCR0B = _dutyVal;

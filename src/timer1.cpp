@@ -8,20 +8,17 @@ class timer1: public timer
 public:
   timer1() {
 
-		frequency = DEFAULT_INITIAL_FREQ;
-		setDuty(DEFAULT_INITIAL_DUTY);
-<<<<<<< HEAD
-		prescaler = 64;
-=======
-		prescaler = 8;
->>>>>>> a36fde408a82f0f02f204a59047fcb0f0517dbc0
+		frequency = DEFAULT_T1_FREQ;
+		setDuty(DEFAULT_T1_DUTY);
+
+		prescaler = DEFAULT_T1_PRESCALER;
 		_timer1_fastPwm_ocr1atop_init();
 	 
 	}
 
 	int _timer1_fastPwm_icr1top_init() {
 		
-		SET_TIMER1_PINB;
+//		SET_TIMER1_PINB;
 		SET_TIMER1_FREQUENCY_ICR1TOP(frequency);
 		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
 		TIMER1_RESET;
@@ -29,7 +26,7 @@ public:
 		SET_TIMER1_MODE_FASTPWM_ICR1;
 		SET_TIMER1_PINB_NOTINVERTING(0);
 		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
-		SET_TIMER1_PRESCALER_0;
+	//	SET_TIMER1_PRESCALER_0;
 
 	 return 0;
 	}
