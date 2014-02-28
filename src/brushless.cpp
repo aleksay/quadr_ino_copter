@@ -15,7 +15,11 @@
 
 #define NUM_STATES 6
 
+<<<<<<< HEAD
 #define RAMP_INIT_FREQUENCY 10000
+=======
+#define RAMP_INIT_FREQUENCY 20000
+>>>>>>> a36fde408a82f0f02f204a59047fcb0f0517dbc0
 #define RAMP_INIT_DUTY 1
 #define RAMP_INIT_REFREASHRATE 1
 
@@ -219,7 +223,7 @@ String brushless::getResponse() {
 int brushless::start(){
 	
 debug("timer1 start",3);
-timer1_pwm->start(0);
+timer1_pwm->start();
 
 }
 
