@@ -13,10 +13,10 @@
 #include "mosfetSequencecontroller.h"
 
 typedef struct _startup_data {
-	int start;
-	int end;
+	unsigned int start;
+	unsigned int end;
 	float decrement;
-	int currentValue;
+	unsigned int currentValue;
 	float resto;
 }*startupData;
 

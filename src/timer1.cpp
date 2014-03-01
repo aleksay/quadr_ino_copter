@@ -10,7 +10,7 @@ public:
 
 		frequency = DEFAULT_INITIAL_FREQ;
 		setDuty(DEFAULT_INITIAL_DUTY);
-		prescaler = 8;
+		prescaler = 0;
 		_timer1_fastPwm_ocr1atop_init();
 	 
 	}

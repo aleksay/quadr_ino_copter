@@ -15,12 +15,12 @@
 
 #define NUM_STATES 6
 
-#define RAMP_INIT_FREQUENCY 20000
+#define RAMP_INIT_FREQUENCY 59000
 #define RAMP_INIT_DUTY 1
 #define RAMP_INIT_REFREASHRATE 1
 
-#define RAMP_FIN_FREQUENCY 600
-#define RAMP_FIN_DUTY 50
+#define RAMP_FIN_FREQUENCY 800
+#define RAMP_FIN_DUTY 1
 #define RAMP_FIN_REFREASHRATE 1
 
 timer1 *timer1_pwm = NULL;
@@ -53,6 +53,8 @@ brushless::brushless() {
 
 	timer0_pwm->start(0);
 
+	startup();
+
 }
 //volatile int cpmCounter = 0;
 //ISR(TIMER1_COMPA_vect) {
@@ -71,7 +73,8 @@ brushless::brushless() {
 
 void brushless::startupcalc(startupData valueData, int slow) {
 	//start_values ritorno;
-	int delta = valueData->currentValue - valueData->end;
+	unsigned int delta = valueData->currentValue - valueData->end;
+	
 	float minus = delta * valueData->decrement;
 	if (minus >= 1) {
 		valueData->currentValue = valueData->currentValue - floor(minus);
@@ -96,7 +99,7 @@ int brushless::startup() {
 	freqData = (startupData) malloc(sizeof(_startup_data));
 	freqData->start = RAMP_INIT_FREQUENCY;
 	freqData->end = RAMP_FIN_FREQUENCY;
-	freqData->decrement = 0.08;
+	freqData->decrement = 0.005;
 	freqData->currentValue = freqData->start;
 	freqData->resto = 0;
 
@@ -125,11 +128,13 @@ void brushless::iterate() {
 	//if startup mode do startup
 
 	if (startupping) {
+		
 		if ((freqData->currentValue > freqData->end)
 		||  (dutyData->currentValue > dutyData->end)
 		||  (refreshData->currentValue > refreshData->end)) {
 
 			if (freqData->currentValue > freqData->end) {
+
 				startupcalc(freqData, 1);
 				timer1_pwm->setFrequency(freqData->currentValue);
 			}
