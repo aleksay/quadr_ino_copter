@@ -42,8 +42,9 @@ void setup() {
     brushlessPtr  = new brushless();  
   }
   brushlessPtr->start(); //set prescaler and start the iteration
-  //brushlessPtr->startup(); //start-up ramp
+  
   debug("Brushless object initialized. ", 3);
+  brushlessPtr->startup(); //start-up ramp
 }
 
 int commandExecute = 0;

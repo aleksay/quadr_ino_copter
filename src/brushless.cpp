@@ -10,18 +10,7 @@
 #include "brushless.h"
 #include "timer1.cpp"
 #include "timer0.cpp"
-
-
-
-#define NUM_STATES 6
-
-#define RAMP_INIT_FREQUENCY 59000
-#define RAMP_INIT_DUTY 1
-#define RAMP_INIT_REFREASHRATE 1
-
-#define RAMP_FIN_FREQUENCY 800
-#define RAMP_FIN_DUTY 1
-#define RAMP_FIN_REFREASHRATE 1
+#include "timer.h"
 
 timer1 *timer1_pwm = NULL;
 timer0 *timer0_pwm = NULL;
@@ -30,18 +19,18 @@ mosfetSequencecontroller * automa = NULL;
 startupData freqData;
 startupData dutyData;
 startupData refreshData;
-
+unsigned int freq;
 
 
 brushless::brushless() {
 
 	timer1_pwm   = new timer1();
-	timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY);
-	timer1_pwm->setDuty(RAMP_INIT_DUTY);
+	//timer1_pwm->setFrequency(RAMP_INIT_FREQUENCY_T1);
+	//timer1_pwm->setDuty(T1_DUTY);
 	
 	timer0_pwm   = new timer0();
-	timer0_pwm->setFrequency(T0_FREQUENCY);
-	timer0_pwm->setDuty(T0_DUTY);
+	//timer0_pwm->setFrequency(T0_FREQUENCY);
+	//timer0_pwm->setDuty(RAMP_INIT_DUTY_T0);
 	//OCR0B
 
 	automa	     = new mosfetSequencecontroller();
@@ -52,8 +41,8 @@ brushless::brushless() {
 	latestCommand->type = 'n';
 
 	timer0_pwm->start(0);
-
-	startup();
+	
+	
 
 }
 //volatile int cpmCounter = 0;
@@ -97,20 +86,20 @@ int brushless::startup() {
 	debug(String("Entering brushless::") + __func__, 5);
 
 	freqData = (startupData) malloc(sizeof(_startup_data));
-	freqData->start = RAMP_INIT_FREQUENCY;
-	freqData->end = RAMP_FIN_FREQUENCY;
+	freqData->start = RAMP_INIT_FREQUENCY_T1;
+	freqData->end = RAMP_FIN_FREQUENCY_T1;
 	freqData->decrement = 0.005;
 	freqData->currentValue = freqData->start;
 	freqData->resto = 0;
 
 	dutyData = (startupData) malloc(sizeof(_startup_data));
-	dutyData->start = RAMP_INIT_DUTY;
-	dutyData->end = RAMP_FIN_DUTY;
-	dutyData->decrement = 0.1;
+	dutyData->start = RAMP_INIT_DUTY_T0;
+	dutyData->end = RAMP_FIN_DUTY_T0;
+	dutyData->decrement = 0.01;
 	dutyData->currentValue = dutyData->start;
 	dutyData->resto = 0;
 
-  refreshData = (startupData) malloc(sizeof(_startup_data));
+    refreshData = (startupData) malloc(sizeof(_startup_data));
 	refreshData->start = RAMP_INIT_REFREASHRATE;
 	refreshData->end = RAMP_FIN_REFREASHRATE;
 	refreshData->decrement = 0.2;
@@ -141,14 +130,15 @@ void brushless::iterate() {
 
 			if (dutyData->currentValue > dutyData->end) {
 				startupcalc(dutyData, 1);
-				timer1_pwm->setDuty(dutyData->currentValue);
+				timer0_pwm->setDuty(dutyData->currentValue);
 			}
 
 			if (refreshData->currentValue > refreshData->end) {
 				startupcalc(refreshData, 1);
 				automa->setAutomaRate(refreshData->currentValue);
 			}
-			debug("f"+String(timer1_pwm->getFrequency())+" d"+String(timer1_pwm->getDuty())+" r"+String(automa->getAutomaRate()),3);
+			freq=timer1_pwm->getFrequency();
+			debug(String("f")+freq+" d"+String(timer0_pwm->getDuty()),3);
 			delay(100);
 		} else {
 			startupping = 0;
@@ -175,7 +165,9 @@ String brushless::parseCommand(Command command){
   case 'f':
 	  
 	  timer1_pwm->setFrequency(command->value);
-	  return String(timer1_pwm->getFrequency());
+	  
+	  freq=timer1_pwm->getFrequency();
+	  return String("")+freq;
   case 'd':
     timer1_pwm->setDuty(command->value);
 	
@@ -196,13 +188,17 @@ String brushless::parseCommand(Command command){
 //           String("d") + String(timer1_pwm->getDuty())        + String("\n") +
 //           String("r") + String(automa->getAutomaRate())			+ String("\n") +
 //		       String( "----"),3);
+		
+		freq=timer1_pwm->getFrequency();	
+
+
 		return  String( "--QUERY--\n") +
-				String("f_t1 ") + String(timer1_pwm->getFrequency())   	+ String("\n") +
-				String("d_t1 ") + String(timer1_pwm->getDuty())     	+ String("\n") +
-				String("f_t0 ") + String(timer0_pwm->getFrequency())   	+ String("\n") +
-				String("d_t0 ") + String(timer0_pwm->getDuty())     	+ String("\n") +
-				String("r") + String(automa->getAutomaRate())		+ String("\n") +
-				String("b") + String(automa->getbit())			+ String("\n") +
+								
+			String("f_t1 ") + freq	+ String("\n") +
+			String("d_t1 ") + String(timer1_pwm->getDuty())     	+ String("\n") +
+			String("f_t0 ") + String(timer0_pwm->getFrequency()) 	+ String("\n") +
+			String("d_t0 ") + String(timer0_pwm->getDuty())   	+ String("\n") +
+			String("r") + String(automa->getAutomaRate())		+ String("\n") +	
 		        String( "----"); 
     
 

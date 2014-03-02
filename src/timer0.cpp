@@ -1,21 +1,6 @@
 #include "timer.h"
+#include "communicator.h"
 
-#define DEBUG 1
-#define DEBUG_LEVEL 4 // change me to desired logging level
-
-#ifdef DEBUG
-#define debug(msg,prio) if(prio < DEBUG_LEVEL){													\
-													Serial.print(String(__FILE__));								\
-										    	Serial.print(":");														\
-													Serial.print(String(__LINE__));								\
-													Serial.print(":");														\
-													Serial.print(String(__FUNCTION__));						\
-													Serial.print(" - ");													\
-													Serial.println(msg);													\
-												}
-#else
-#define debug(msg)
-#endif
 
 class timer0: public timer
 {
@@ -24,11 +9,11 @@ public:
 	timer0(){
 
 		frequency = T0_FREQUENCY;
-		setDuty(T0_DUTY);
+		setDuty(RAMP_INIT_DUTY_T0);
 		prescaler = DEFAULT_T0_INITIAL_PRESCALER;
 		
-		OCR0A = frequency;
-		OCR0B = _dutyVal;
+//		OCR0A = frequency;
+//		OCR0B = _dutyVal;
 
 		_timer0_fastPwm_ocr0atop_init();
 //		TCCR0A =  _BV(COM0B1) | _BV(WGM00) ;
@@ -38,9 +23,10 @@ public:
 	void _timer0_fastPwm_ocr0atop_init(){
 		//cli();
 		SET_TIMER0_PINB;
+		TIMER0_RESET;
 		SET_TIMER0_FREQUENCY(frequency);
 		SET_TIMER0_DUTY(_dutyVal);
-		TIMER0_RESET;
+	
 		SET_TIMER0_PINOUT(B);  
 		SET_TIMER0_MODE_PHASE_CORRECT_OCR0A;
 		SET_TIMER0_PINB_NOTINVERTING(0);
@@ -48,8 +34,7 @@ public:
 		//SET_TIMER0_INTERRUPT_OVERFLOW;
 		//sei();
 
-		debug(String(TCCR0A),3);
-		debug(String(TCCR0B),3);
+		
 	}
 
   	int start() {
@@ -63,7 +48,7 @@ public:
 	}
  
 	int setPrescaler(int _prescaler){
-		debug("",3);
+		
 		switch(_prescaler) {
 			case 0:
 				SET_TIMER0_PRESCALER_0;
@@ -139,7 +124,7 @@ public:
 
 private:
 
- int frequency;
+        int frequency;
 	int duty;
 	int _dutyVal;
 	int prescaler;
