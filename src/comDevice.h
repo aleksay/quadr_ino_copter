@@ -5,11 +5,10 @@ class comDevice {
 
 public:
 
-	comDevice() {
-	}
-	virtual char read() = 0;
+	comDevice() {}
+	virtual char read()       = 0;
 	virtual int write(char c) = 0;
-	virtual int available() = 0;
+	virtual int available()   = 0;
 
 private:
 

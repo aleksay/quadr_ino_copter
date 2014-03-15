@@ -8,16 +8,11 @@ class timer0: public timer
 public:
 	timer0(){
 
-		frequency = T0_FREQUENCY;
-		setDuty(RAMP_INIT_DUTY_T0);
-		prescaler = DEFAULT_T0_INITIAL_PRESCALER;
-		
-//		OCR0A = frequency;
-//		OCR0B = _dutyVal;
+		frequency = DEFAULT_T0_INIT_FREQUENCY;
+		setDuty(DEFAULT_T0_INIT_DUTY);
+		prescaler = DEFAULT_T0_INIT_PRESCALER;
 
 		_timer0_fastPwm_ocr0atop_init();
-//		TCCR0A =  _BV(COM0B1) | _BV(WGM00) ;
-//		TCCR0B =  _BV(WGM02); 
 	}
 
 	void _timer0_fastPwm_ocr0atop_init(){
@@ -33,12 +28,9 @@ public:
 		//SET_TIMER0_INTERRUPT_OUTPUTCOMPARE_B;
 		//SET_TIMER0_INTERRUPT_OVERFLOW;
 		//sei();
-
-		
 	}
 
   	int start() {
-
 		setPrescaler(prescaler);
 		return 0;
 	}
@@ -113,7 +105,7 @@ public:
 		return 0;
 	}
 
-	int getFrequency() {
+	unsigned int getFrequency() {
 		return frequency;
 	}
 	int getDuty() {
@@ -124,9 +116,9 @@ public:
 
 private:
 
-        int frequency;
+        unsigned int frequency;
 	int duty;
-	int _dutyVal;
+	unsigned int _dutyVal;
 	int prescaler;
 
 };

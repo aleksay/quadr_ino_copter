@@ -8,18 +8,18 @@ usart* usart_module = NULL;
 communicator::communicator() {
 
 
-	bufferLength = 0;
+	bufferLength          = 0;
 
-	inputBuffer = "";
+	inputBuffer           = "";
 	inputBuffer.reserve(20);
 
-	haveCommand = 0;
+	haveCommand           = 0;
 
-	currentCommand = (Command) malloc(sizeof(_command));
-	currentCommand->type = '\n';
+	currentCommand        = (Command) malloc(sizeof(_command));
+	currentCommand->type  = '\n';
 	currentCommand->value = 0;
 
-	usart_module = new usart(9600);
+	usart_module          = new usart(9600);
 	
 	debug(String("Entering constructor for: ") + __func__,3)
 
@@ -52,7 +52,6 @@ void communicator::eventHandler() {
 				inputStringValue[i - 1] = inputBuffer[i];
 				i++;
 			}
-
 			currentCommand->type = inputBuffer[0];
 			currentCommand->value = strtol(inputStringValue,NULL,0);
 			
@@ -63,13 +62,13 @@ void communicator::eventHandler() {
 
 Command communicator::getCommand() {
 
-	Command tmpCommand = (Command) malloc(sizeof(_command));
-	tmpCommand->type = currentCommand->type;
-	tmpCommand->value = currentCommand->value;
+	Command tmpCommand    = (Command) malloc(sizeof(_command));
+	tmpCommand->type      = currentCommand->type;
+	tmpCommand->value     = currentCommand->value;
 
-	inputBuffer = "";
-	haveCommand = 0;
-	currentCommand->type = '\n';
+	inputBuffer           = "";
+	haveCommand           = 0;
+	currentCommand->type  = '\n';
 	currentCommand->value = 0;
 
 	return tmpCommand;
@@ -84,7 +83,6 @@ int communicator::logToSerial(String logString, int logPriority) {
 	if (logPriority < logLevel) {
 		Serial.println(logString);
 	}
-
 	return 0;
 }
 

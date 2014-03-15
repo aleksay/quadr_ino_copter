@@ -8,15 +8,15 @@
 #define DEBUG_LEVEL 4 // change me to desired logging level
 
 #ifdef DEBUG
-#define debug(msg,prio) if(prio < DEBUG_LEVEL){													\
-													Serial.print(String(__FILE__));								\
-										    	Serial.print(":");														\
-													Serial.print(String(__LINE__));								\
-													Serial.print(" - ");													\
-													Serial.println(msg);													\
-												}
+#define debug(msg,prio) if(prio < DEBUG_LEVEL){			\
+				Serial.print(String(__FILE__));	\
+			    	Serial.print(":");		\
+				Serial.print(String(__LINE__));	\
+				Serial.print(" - ");		\
+				Serial.println(msg);		\
+			}
 #else
-#define debug(msg)
+	#define debug(msg)
 #endif
 
 

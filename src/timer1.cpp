@@ -8,10 +8,10 @@ class timer1: public timer
 public:
   timer1() {
 
-		frequency = RAMP_INIT_FREQUENCY_T1;
+		frequency = DEFAULT_T1_INIT_FREQUENCY;
 		
-		setDuty(T1_DUTY);
-		prescaler = DEFAULT_T1_INITIAL_PRESCALER;
+		setDuty(DEFAULT_T1_INIT_DUTY);
+		prescaler = DEFAULT_T1_INIT_PRESCALER;
 		_timer1_fastPwm_ocr1atop_init();
 	 	
 	}
@@ -126,7 +126,7 @@ public:
 
 	}
 
-	int getFrequency() {
+	unsigned int getFrequency() {
 		return frequency;
 	}
 	int getDuty() {

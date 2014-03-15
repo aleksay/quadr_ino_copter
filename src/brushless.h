@@ -12,6 +12,12 @@
 #include "timer.h"
 #include "mosfetSequencecontroller.h"
 
+
+#define RAMP_FIN_FREQUENCY_T1 30000
+#define RAMP_FIN_DUTY_T0 90
+
+
+
 typedef struct _startup_data {
 	unsigned int start;
 	unsigned int end;

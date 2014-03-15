@@ -44,7 +44,7 @@ void setup() {
   brushlessPtr->start(); //set prescaler and start the iteration
   
   debug("Brushless object initialized. ", 3);
-  brushlessPtr->startup(); //start-up ramp
+//  brushlessPtr->startup(); //start-up ramp
 }
 
 int commandExecute = 0;
@@ -54,24 +54,39 @@ void loop() {
 // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
 	
-	//	 communicator::logToSerial("Setting Command", 3);
     latestCommand = serialCommPtr->getCommand();
     //debug("Received command type: " + String(latestCommand->type) + " value: " + String(latestCommand->value), 3);
+    
+    //here put a setCommand for each module in the sketch
     brushlessPtr->setCommand(latestCommand);
-	commandExecute = 1;
+    
+    //and then set flag for catching responses
+    commandExecute = 1;
   }
 
-	brushlessPtr->iterate();
+	brushlessPtr->iterate();	
 
 	if(commandExecute == 1){
+		parseCommand(latestCommand);
      		debug(brushlessPtr->getResponse(), 3); 
-		debug(" OCR1A: " + String (OCR1A) +" OCR1B:"+OCR1B ,3);
+		//debug(" OCR1A: " + String (OCR1A) +" OCR1B:"+OCR1B ,3);
 		commandExecute = 0;
-		
 	}
-
-	
 }
+
+
+String parseCommand(Command command){
+
+	 switch(command->type){
+	 	case 'R':
+			 wdt_init();
+		default:
+			return "";
+	}	  
+}
+
+
+
 
 
 // Register brushless object event handler to ISR for Timer 1
