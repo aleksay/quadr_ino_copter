@@ -1,7 +1,7 @@
 /*
-Header file for brshless control module
+ Header file for brshless control module
 
-*/
+ */
 
 #ifndef BRUSHLESS_h
 #define BRUSHLESS_h
@@ -9,38 +9,36 @@ Header file for brshless control module
 #include <Arduino.h>
 #include <WString.h>
 #include "communicator.h"
+#include "timer.h"
+#include "mosfetSequencecontroller.h"
 
-typedef struct _startup_data{
-   int start;
-   int end;
-   float decrement;
-   int currentValue;
-   float resto;
-} *startupData;
+typedef struct _startup_data {
+	unsigned int start;
+	unsigned int end;
+	float decrement;
+	unsigned int currentValue;
+	float resto;
+}*startupData;
 
 class brushless {
 
-  public:
-    brushless();
-    int setFrequency(int val);
-    int setRefreshRate(int val);
-    int setDuty(int val);
-    int getFrequency();
-    int getRefreshRate();
-    int getDuty();
-    int eventHandler();
-    int startup();
-    void startupcalc(startupData valueData,int slow);
-    //void iterate();
+public:
+	brushless();
+	int startup();
+	void iterate();
+	int start();
+	int setCommand(Command command);  
+	String getResponse();
 
-  private:
-    volatile unsigned int cpmCounter;
-    volatile          int stato;
-    volatile unsigned int frequency;//holds register value
-    volatile unsigned int refreshRate;
-    volatile unsigned int duty;//holds register value
+private:
 
-    int timer1_init();
+	Command latestCommand;
+	int startupping = 0;
+	int commandRead = 0;
+	String latestMessage;
+
+	String parseCommand(Command command);
+	void startupcalc(startupData valueData, int slow);
 };
 
 #endif
