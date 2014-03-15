@@ -1,5 +1,5 @@
-
 #include <avr/wdt.h>
+#include <avr/interrupt.h> 
 #include <Arduino.h>
 #include <WString.h>
 
@@ -13,7 +13,7 @@
 brushless *brushlessPtr     = NULL;
 communicator *serialCommPtr = NULL;
 
-// Initialization of struct
+// Initialization of comman struct
 Command latestCommand;
 
 // Software reset 
@@ -34,72 +34,66 @@ void setup() {
     serialCommPtr = new communicator(); 
   }
 
-  communicator::logToSerial("SerialComm object initialized. ", 3);
+  debug("SerialComm object initialized. ", 3);
 
-   // Initialize brushless communications
+   // Initialize brushless object
   if (brushlessPtr == NULL)
   {
-    brushlessPtr  = new brushless();  // This is critical  - create a new class here only
+    brushlessPtr  = new brushless();  
   }
-
-  brushlessPtr->startup();
-  communicator::logToSerial("Brushless object initialized. ", 3);
+  brushlessPtr->start(); //set prescaler and start the iteration
+  
+  debug("Brushless object initialized. ", 3);
+//  brushlessPtr->startup(); //start-up ramp
 }
+
+int commandExecute = 0;
 
 void loop() { 
 
 // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
+	
     latestCommand = serialCommPtr->getCommand();
-    setCommand(latestCommand);
-  }
-}
-
-void setCommand(Command command){
-
-
-  
-  int r = -10;
-
-  switch(command->type){
-
-  case 'f':
-    r = -10;
-    r = brushlessPtr->setFrequency(command->value);
-    break;
-
-  case 'd':
-    r = -10;
-    r = brushlessPtr->setDuty(command->value);
-    break;
-
-  case 'r':
-    r = -10;
-    r = brushlessPtr->setRefreshRate(command->value);
-    break;
+    //debug("Received command type: " + String(latestCommand->type) + " value: " + String(latestCommand->value), 3);
     
-  case 'p':
-	communicator::printToSerial ( "--QUERY--");
-	communicator::printToSerial( String("f") + String(brushlessPtr->getFrequency())  );
-	communicator::printToSerial( String("d") + String(brushlessPtr->getDuty())  );
-	communicator::printToSerial( String("r") + String(brushlessPtr->getRefreshRate())  );
-	communicator::printToSerial ( "----"); 
-    break;
-
-  case 'R':
-    wdt_init();
-    break;
-
-  default:
-  break;  
+    //here put a setCommand for each module in the sketch
+    brushlessPtr->setCommand(latestCommand);
+    
+    //and then set flag for catching responses
+    commandExecute = 1;
   }
+
+	brushlessPtr->iterate();	
+
+	if(commandExecute == 1){
+		parseCommand(latestCommand);
+     		debug(brushlessPtr->getResponse(), 3); 
+		//debug(" OCR1A: " + String (OCR1A) +" OCR1B:"+OCR1B ,3);
+		commandExecute = 0;
+	}
 }
+
+
+String parseCommand(Command command){
+
+	 switch(command->type){
+	 	case 'R':
+			 wdt_init();
+		default:
+			return "";
+	}	  
+}
+
+
+
+
 
 // Register brushless object event handler to ISR for Timer 1
-ISR(TIMER1_COMPB_vect) {
-  brushlessPtr->eventHandler();
+/*ISR(TIMER1_COMPB_vect) {*/
+/*  brushlessPtr->eventHandler();*/
 
-}
+/*}*/
 
 // Callback function for reserved Arduino keyword serial polling
 void serialEvent(){
