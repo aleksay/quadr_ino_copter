@@ -33,13 +33,11 @@ class communicator {
 public:
 
 	communicator();
-	int getHaveCommand();
-	Command getCommand();
-	void eventHandler();
-	void iterate();
-	static int logToSerial(String logString, int logPriority);
-	static int printToSerial(String logString);
-
+	int 		 getHaveCommand();
+	Command  getCommand();
+	void 		 eventHandler();
+	void 		 iterate();
+	
 private:
 	String inputBuffer;
 	int haveCommand;

@@ -25,7 +25,6 @@ public:
 	int commutePole();
 	int setAutomaRate(int val);
 	int getAutomaRate();
-	int getbit();
 	int getAutomaState();
 	int getState();
 	int getAutomaState(int st);

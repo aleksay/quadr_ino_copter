@@ -78,18 +78,4 @@ int communicator::getHaveCommand() {
 	return haveCommand;
 }
 
-int communicator::logToSerial(String logString, int logPriority) {
-
-	if (logPriority < logLevel) {
-		Serial.println(logString);
-	}
-	return 0;
-}
-
-int communicator::printToSerial(String logString) {
-
-	Serial.println(logString);
-	return 0;
-
-}
 
