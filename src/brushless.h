@@ -39,8 +39,8 @@ public:
 private:
 
 	Command latestCommand;
-	int startupping = 0;
-	int commandRead = 0;
+	int startupping;
+	int commandRead;
 	String latestMessage;
 
 	String parseCommand(Command command);

@@ -17,6 +17,10 @@ unsigned int freq;
 
 brushless::brushless() {
 
+  
+  	startupping = 0;
+	commandRead = 0;
+  
 	timer1_pwm   = new timer1();
 	
 	timer0_pwm   = new timer0();
