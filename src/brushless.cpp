@@ -63,7 +63,7 @@ int brushless::startup() {
 	freqData = (startupData) malloc(sizeof(_startup_data));
 	freqData->start = timer1_pwm->getFrequency();
 	freqData->end = RAMP_FIN_FREQUENCY_T1;
-	freqData->decrement = 0.005;
+	freqData->decrement = 0.003;
 	freqData->currentValue = freqData->start;
 	freqData->resto = 0;
 

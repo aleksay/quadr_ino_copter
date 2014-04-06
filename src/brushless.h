@@ -13,7 +13,7 @@
 #include "mosfetSequencecontroller.h"
 
 
-#define RAMP_FIN_FREQUENCY_T1 30000
+#define RAMP_FIN_FREQUENCY_T1 5000
 #define RAMP_FIN_DUTY_T0 90
 
 
