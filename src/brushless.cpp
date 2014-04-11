@@ -11,8 +11,6 @@ mosfetSequencecontroller * automa = NULL;
 
 startupData freqData;
 startupData dutyData;
-startupData refreshData;
-unsigned int freq;
 
 
 brushless::brushless() {
@@ -74,13 +72,6 @@ int brushless::startup() {
 	dutyData->currentValue = dutyData->start;
 	dutyData->resto = 0;
 
-//        refreshData = (startupData) malloc(sizeof(_startup_data));
-//	refreshData->start = RAMP_INIT_REFREASHRATE;
-//	refreshData->end = RAMP_FIN_REFREASHRATE;
-//	refreshData->decrement = 0.2;
-//	refreshData->currentValue = refreshData->start;
-//	refreshData->resto = 0;
-
 	startupping = 1;
 
 }
@@ -92,8 +83,7 @@ void brushless::iterate() {
 	if (startupping) {
 		
 		if ((freqData->currentValue > freqData->end)
-		||  (dutyData->currentValue > dutyData->end)
-		||  (refreshData->currentValue > refreshData->end)) {
+		||  (dutyData->currentValue > dutyData->end)) {
 
 			if (freqData->currentValue > freqData->end) {
 
@@ -106,18 +96,12 @@ void brushless::iterate() {
 				timer0_pwm->setDuty(dutyData->currentValue);
 			}
 
-//			if (refreshData->currentValue > refreshData->end) {
-//				startupcalc(refreshData, 1);
-//				automa->setAutomaRate(refreshData->currentValue);
-//			}
-			freq=timer1_pwm->getFrequency();
-			debug(String("f")+freq+" d"+String(timer0_pwm->getDuty()),3);
+			debug(String("f")+timer1_pwm->getFrequency()+" d"+String(timer0_pwm->getDuty()),3);
 			delay(100);
 		} else {
 			startupping = 0;
 			free(freqData);
 			free(dutyData);
-			free(refreshData);
 			debug("ramp end ", 3);
 		}
 
@@ -132,15 +116,12 @@ void brushless::iterate() {
 
 String brushless::parseCommand(Command command){
 	
-  //int r = -10;
-
   switch(command->type){
 
   case 'f':
 	  timer1_pwm->setFrequency(command->value);
-	  
-	  freq=timer1_pwm->getFrequency();
-	  return String("")+freq;
+	  	  
+	  return String("")+timer1_pwm->getFrequency();
   case 'n':
           timer1_pwm->setDuty(command->value);
 	  return String(timer1_pwm->getDuty());
@@ -158,9 +139,8 @@ String brushless::parseCommand(Command command){
 	  startup();
 	  return "ramp started";
   case 'p':
-	freq=timer1_pwm->getFrequency();	
 	return  String( "--QUERY--\n") +
-		String("f_t1 ") + freq	+ String("\n") +
+		String("f_t1 ") + String(timer1_pwm->getFrequency())	+ String("\n") +
 		String("d_t1 ") + String(timer1_pwm->getDuty())     	+ String("\n") +
 		String("f_t0 ") + String(timer0_pwm->getFrequency()) 	+ String("\n") +
 		String("d_t0 ") + String(timer0_pwm->getDuty())   	+ String("\n") +
@@ -170,8 +150,7 @@ String brushless::parseCommand(Command command){
 
   default:
 	return "";
-	//return String( "--D--");
-    
+  
   }
 }
 

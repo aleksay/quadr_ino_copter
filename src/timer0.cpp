@@ -116,7 +116,7 @@ public:
 
 private:
 
-        unsigned int frequency;
+    unsigned int frequency;
 	int duty;
 	unsigned int _dutyVal;
 	int prescaler;
