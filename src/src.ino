@@ -5,8 +5,8 @@
 
 #include "brushless.h"
 #include "communicator.h"
-#include "MsTimer2.h"
 
+#include "MsTimer2.h"
 
 #define F_CPU 8000000UL  //Uncomment for arduino Fio
 //#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
@@ -27,34 +27,12 @@ void wdt_init(void)
     return;
 }
 
-int getTimeDebugCounter=0;
-int ref_time = 0;
-
-
-void getTime(){
-  getTimeDebugCounter++;
-  if(getTimeDebugCounter == 9){ 
-    getTimeDebugCounter=0;
-    String debString=String("ref_time is") + ref_time + String("ms");
-    debug(debString,3);
+void globalSetTime()
+{
+brushlessPtr->setTime();
 }
-}
-
-void setTime(){
-  ref_time = ref_time + 50;
-  getTime();
-}
-
-
-
-
 
 void setup() {
-
-  //initialize timer2
-  MsTimer2::set(50, setTime); // 50ms period
-  MsTimer2::start();
-
 
   // Initialize serial communications
   if (serialCommPtr == NULL)
@@ -70,6 +48,10 @@ void setup() {
     brushlessPtr  = new brushless();  
   }
   brushlessPtr->start(); //set prescaler and start the iteration
+	// MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
+	MsTimer2::set(50, globalSetTime ); // 50ms period
+        MsTimer2::start();
+
   
   debug("Brushless object initialized. ", 3);
 

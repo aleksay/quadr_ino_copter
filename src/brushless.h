@@ -35,6 +35,7 @@ public:
 	int start();
 	int setCommand(Command command);  
 	String getResponse();
+	void setTime();
 
 private:
 
@@ -43,8 +44,12 @@ private:
 	int commandRead;
 	String latestMessage;
 
+
+	int msTime;
+
 	String parseCommand(Command command);
 	void startupcalc(startupData valueData, int slow);
+	int getStartupValue(int gain, int ssGain);
 };
 
 #endif

@@ -13,12 +13,29 @@ startupData freqData;
 startupData dutyData;
 
 
+
+//void getTime(){
+//    String debString=String("ref_time is") + ref_time + String("ms");
+//    debug(debString,3);
+//}
+
+void brushless::setTime(){
+  msTime = msTime + 50;
+}
+
+
+
 brushless::brushless() {
 
-  
+	msTime = 0;  
   	startupping = 0;
 	commandRead = 0;
-  
+ 
+	//initialize timer2
+        
+	//MsTimer2::set(50, brushless::setTime()); // 50ms period
+        //MsTimer2::start();
+
 	timer1_pwm   = new timer1();
 	
 	timer0_pwm   = new timer0();
@@ -51,6 +68,14 @@ void brushless::startupcalc(startupData valueData, int slow) {
 			valueData->currentValue = valueData->currentValue - 1;
 		}
 	}
+}
+
+int brushless::getStartupValue(int gain, int ssGain) {
+
+// proportional open loop controller
+// y = K *t * start
+
+return gain * 0.001 * msTime + ssGain;
 }
 
 
@@ -87,12 +112,14 @@ void brushless::iterate() {
 
 			if (freqData->currentValue > freqData->end) {
 
-				startupcalc(freqData, 1);
+				//startupcalc(freqData, 1);
+				freqData->currentValue = getStartupValue(freqData->decrement, freqData->start);
 				timer1_pwm->setFrequency(freqData->currentValue);
 			}
 
 			if (dutyData->currentValue > dutyData->end) {
-				startupcalc(dutyData, 1);
+				//startupcalc(dutyData, 1);
+				dutyData->currentValue = getStartupValue(dutyData->decrement, dutyData->start);
 				timer0_pwm->setDuty(dutyData->currentValue);
 			}
 
