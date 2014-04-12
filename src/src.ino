@@ -51,6 +51,11 @@ void setTime(){
 
 void setup() {
 
+  //initialize timer2
+  MsTimer2::set(50, setTime); // 50ms period
+  MsTimer2::start();
+
+
   // Initialize serial communications
   if (serialCommPtr == NULL)
   {
@@ -67,10 +72,6 @@ void setup() {
   brushlessPtr->start(); //set prescaler and start the iteration
   
   debug("Brushless object initialized. ", 3);
-
- MsTimer2::set(50, setTime); // 50ms period
- MsTimer2::start();
-
 
 }
 
