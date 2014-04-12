@@ -6,23 +6,23 @@
 
 /*
 =====================================================
-
-		           Timer 0 Section
-
-=====================================================
-*/
+ 
+ 		           Timer 0 Section
+ 
+ =====================================================
+ */
 #define TIMER0_RESET TCCR0B=0;TCCR0A=0;TCNT0=0
 
 /*
 0 0 0 No clock source (Timer/Counter stopped)
-0 0 1 clkI/O/(No prescaling)
-0 1 0 clkI/O/8 (From prescaler)
-0 1 1 clkI/O/64 (From prescaler)
-1 0 0 clkI/O/256 (From prescaler)
-1 0 1 clkI/O/1024 (From prescaler)
-1 1 0 External clock source on T0 pin. Clock on falling edge.
-1 1 1 External clock source on T0 pin. Clock on rising edge
-*/
+ 0 0 1 clkI/O/(No prescaling)
+ 0 1 0 clkI/O/8 (From prescaler)
+ 0 1 1 clkI/O/64 (From prescaler)
+ 1 0 0 clkI/O/256 (From prescaler)
+ 1 0 1 clkI/O/1024 (From prescaler)
+ 1 1 0 External clock source on T0 pin. Clock on falling edge.
+ 1 1 1 External clock source on T0 pin. Clock on rising edge
+ */
 
 #define SET_TIMER0_STOP           TCCR0B |= (0 << CS02) | (0 << CS01) | (0 << CS00)
 #define SET_TIMER0_PRESCALER_0    TCCR0B |= (0 << CS02) | (0 << CS01) | (1 << CS00)
@@ -33,9 +33,9 @@
 
 /*
 WGM02 WGM01 WGM00 Timer/Counter 
-1 0 1 PWM, Phase Correct OCRA TOP BOTTOM
-1 1 1 Fast PWM OCRA BOTTOM TOP
-*/
+ 1 0 1 PWM, Phase Correct OCRA TOP BOTTOM
+ 1 1 1 Fast PWM OCRA BOTTOM TOP
+ */
 
 #define SET_TIMER0_MODE_PHASE_CORRECT_OCR0A     TCCR0B |= (1 << WGM02);TCCR0A |= (0 << WGM01) | (1 << WGM00)
 #define SET_TIMER0_MODE_FASTPWM_OCR0A           TCCR0B |= (1 << WGM02);TCCR0A |= (1 << WGM01) | (1 << WGM00)
@@ -57,11 +57,11 @@ WGM02 WGM01 WGM00 Timer/Counter
 
 /*
 =====================================================
-
-		           Timer 1 Section
-
-=====================================================
-*/
+ 
+ 		           Timer 1 Section
+ 
+ =====================================================
+ */
 #define TIMER1_RESET TCCR1B=0;TCCR1A=0;TCNT1=0
 
 /*
@@ -130,25 +130,26 @@ WGM02 WGM01 WGM00 Timer/Counter
 
 /*
 =====================================================
-
-		Mosfet Sequence Controller Section
-
-=====================================================
-*/
+ 
+ 		Mosfet Sequence Controller Section
+ 
+ =====================================================
+ */
 //#define	automa_register_D
 #define automa_register_B
 
 
 #ifdef automa_register_D
-	#define AUTOMA_PIN_INIT DDRD |= 0b00111111 
-	#define AUTOMA_ITERATE(state) PORTD=states[state]
+#define AUTOMA_PIN_INIT DDRD |= 0b00111111 
+#define AUTOMA_ITERATE(state) PORTD=states[state]
 #endif
 
 #ifdef automa_register_B
-	#define AUTOMA_PIN_INIT DDRB |= 0b00111111 
-	#define AUTOMA_ITERATE(state) PORTB=states[state]
+#define AUTOMA_PIN_INIT DDRB |= 0b00111111 
+#define AUTOMA_ITERATE(state) PORTB=states[state]
 #endif
 
 
 
 #endif
+

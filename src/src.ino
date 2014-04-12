@@ -22,14 +22,14 @@ Command latestCommand;
 void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
 void wdt_init(void)
 {
-    MCUSR = 0;
-    wdt_disable();
-    return;
+  MCUSR = 0;
+  wdt_disable();
+  return;
 }
 
 void globalSetTime()
 {
-brushlessPtr->setTime();
+  brushlessPtr->setTime();
 }
 
 void setup() {
@@ -42,17 +42,19 @@ void setup() {
 
   debug("SerialComm object initialized. ", 3);
 
-   // Initialize brushless object
+  // Initialize brushless object
   if (brushlessPtr == NULL)
   {
     brushlessPtr  = new brushless();  
   }
   brushlessPtr->start(); //set prescaler and start the iteration
-	// MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
-	MsTimer2::set(50, globalSetTime ); // 50ms period
-        MsTimer2::start();
 
-  
+  //timer 2 init.
+  // MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
+  MsTimer2::set(50, globalSetTime ); // 50ms period
+  MsTimer2::start();
+
+
   debug("Brushless object initialized. ", 3);
 
 }
@@ -63,41 +65,42 @@ int commandExecute = 0;
 void loop() { 
 
 
-// Run main loop: check for serial command and set command 
+  // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
-	
+
     latestCommand = serialCommPtr->getCommand();
-    
+
     //here put a setCommand for each module in the sketch
     brushlessPtr->setCommand(latestCommand);
-    
+
     //and then set flag for catching responses
     commandExecute = 1;
   }
 
-	brushlessPtr->iterate();	
+  brushlessPtr->iterate();	
 
-	if(commandExecute == 1){
-		parseCommand(latestCommand);
-     		debug(brushlessPtr->getResponse(), 3); 
-		//debug(" OCR1A: " + String (OCR1A) +" OCR1B:"+OCR1B ,3);
-		commandExecute = 0;
-	}
+  if(commandExecute == 1){
+    parseCommand(latestCommand);
+    debug(brushlessPtr->getResponse(), 3); 
+    //debug(" OCR1A: " + String (OCR1A) +" OCR1B:"+OCR1B ,3);
+    commandExecute = 0;
+  }
 }
 
 
 String parseCommand(Command command){
 
-	 switch(command->type){
-	 	case 'R':
-			 wdt_init();
-		default:
-			return "";
-	}	  
+  switch(command->type){
+  case 'R':
+    wdt_init();
+  default:
+    return "";
+  }	  
 }
 
 // Callback function for reserved Arduino keyword serial polling
 void serialEvent(){
   serialCommPtr->eventHandler();
 }
+
 
