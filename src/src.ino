@@ -5,6 +5,8 @@
 
 #include "brushless.h"
 #include "communicator.h"
+#include "MsTimer2.h"
+
 
 #define F_CPU 8000000UL  //Uncomment for arduino Fio
 //#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
@@ -49,8 +51,16 @@ void setup() {
 
 int commandExecute = 0;
 
-void loop() { 
+void flash(){
 
+Serial.println("timer 2 misure 500 ms");
+
+}
+
+
+void loop() { 
+ MsTimer2::set(500, flash); // 500ms period
+  MsTimer2::start();
 // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
 	
