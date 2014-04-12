@@ -27,6 +27,15 @@ void wdt_init(void)
     return;
 }
 
+int ref_time = 0;
+
+void flash(){
+
+ref_time = millis();
+}
+
+
+
 
 void setup() {
 
@@ -46,21 +55,20 @@ void setup() {
   brushlessPtr->start(); //set prescaler and start the iteration
   
   debug("Brushless object initialized. ", 3);
-//  brushlessPtr->startup(); //start-up ramp
+
+ MsTimer2::set(500, flash); // 500ms period
+  MsTimer2::start();
+
+
 }
 
 int commandExecute = 0;
 
-void flash(){
-
-Serial.println("timer 2 misure 500 ms");
-
-}
-
 
 void loop() { 
- MsTimer2::set(500, flash); // 500ms period
-  MsTimer2::start();
+
+Serial.println(ref_time);
+
 // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
 	
