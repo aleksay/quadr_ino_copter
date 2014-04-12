@@ -27,12 +27,24 @@ void wdt_init(void)
     return;
 }
 
+int getTimeDebugCounter=0;
 int ref_time = 0;
 
-void flash(){
 
-ref_time = millis();
+void getTime(){
+  getTimeDebugCounter++;
+  if(getTimeDebugCounter == 9){ 
+    getTimeDebugCounter=0;
+    String debString=String("ref_time is") + ref_time + String("ms");
+    debug(debString,3);
 }
+}
+
+void setTime(){
+  ref_time = ref_time + 50;
+  getTime();
+}
+
 
 
 
@@ -56,8 +68,8 @@ void setup() {
   
   debug("Brushless object initialized. ", 3);
 
- MsTimer2::set(500, flash); // 500ms period
-  MsTimer2::start();
+ MsTimer2::set(50, setTime); // 50ms period
+ MsTimer2::start();
 
 
 }
@@ -67,7 +79,6 @@ int commandExecute = 0;
 
 void loop() { 
 
-Serial.println(ref_time);
 
 // Run main loop: check for serial command and set command 
   if(serialCommPtr->getHaveCommand() == 1){
