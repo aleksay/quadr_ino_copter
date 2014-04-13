@@ -9,11 +9,12 @@ public timer
 public:
   timer1() {
 
+	//initialize timer1 global variable
     frequency = DEFAULT_T1_INIT_FREQUENCY;
-
-    setDuty(DEFAULT_T1_INIT_DUTY);
+    duty = DEFAULT_T1_INIT_DUTY;
     prescaler = DEFAULT_T1_INIT_PRESCALER;
-
+	
+	//configure timer1
     _timer1_fastPwm_ocr1atop_init();
 
   }
@@ -37,16 +38,19 @@ public:
 
   int _timer1_fastPwm_ocr1atop_init() {
     SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
-    TIMER1_RESET;
-    //SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
+	//SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
     //SET_TIMER1_INTERRUPT_OVERFLOW;
+    TIMER1_RESET;
+
     SET_TIMER1_PINB;
-    SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-    SET_TIMER1_DUTY_CHAN_B(_dutyVal);
+	
+	setFrequency(frequency);
+    setDuty(duty);
 
     //SET_TIMER1_PINOUT(B);
     SET_TIMER1_MODE_FASTPWM_OCR1A;
     SET_TIMER1_PINB_NOTINVERTING(0);
+
 
 
     return 0;
@@ -54,7 +58,7 @@ public:
 
   int start() {
     debug("prescaler set to:",3);
-    debug(prescaler,3);
+    debug(prescaler,3); //DA mettere in un'unica stampa
     setPrescaler(prescaler);
     return 0;
   }
@@ -70,19 +74,12 @@ public:
 
   int setPrescaler(int _prescaler){
 
- //   debug(String("bastardoprescaler set to: " + _prescaler) ,3);
+
     
     switch(_prescaler) {
     
-   case 0:
-	debug("bastardoprescaler set to: ",3);
-	debug(_prescaler,3);
-      SET_TIMER1_PRESCALER_1;
-      prescaler = 0;
-      return 0;
     case 1:
-	debug("bastardoprescaler set to: ",3);
-	debug(_prescaler,3);
+      debug(_prescaler,3);
       SET_TIMER1_PRESCALER_1;
       prescaler = 1;
       return 0;
@@ -102,9 +99,7 @@ public:
       SET_TIMER1_PRESCALER_1024;
       prescaler = 1024;
       return 0;			
-    }
-
-    
+    } 
 
     return 1;
   }
@@ -112,26 +107,39 @@ public:
   int getPrescaler(){
     return prescaler;
   }
+  
+	//convert to TOP value
+	int Hz2top(int freqHz) {
+         debug("funzione di conversione:",3);
+         debug(freqHz,3);
+         debug(F_CPU,3);
+         debug(getPrescaler(),3);
+         debug(floor(F_CPU/(getPrescaler() * freqHz)-1),3);
+         
+	 return floor(F_CPU/(getPrescaler() * freqHz)-1);
+	}
+  
+ 
+	int setFrequency(unsigned int freqHz) {
 
-  int setFrequency(unsigned int freqHz) {
+	unsigned int top = Hz2top(freqHz);
+        debug(top,3);
 
-  int top = floor(F_CPU/(getPrescaler() * freqHz)-1);
+	if (top < 0 || top > 65000){
+	  return -1;
+	}
 
+	if (top == frequency) {
+	  return -1;
+	}
 
-    if (top < 0 || top > 65000){
-      return -1;
-    }
-
-    if (top == frequency) {
-      return -1;
-    }
-
-    int zDuty = -10;
+	int zDuty = -10;
 
 
     frequency = top;       
-
+	debug(frequency,3);
     SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
+	debug(OCR1A,3);
     zDuty = setDuty(duty);
 
     return zDuty;
@@ -162,7 +170,7 @@ public:
 private: 
   unsigned int frequency;
   int duty;
-  unsigned int _dutyVal;
+  int _dutyVal;
   int prescaler;
 };
 #endif

@@ -34,28 +34,32 @@ void globalSetTime()
 void setup() {
 
   // Initialize serial communications
+    
+  debug("Entering SerialComm constructor", 5);
   if (serialCommPtr == NULL)
   {
     serialCommPtr = new communicator(); 
   }
-
-  debug("SerialComm constructor has returned. ", 3);
+  debug("SerialComm constructor DONE", 3);
 
   // Initialize brushless object
+  debug("Entering Brushless constructor", 5);
   if (brushlessPtr == NULL)
   {
     brushlessPtr  = new brushless();  
   }
-  debug("Brushless constructor has returned. ", 3);
+  debug("Brushless constructor DONE", 3);
 
+  debug("Starting brushless", 5);
   brushlessPtr->start(); //set prescaler and start the iteration
-  debug("brushlessPtr->start() has returned ", 3);
+  debug("brushlessPtr->start() DONE", 3);
 
   //timer 2 init.
   // MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
+  debug("Starting timer2 counter", 5);
   MsTimer2::set(50, globalSetTime ); // 50ms period
   MsTimer2::start();
-  debug("MsTimer2::start() has returned ", 3);
+  debug("MsTimer2::start() DONE", 3);
 
 
 

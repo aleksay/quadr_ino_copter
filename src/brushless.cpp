@@ -61,10 +61,7 @@ int brushless::getStartupValueHz(int gain, int ssGain) {
   return freqHz;
   
 }
-////convert to TOP value
-//int brushless::Hz2top(int freqHz) {
-//  return F_CPU/(timer0_pwm->getPrescaler() * freqHz)-1;
-//}
+
 
 int brushless::startup() {
 
@@ -165,6 +162,7 @@ String brushless::parseCommand(Command command){
   case 'p':
     return  String( "--QUERY--\n") +
       String("f_t1 ") + String(timer1_pwm->getFrequency())	+ String("\n") +
+	  "valore TOP timer 1 "+OCR1A+ String("\n") +
       String("d_t1 ") + String(timer1_pwm->getDuty())     	+ String("\n") +
       String("f_t0 ") + String(timer0_pwm->getFrequency()) 	+ String("\n") +
       String("d_t0 ") + String(timer0_pwm->getDuty())   	+ String("\n") +
@@ -187,9 +185,9 @@ String brushless::getResponse() {
 }
 
 int brushless::start(){
-  debug("timer1 start",3);
-  timer1_pwm->start(0);
-    debug("timer1 end",3);
+  debug("timer1 start",5);
+  timer1_pwm->start();
+    debug("timer1 started",3);
 }
 
 
