@@ -13,6 +13,7 @@ public:
 
     setDuty(DEFAULT_T1_INIT_DUTY);
     prescaler = DEFAULT_T1_INIT_PRESCALER;
+
     _timer1_fastPwm_ocr1atop_init();
 
   }
@@ -29,7 +30,7 @@ public:
     SET_TIMER1_MODE_FASTPWM_ICR1;
     SET_TIMER1_PINB_NOTINVERTING(0);
     SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
-    SET_TIMER1_PRESCALER_0;
+    //SET_TIMER1_PRESCALER_1;
 
     return 0;
   }
@@ -52,11 +53,13 @@ public:
   }
 
   int start() {
-
+    debug("prescaler set to:",3);
+    debug(prescaler,3);
     setPrescaler(prescaler);
     return 0;
   }
   int start(int _prescaler) {
+    //debug(String("_prescaler set to: " + _prescaler) ,3);
     setPrescaler(_prescaler);
     return 0;
   }
@@ -67,10 +70,21 @@ public:
 
   int setPrescaler(int _prescaler){
 
+ //   debug(String("bastardoprescaler set to: " + _prescaler) ,3);
+    
     switch(_prescaler) {
-    case 0:
-      SET_TIMER1_PRESCALER_0;
+    
+   case 0:
+	debug("bastardoprescaler set to: ",3);
+	debug(_prescaler,3);
+      SET_TIMER1_PRESCALER_1;
       prescaler = 0;
+      return 0;
+    case 1:
+	debug("bastardoprescaler set to: ",3);
+	debug(_prescaler,3);
+      SET_TIMER1_PRESCALER_1;
+      prescaler = 1;
       return 0;
     case 8:
       SET_TIMER1_PRESCALER_8;
@@ -89,6 +103,9 @@ public:
       prescaler = 1024;
       return 0;			
     }
+
+    
+
     return 1;
   }
 
@@ -96,20 +113,23 @@ public:
     return prescaler;
   }
 
-  int setFrequency(unsigned int val) {
+  int setFrequency(unsigned int freqHz) {
 
-    if (val < 0 || val > 65000){
+  int top = floor(F_CPU/(getPrescaler() * freqHz)-1);
+
+
+    if (top < 0 || top > 65000){
       return -1;
     }
 
-    if (val == frequency) {
+    if (top == frequency) {
       return -1;
     }
 
     int zDuty = -10;
 
 
-    frequency = val;       
+    frequency = top;       
 
     SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
     zDuty = setDuty(duty);

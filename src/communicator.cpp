@@ -21,7 +21,7 @@ communicator::communicator() {
 
   usart_module          = new usart(9600);
 
-  debug(String("Entering constructor for: ") + __func__,3)
+  debug(String("Entering constructor fo+r: ") + __func__,3)
 
     if (usart_module != NULL)
       debug("Serial initialized. ", 3);

@@ -1,3 +1,5 @@
+
+// setFrequency() still in TOP TODO
 #include "timer.h"
 #include "communicator.h"
 
@@ -44,8 +46,13 @@ public:
 
     switch(_prescaler) {
     case 0:
-      SET_TIMER0_PRESCALER_0;
+      SET_TIMER0_PRESCALER_1;
       prescaler = 0;
+      debug(String(prescaler),3);
+      return 0;
+    case 1:
+      SET_TIMER0_PRESCALER_1;
+      prescaler = 1;
       debug(String(prescaler),3);
       return 0;
     case 8:

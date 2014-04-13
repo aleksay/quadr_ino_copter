@@ -8,8 +8,7 @@
 
 #include "MsTimer2.h"
 
-#define F_CPU 8000000UL  //Uncomment for arduino Fio
-//#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
+
 
 // Initialization of objects
 brushless *brushlessPtr     = NULL;
@@ -40,22 +39,25 @@ void setup() {
     serialCommPtr = new communicator(); 
   }
 
-  debug("SerialComm object initialized. ", 3);
+  debug("SerialComm constructor has returned. ", 3);
 
   // Initialize brushless object
   if (brushlessPtr == NULL)
   {
     brushlessPtr  = new brushless();  
   }
+  debug("Brushless constructor has returned. ", 3);
+
   brushlessPtr->start(); //set prescaler and start the iteration
+  debug("brushlessPtr->start() has returned ", 3);
 
   //timer 2 init.
   // MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
   MsTimer2::set(50, globalSetTime ); // 50ms period
   MsTimer2::start();
+  debug("MsTimer2::start() has returned ", 3);
 
 
-  debug("Brushless object initialized. ", 3);
 
 }
 

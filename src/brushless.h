@@ -37,7 +37,7 @@ public:
   int setCommand(Command command);  
   String getResponse();
   void setTime();
-  void printTime();
+  int Hz2top();
 private:
 
   Command latestCommand;
@@ -50,7 +50,7 @@ private:
 
   String parseCommand(Command command);
   //void startupcalc(startupData valueData, int slow);
-  int getStartupValue(int gain, int ssGain);
+  int getStartupValueHz(int gain, int ssGain);
 };
 
 #endif

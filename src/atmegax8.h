@@ -3,6 +3,16 @@
 
 #include <Arduino.h>
 
+/*
+=====================================================
+ 
+ 		           Global configuration Section
+ 
+ =====================================================
+ */
+
+#define F_CPU 8000000UL  //Uncomment for arduino Fio
+//#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
 
 /*
 =====================================================
@@ -15,7 +25,7 @@
 
 /*
 0 0 0 No clock source (Timer/Counter stopped)
- 0 0 1 clkI/O/(No prescaling)
+ 0 0 1 clkI/O/1 (No prescaling)
  0 1 0 clkI/O/8 (From prescaler)
  0 1 1 clkI/O/64 (From prescaler)
  1 0 0 clkI/O/256 (From prescaler)
@@ -25,7 +35,7 @@
  */
 
 #define SET_TIMER0_STOP           TCCR0B |= (0 << CS02) | (0 << CS01) | (0 << CS00)
-#define SET_TIMER0_PRESCALER_0    TCCR0B |= (0 << CS02) | (0 << CS01) | (1 << CS00)
+#define SET_TIMER0_PRESCALER_1    TCCR0B |= (0 << CS02) | (0 << CS01) | (1 << CS00)
 #define SET_TIMER0_PRESCALER_8    TCCR0B |= (0 << CS02) | (1 << CS01) | (0 << CS00)
 #define SET_TIMER0_PRESCALER_64   TCCR0B |= (0 << CS02) | (1 << CS01) | (1 << CS00)
 #define SET_TIMER0_PRESCALER_256  TCCR0B |= (1 << CS02) | (0 << CS01) | (0 << CS00)
@@ -67,14 +77,14 @@ WGM02 WGM01 WGM00 Timer/Counter
 /*
  CS12 CS11 CS10 Description
  0 0 0 No clock source (Timer/Counter stopped).
- 0 0 1 clkI/O/1 (No prescaling)
+ 0 0 1 clkI/O/0 (No prescaling)
  0 1 0 clkI/O/8 (From prescaler)
  0 1 1 clkI/O/64 (From prescaler)
  1 0 0 clkI/O/256 (From prescaler)
  1 0 1 clkI/O/1024 (From prescaler)
  */
 #define SET_TIMER1_STOP           TCCR1B |= (0 << CS12) | (0 << CS11) | (0 << CS10)
-#define SET_TIMER1_PRESCALER_0    TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10)
+#define SET_TIMER1_PRESCALER_1    TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10)
 #define SET_TIMER1_PRESCALER_8    TCCR1B |= (0 << CS12) | (1 << CS11) | (0 << CS10)
 #define SET_TIMER1_PRESCALER_64   TCCR1B |= (0 << CS12) | (1 << CS11) | (1 << CS10)
 #define SET_TIMER1_PRESCALER_256  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10)

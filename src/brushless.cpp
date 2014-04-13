@@ -1,5 +1,5 @@
 
-
+#include "atmegax8.h"
 #include "brushless.h"
 #include "timer1.cpp"
 #include "timer0.cpp"
@@ -20,8 +20,8 @@ brushless::brushless() {
   commandRead = 0;
 
   timer1_pwm   = new timer1();
-
   timer0_pwm   = new timer0();
+// TODO bring timer 2 here
 
   automa	     = new mosfetSequencecontroller();
   //automa->setAutomaRate(RAMP_INIT_REFREASHRATE);
@@ -53,26 +53,28 @@ brushless::brushless() {
 //	}
 //}
 
-int brushless::getStartupValue(int gain, int ssGain) {
+int brushless::getStartupValueHz(int gain, int ssGain) {
 
   // proportional open loop controller
-  // y = K * t + Kstart 
-
-  return gain * 0.001 * msTime + ssGain;
+  // y = K * t + Kstart [Hz]
+  int freqHz = gain * 0.001 * msTime + ssGain;
+  return freqHz;
+  
 }
-
+////convert to TOP value
+//int brushless::Hz2top(int freqHz) {
+//  return F_CPU/(timer0_pwm->getPrescaler() * freqHz)-1;
+//}
 
 int brushless::startup() {
 
-  debug(String("Entering brushless::") + __func__, 5);
+  debug(String("starting ramp") , 5);
 
   freqData = (startupData) malloc(sizeof(_startup_data));
-  freqData->start = timer1_pwm->getFrequency();
-  freqData->end = RAMP_FIN_FREQUENCY_T1;
-  freqData->gain = 0.003;
-  freqData->currentValue = freqData->start;
-  freqData->resto = 0;
-
+  freqData->start = 244;  //start value in Hz
+  freqData->end = 4000;   //end value in Hz
+  freqData->gain = 1252; //gain
+  
   dutyData = (startupData) malloc(sizeof(_startup_data));
   dutyData->start = timer0_pwm->getDuty();
   dutyData->end = RAMP_FIN_DUTY_T0;
@@ -96,13 +98,13 @@ void brushless::iterate() {
       if (freqData->currentValue > freqData->end) {
 
         //startupcalc(freqData, 1);
-        freqData->currentValue = getStartupValue(freqData->gain, freqData->start);
+        freqData->currentValue = getStartupValueHz(freqData->gain, freqData->start);
         timer1_pwm->setFrequency(freqData->currentValue);
       }
 
       if (dutyData->currentValue > dutyData->end) {
         //startupcalc(dutyData, 1);
-        dutyData->currentValue = getStartupValue(dutyData->gain, dutyData->start);
+        dutyData->currentValue = getStartupValueHz(dutyData->gain, dutyData->start);
         timer0_pwm->setDuty(dutyData->currentValue);
       }
 
@@ -124,10 +126,10 @@ void brushless::iterate() {
   }
 }
 
-void brushless::printTime(){
-  String debString=String("msTime is") + msTime + String("ms");
-  debug(debString,3);
-}
+//void brushless::printTime(){
+//  String debString=String("msTime is") + msTime + String("ms");
+//  debug(debString,3);
+//}
 
 void brushless::setTime(){
   msTime = msTime + 50;
@@ -186,7 +188,8 @@ String brushless::getResponse() {
 
 int brushless::start(){
   debug("timer1 start",3);
-  timer1_pwm->start();
+  timer1_pwm->start(0);
+    debug("timer1 end",3);
 }
 
 
