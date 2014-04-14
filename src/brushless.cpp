@@ -112,7 +112,7 @@ void brushless::iterate() {
       }
 
       debug(String("f:")+timer1_pwm->getFrequency()+String(" top:")+timer1_pwm->getTop()+" time:"+msTime+" d:"+String(timer0_pwm->getDuty()),3);
-      delay(100);
+      //delay(100);
     } 
     else {
       startupping = 0;
