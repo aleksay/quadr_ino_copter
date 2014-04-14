@@ -33,20 +33,19 @@ public:
   brushless();
   int startup();
   void iterate();
-  int start();
+  void start();
   int setCommand(Command command);  
   String getResponse();
   void setTime();
   int Hz2top();
+  float angSpeed();
 private:
 
   Command latestCommand;
   int startupping;
   int commandRead;
   String latestMessage;
-
-
-  unsigned int msTime;
+  int msTime;
 
   String parseCommand(Command command);
   //void startupcalc(startupData valueData, int slow);

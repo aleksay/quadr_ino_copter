@@ -17,19 +17,7 @@ communicator *serialCommPtr = NULL;
 // Initialization of comman struct
 Command latestCommand;
 
-// Software reset 
-void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
-void wdt_init(void)
-{
-  MCUSR = 0;
-  wdt_disable();
-  return;
-}
 
-void globalSetTime()
-{
-  brushlessPtr->setTime();
-}
 
 void setup() {
 
@@ -57,7 +45,7 @@ void setup() {
   //timer 2 init.
   // MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
   debug("Starting timer2 counter", 5);
-  MsTimer2::set(50, globalSetTime ); // 50ms period
+  MsTimer2::set(10, globalSetTime ); // 10ms period
   MsTimer2::start();
   debug("MsTimer2::start() DONE", 3);
 
@@ -107,6 +95,20 @@ String parseCommand(Command command){
 // Callback function for reserved Arduino keyword serial polling
 void serialEvent(){
   serialCommPtr->eventHandler();
+}
+
+// Software reset 
+void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
+void wdt_init(void)
+{
+  MCUSR = 0;
+  wdt_disable();
+  return;
+}
+
+void globalSetTime()
+{
+  brushlessPtr->setTime();
 }
 
 

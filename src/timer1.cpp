@@ -10,8 +10,8 @@ public:
   timer1() {
 
 	//initialize timer1 global variable
-    frequency = DEFAULT_T1_INIT_FREQUENCY;
-    duty = DEFAULT_T1_INIT_DUTY;
+//    frequency = DEFAULT_T1_INIT_FREQUENCY;
+//    duty = DEFAULT_T1_INIT_DUTY;
     prescaler = DEFAULT_T1_INIT_PRESCALER;
 	
 	//configure timer1
@@ -44,8 +44,8 @@ public:
 
     SET_TIMER1_PINB;
 	
-	setFrequency(frequency);
-    setDuty(duty);
+    setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+    setDuty(DEFAULT_T1_INIT_DUTY);
 
     //SET_TIMER1_PINOUT(B);
     SET_TIMER1_MODE_FASTPWM_OCR1A;
@@ -57,8 +57,8 @@ public:
   }
 
   int start() {
-    debug("prescaler set to:",3);
-    debug(prescaler,3); //DA mettere in un'unica stampa
+    //debug(String("prescaler set to: ")+ prescaler,3);
+    
     setPrescaler(prescaler);
     return 0;
   }
@@ -104,42 +104,49 @@ public:
     return 1;
   }
 
-  int getPrescaler(){
-    return prescaler;
-  }
-  
 	//convert to TOP value
 	int Hz2top(int freqHz) {
-         debug("funzione di conversione:",3);
-         debug(freqHz,3);
-         debug(F_CPU,3);
-         debug(getPrescaler(),3);
-         debug(floor(F_CPU/(getPrescaler() * freqHz)-1),3);
+//         debug("funzione di conversione:",3);
+//         debug(freqHz,3);
+//         debug(F_CPU,3);
+//         debug(getPrescaler(),3);
+//         debug(floor(F_CPU/(getPrescaler() * freqHz)-1),3);
          
 	 return floor(F_CPU/(getPrescaler() * freqHz)-1);
 	}
   
  
 	int setFrequency(unsigned int freqHz) {
-
-	unsigned int top = Hz2top(freqHz);
-        debug(top,3);
-
-	if (top < 0 || top > 65000){
+	
+	// check value
+	if (freqHz == frequency) {
 	  return -1;
 	}
-
-	if (top == frequency) {
+	//update global variable frequency
+	frequency = freqHz;
+	
+	//debug(frequency,3);
+	
+	//convert value to microcontroller TOP
+	unsigned int _top = Hz2top(freqHz);
+        //debug(_top,3);
+	
+	//check TOP consistency
+	if (_top < 0 || _top > 65000){
+	  return -1;
+	}
+	if (_top == top) {
 	  return -1;
 	}
 
 	int zDuty = -10;
-
-
-    frequency = top;       
-	debug(frequency,3);
-    SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-	debug(OCR1A,3);
+         
+	//set new value on the register
+    SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
+	
+	//update global variable top
+	top = _top;
+	
     zDuty = setDuty(duty);
 
     return zDuty;
@@ -160,15 +167,25 @@ public:
   unsigned int getFrequency() {
     return frequency;
   }
+  
+  unsigned int getTop() {
+    return top;
+  }
   int getDuty() {
     return duty;
   }
+  
+  int getPrescaler(){
+    return prescaler;
+  }
+  
   void _timer1_ovf_handler(){
     SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
     SET_TIMER1_DUTY_CHAN_B(_dutyVal);
   }
 private: 
   unsigned int frequency;
+  unsigned int top;
   int duty;
   int _dutyVal;
   int prescaler;

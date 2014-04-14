@@ -45,11 +45,7 @@ public:
   int setPrescaler(int _prescaler){
 
     switch(_prescaler) {
-    case 0:
-      SET_TIMER0_PRESCALER_1;
-      prescaler = 0;
-      debug(String(prescaler),3);
-      return 0;
+
     case 1:
       SET_TIMER0_PRESCALER_1;
       prescaler = 1;
