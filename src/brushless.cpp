@@ -15,7 +15,7 @@ startupData dutyData;
 brushless::brushless() {
 
   msTime = 0;  
-  startupping = 0;
+  
   commandRead = 0;
   
   timer0_pwm   = new timer0();
@@ -58,17 +58,17 @@ int brushless::getStartupValueHz(int gain, int ssGain) {
   // proportional open loop controller
   // y = K * t + Kstart [Hz]
   int time=msTime;
-  float ang= (float)gain * msTime * 0.001; // escono cazzate !
+  float ang= (float)gain * msTime * 0.001; 
   unsigned int freqHz = ang + ssGain;
-  debug (freqHz,3);
-  debug(time,3);
+  //debug (freqHz,3);
+  //debug(time,3);
   return freqHz;
 }
 
 
 int brushless::startup() {
 
-  debug(String("starting ramp") , 5);
+  debug(String("starting ramp") , 3);
 
   freqData = (startupData) malloc(sizeof(_startup_data));
   freqData->start = 300;  //start value in Hz
@@ -83,20 +83,20 @@ int brushless::startup() {
   dutyData->currentValue = dutyData->start;
   dutyData->resto = 0;
 
-  startupping = 1;
+  startupping();
   
-  //Resetta il riferimento temporale
-  msTime = 0;
-}
 
-void brushless::iterate() {
+  
+}
 
   //if startup mode do startup
 
-  if (startupping) {
-
-    if ((freqData->currentValue < freqData->end)
-      ||  (dutyData->currentValue > dutyData->end)) {
+  void brushless::startupping() {
+  //Resetta il riferimento temporale
+  msTime = 0;
+  
+    while ((freqData->currentValue < freqData->end) )//||  (dutyData->currentValue > dutyData->end)) 
+    {
 
       if (freqData->currentValue < freqData->end) {
 
@@ -105,25 +105,31 @@ void brushless::iterate() {
         timer1_pwm->setFrequency(freqData->currentValue);
       }
 
-      if (dutyData->currentValue > dutyData->end) {
-        //startupcalc(dutyData, 1);
-        dutyData->currentValue = getStartupValueHz(dutyData->gain, dutyData->start);
-        timer0_pwm->setDuty(dutyData->currentValue);
-      }
-
-      debug(String("f:")+timer1_pwm->getFrequency()+String(" top:")+timer1_pwm->getTop()+" time:"+msTime+" d:"+String(timer0_pwm->getDuty()),3);
+//      if (dutyData->currentValue > dutyData->end) {
+//        //startupcalc(dutyData, 1);
+//        dutyData->currentValue = getStartupValueHz(dutyData->gain, dutyData->start);
+//        timer0_pwm->setDuty(dutyData->currentValue);
+//      }
+  
+      //debug(String("f:")+timer1_pwm->getFrequency()+String(" top:")+timer1_pwm->getTop()+" time:"+msTime+" d:"+String(timer0_pwm->getDuty()),3);
+      //debug(String("f:")+timer1_pwm->getFrequency()+" time:"+msTime,3);
       //delay(100);
+      
+     
     } 
-    else {
-      startupping = 0;
+   
       free(freqData);
       free(dutyData);
       debug("ramp end ", 3);
+      
     }
 
-  }
+  
+
+void brushless::iterate() {
+
   // else parse latestcommand
-  else if (commandRead == 0) {
+  if (commandRead == 0) {
     latestMessage = parseCommand(latestCommand);
     commandRead = 1;
   }

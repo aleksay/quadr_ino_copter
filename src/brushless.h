@@ -39,13 +39,15 @@ public:
   void setTime();
   int Hz2top();
   float angSpeed();
+  void startupping();
 private:
 
   Command latestCommand;
-  int startupping;
+  
   int commandRead;
   String latestMessage;
   int msTime;
+  
 
   String parseCommand(Command command);
   //void startupcalc(startupData valueData, int slow);
