@@ -1,6 +1,6 @@
 /*
  Header file for brshless control module
-
+ 
  */
 
 #ifndef BRUSHLESS_h
@@ -19,32 +19,38 @@
 
 
 typedef struct _startup_data {
-	unsigned int start;
-	unsigned int end;
-	float decrement;
-	unsigned int currentValue;
-	float resto;
-}*startupData;
+  unsigned int start;
+  unsigned int end;
+  float gain;
+  unsigned int currentValue;
+  float resto;
+}
+*startupData;
 
 class brushless {
 
 public:
-	brushless();
-	int startup();
-	void iterate();
-	int start();
-	int setCommand(Command command);  
-	String getResponse();
-
+  brushless();
+  int startup();
+  void iterate();
+  void start();
+  int setCommand(Command command);  
+  String getResponse();
+  void setTime();
+  int getTopValue();
+  float angSpeed();
 private:
 
-	Command latestCommand;
-	int startupping;
-	int commandRead;
-	String latestMessage;
+  Command latestCommand;
+  int startupping;
+  int commandRead;
+  String latestMessage;
+  int msTime;
 
-	String parseCommand(Command command);
-	void startupcalc(startupData valueData, int slow);
+  String parseCommand(Command command);
+  //void startupcalc(startupData valueData, int slow);
+  int getStartupValueHz(int gain, int ssGain);
 };
 
 #endif
+

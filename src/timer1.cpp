@@ -3,144 +3,169 @@
 #include "timer.h"
 #include "communicator.h"
 
-class timer1: public timer
+class timer1: 
+public timer
 {
 public:
   timer1() {
 
-		frequency = DEFAULT_T1_INIT_FREQUENCY;
+	//initialize timer1 global variable
+
+	  top       = 0;
+	  duty      = 0;
+	  _dutyVal  = 0;
+    frequency = 0;
+    prescaler = 0;
 		
-		setDuty(DEFAULT_T1_INIT_DUTY);
-		prescaler = DEFAULT_T1_INIT_PRESCALER;
-		_timer1_fastPwm_ocr1atop_init();
-	 	
-	}
+    int zF    =	setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+    int zd    = setDuty(DEFAULT_T1_INIT_DUTY);
+		//configure timer1
+  	if(zf == 0 && zd == 0)
+		  _timer1_fastPwm_ocr1atop_init();
 
-	int _timer1_fastPwm_icr1top_init() {
-		
-		SET_TIMER1_PINB;
-		SET_TIMER1_FREQUENCY_ICR1TOP(frequency);
-		
-		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
-		
-		TIMER1_RESET;
-		SET_TIMER1_PINOUT(B);  
-		SET_TIMER1_MODE_FASTPWM_ICR1;
-		SET_TIMER1_PINB_NOTINVERTING(0);
-		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
-		SET_TIMER1_PRESCALER_0;
+  }
 
-	 return 0;
-	}
+  int _timer1_fastPwm_icr1top_init() {
 
-	int _timer1_fastPwm_ocr1atop_init() {
-		SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
-		TIMER1_RESET;
-		//SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
-		//SET_TIMER1_INTERRUPT_OVERFLOW;
-		SET_TIMER1_PINB;
-		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
-		
-		//SET_TIMER1_PINOUT(B);
-		SET_TIMER1_MODE_FASTPWM_OCR1A;
-		SET_TIMER1_PINB_NOTINVERTING(0);
-		
+    SET_TIMER1_PINB;
+    SET_TIMER1_FREQUENCY_ICR1TOP(frequency);
 
-		return 0;
-	}
+    SET_TIMER1_DUTY_CHAN_B(_dutyVal);
 
-	int start() {
+    TIMER1_RESET;
+    SET_TIMER1_PINOUT(B);  
+    SET_TIMER1_MODE_FASTPWM_ICR1;
+    SET_TIMER1_PINB_NOTINVERTING(0);
+    SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
+    //SET_TIMER1_PRESCALER_1;
 
-		setPrescaler(prescaler);
-		return 0;
-	}
-	int start(int _prescaler) {
-		setPrescaler(_prescaler);
-		return 0;
-	}
+    return 0;
+  }
 
-//int timer::stop(){ //not working with prescaler
-//	SET_TIMER1_STOP;
-//}
+  int _timer1_fastPwm_ocr1atop_init() {
+    SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
+    TIMER1_RESET;
+    SET_TIMER1_PINB;
+    SET_TIMER1_MODE_FASTPWM_OCR1A;
+    SET_TIMER1_PINB_NOTINVERTING(0);
+    return 0;
+  }
 
-	int setPrescaler(int _prescaler){
-	
-		switch(_prescaler) {
-			case 0:
-				SET_TIMER1_PRESCALER_0;
-				prescaler = 0;
+  int start() {
+    //debug(String("prescaler set to: ")+ prescaler,3);
+    return setPrescaler(prescaler);
+  }
+  int start(int _prescaler) {
+    //debug(String("_prescaler set to: " + _prescaler) ,3);
+    
+    return setPrescaler(_prescaler);
+  }
+
+  //int timer::stop(){ //not working with prescaler
+  //	SET_TIMER1_STOP;
+  //}
+
+  int setPrescaler(int _prescaler){
+
+    switch(_prescaler) {
+		  case 1:
+		    debug(_prescaler,3);
+		    SET_TIMER1_PRESCALER_1;
+		    prescaler = 1;
 		    return 0;
 		  case 8:
-				SET_TIMER1_PRESCALER_8;
-				prescaler = 8;
+		    SET_TIMER1_PRESCALER_8;
+		    prescaler = 8;
 		    return 0;
-			case 64:
-				SET_TIMER1_PRESCALER_64;
-				prescaler = 64;
-				return 0;	
-			case 256:
-				SET_TIMER1_PRESCALER_256;
-				prescaler = 256;
-				return 0;
-			case 1024:
-				SET_TIMER1_PRESCALER_1024;
-				prescaler = 1024;
-				return 0;			
-		}
-		return 1;
+		  case 64:
+		    SET_TIMER1_PRESCALER_64;
+		    prescaler = 64;
+		    return 0;	
+		  case 256:
+		    SET_TIMER1_PRESCALER_256;
+		    prescaler = 256;
+		    return 0;
+		  case 1024:
+		    SET_TIMER1_PRESCALER_1024;
+		    prescaler = 1024;
+		    return 0;			
+		  } 
+    return 1;
+  }
+
+	//convert to TOP value
+	int getTopValue(int freqHz) {
+//         debug("funzione di conversione:",3);
+//         debug(freqHz,3);
+//         debug(F_CPU,3);
+//         debug(getPrescaler(),3);
+//         debug(floor(F_CPU/(getPrescaler() * freqHz)-1),3);
+         
+		return floor(F_CPU/(getPrescaler() * freqHz)-1);
 	}
-
-	int getPrescaler(){return prescaler;}
-
-	int setFrequency(unsigned int val) {
-		
-		if (val < 0 || val > 65000){
-			return -1;
-		}
-		
-		if (val == frequency) {
-			return -1;
-		}
-
-		int zDuty = -10;
-
-		
-		frequency = val;       
-
-		SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-		zDuty = setDuty(duty);
+  
+ 
+	int setFrequency(unsigned int freqHz) {
 	
-		return zDuty;
-	}
-
-	int setDuty(int val) {
-
-		if (val < 0 || val > 100)
+		if (freqHz == frequency) {
 			return -1;
+		}
+
+		unsigned int _top = getTopValue(freqHz);
+	
+		if (_top == top || _top > 65535 || _top < 0){
+			return -1;
+		}
 		
-		duty = val;
-		_dutyVal = map(duty, 0, 100, 0, frequency);
-		SET_TIMER1_DUTY_CHAN_B(_dutyVal);
-		return 0;
+		int zDuty = -10;
+		       
+		SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
 
-	}
+		top = _top;
+		frequency = freqHz;
 
-	unsigned int getFrequency() {
-		return frequency;
-	}
-	int getDuty() {
-		return duty;
-	}
-	void _timer1_ovf_handler(){
-			SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
-			SET_TIMER1_DUTY_CHAN_B(_dutyVal);
-	}
+		zDuty = setDuty(duty);
+		return zDuty;
+  }
+
+  int setDuty(int val) {
+
+    if (val < 0 || val > 100)
+      return -1;
+
+    duty = val;
+    _dutyVal = map(duty, 0, 100, 0, top);
+    SET_TIMER1_DUTY_CHAN_B(_dutyVal);
+    return 0;
+
+  }
+
+  unsigned int getFrequency() {
+    return frequency;
+  }
+  
+  unsigned int getTop() {
+    return top;
+  }
+  int getDuty() {
+    return duty;
+  }
+  
+  int getPrescaler(){
+    return prescaler;
+  }
+  
+  void _timer1_ovf_handler(){
+    SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
+    SET_TIMER1_DUTY_CHAN_B(_dutyVal);
+  }
 private: 
-  	unsigned int frequency;
-	int duty;
-	unsigned int _dutyVal;
-	int prescaler;
+  unsigned int frequency;
+  unsigned int top;
+  int duty;
+  int _dutyVal;
+  int prescaler;
 };
 #endif
+
 
