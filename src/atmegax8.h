@@ -24,7 +24,7 @@
 #define TIMER0_RESET TCCR0B=0;TCCR0A=0;TCNT0=0
 
 /*
-0 0 0 No clock source (Timer/Counter stopped)
+ 0 0 0 No clock source (Timer/Counter stopped)
  0 0 1 clkI/O/1 (No prescaling)
  0 1 0 clkI/O/8 (From prescaler)
  0 1 1 clkI/O/64 (From prescaler)

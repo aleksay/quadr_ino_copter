@@ -37,7 +37,7 @@ public:
   int setCommand(Command command);  
   String getResponse();
   void setTime();
-  int Hz2top();
+  int getTopValue();
   float angSpeed();
 private:
 

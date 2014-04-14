@@ -24,7 +24,7 @@ brushless::brushless() {
 // TODO bring timer 2 here
 
   automa	     = new mosfetSequencecontroller();
-  //automa->setAutomaRate(RAMP_INIT_REFREASHRATE);
+
   automa->init();
 
   latestCommand = (Command)malloc(sizeof(_command));
@@ -33,25 +33,7 @@ brushless::brushless() {
   timer0_pwm->start();
 }
 
-//void brushless::startupcalc(startupData valueData, int slow) {
-//	//start_values ritorno;
-//	unsigned int delta = valueData->currentValue - valueData->end;
-//	
-//	float minus = delta * valueData->decrement;
-//	if (minus >= 1) {
-//		valueData->currentValue = valueData->currentValue - floor(minus);
-//	} else {
-//		if (slow == 1) {
-//			valueData->resto = valueData->resto + minus;
-//			if (valueData->resto >= 1) {
-//				valueData->currentValue = valueData->currentValue	- floor(valueData->resto);
-//				valueData->resto = valueData->resto - floor(valueData->resto);
-//			}
-//		} else if (slow == 0) {
-//			valueData->currentValue = valueData->currentValue - 1;
-//		}
-//	}
-//}
+
 
 int brushless::getStartupValueHz(int gain, int ssGain) {
 
