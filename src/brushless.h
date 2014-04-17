@@ -13,40 +13,42 @@
 #include "mosfetSequencecontroller.h"
 
 
-#define RAMP_FIN_FREQUENCY_T1 5000
-#define RAMP_FIN_DUTY_T0 90
+
 
 
 
 typedef struct _startup_data {
   unsigned int start;
   unsigned int end;
-  float gain;
+  int gain;
   unsigned int currentValue;
-  float resto;
 }
+
 *startupData;
 
 class brushless {
 
 public:
   brushless();
-  int startup();
+  void startup();
+  void startuppone();
   void iterate();
   void start();
   int setCommand(Command command);  
   String getResponse();
   void setTime();
   int Hz2top();
-  float angSpeed();
+  String angSpeed();
   void startupping();
+  int setStartupfreqEnd (int val);
+  int setStartupfreqGain (int val);
 private:
 
   Command latestCommand;
   
   int commandRead;
   String latestMessage;
-  int msTime;
+  unsigned int msTime;
   
 
   String parseCommand(Command command);

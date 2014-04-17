@@ -2,17 +2,8 @@
 #define ATMEGAX8 
 
 #include <Arduino.h>
+#include "config.h"
 
-/*
-=====================================================
- 
- 		           Global configuration Section
- 
- =====================================================
- */
-
-//#define F_CPU 8000000UL  //Uncomment for arduino Fio
-#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
 
 /*
 =====================================================

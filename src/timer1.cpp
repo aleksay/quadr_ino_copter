@@ -132,7 +132,7 @@ public:
         //debug(_top,3);
 	
 	//check TOP consistency
-	if (_top < 0 || _top > 65000){
+	if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
 	  return -1;
 	}
 	if (_top == top) {
@@ -142,7 +142,7 @@ public:
 	int zDuty = -10;
          
 	//set new value on the register
-    SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
+        SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
 	
 	//update global variable top
 	top = _top;

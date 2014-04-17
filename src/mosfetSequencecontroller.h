@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "atmegax8.h"
 
-#define NUM_STATES 6
+
 
 const uint8_t states[NUM_STATES] = {	
   0b00001010,

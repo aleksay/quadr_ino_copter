@@ -4,7 +4,8 @@
 
 
 #define DEFAULT_INITIAL_RATE 100
-#define DEFAULT_INITIAL_STATE 0
+
+
 
 volatile int state;
 volatile int rate;

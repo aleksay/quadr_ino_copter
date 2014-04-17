@@ -3,16 +3,6 @@
 
 #include "atmegax8.h"
 
-
-
-#define DEFAULT_T1_INIT_FREQUENCY 300 //244 //Hz-> TOP:65534
-#define DEFAULT_T1_INIT_DUTY 1
-#define DEFAULT_T1_INIT_PRESCALER 1
-
-#define DEFAULT_T0_INIT_FREQUENCY 200
-#define DEFAULT_T0_INIT_DUTY 90
-#define DEFAULT_T0_INIT_PRESCALER 1
-
 class timer {
 
 public:
