@@ -2,9 +2,9 @@
 #include "comDevice.h"
 
 /*
- Wrapper class for Arduino library HardwareSerial
- 
+ Wrapper class for Arduino library HardwareSerial 
  */
+
 class usart: 
 public comDevice {
 public:

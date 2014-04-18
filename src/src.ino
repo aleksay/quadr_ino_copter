@@ -17,6 +17,8 @@ communicator *serialCommPtr = NULL;
 // Initialization of comman struct
 Command latestCommand;
 
+// Flag for indicating if serial messages are available
+int commandExecute = 0;
 
 
 void setup() {
@@ -43,7 +45,7 @@ void setup() {
   debug("brushlessPtr->start() DONE", 3);
 
   //timer 2 init.
-  // MsTimer2::set(50, brushlessPtr->setTime ); // Doesnt work
+  // MsTimer2::set(50, brushlessPtr->incrementTime ); // Doesnt work
   debug("Starting timer2 counter", 5);
   MsTimer2::set(10, globalSetTime ); // 10ms period
   MsTimer2::start();
@@ -53,13 +55,13 @@ void setup() {
 
 }
 
-int commandExecute = 0;
 
 
+  // Run main loop
 void loop() { 
 
 
-  // Run main loop: check for serial command and set command 
+  // check for serial command
   if(serialCommPtr->getHaveCommand() == 1){
 
     latestCommand = serialCommPtr->getCommand();
@@ -108,7 +110,7 @@ void wdt_init(void)
 
 void globalSetTime()
 {
-  brushlessPtr->setTime();
+  brushlessPtr->incrementTime();
 }
 
 

@@ -15,7 +15,7 @@ public:
   virtual unsigned int getFrequency() = 0;
   virtual int getDuty() = 0;
   virtual int getPrescaler() = 0;
-  //int stop(); no working with prescaler
+  //int stop(); not working with prescaler
 
 private:
 

@@ -1,5 +1,3 @@
-
-// setFrequency() still in TOP TODO
 #include "timer.h"
 #include "communicator.h"
 

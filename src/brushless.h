@@ -36,7 +36,7 @@ public:
   void start();
   int setCommand(Command command);  
   String getResponse();
-  void setTime();
+  void incrementTime();
   int Hz2top();
   String angSpeed();
   void startupping();
@@ -52,7 +52,6 @@ private:
   
 
   String parseCommand(Command command);
-  //void startupcalc(startupData valueData, int slow);
   int getStartupValueHz(int gain, int ssGain);
 };
 

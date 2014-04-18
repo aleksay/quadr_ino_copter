@@ -17,7 +17,6 @@ startupData dutyData;
 brushless::brushless() {
 
   msTime = 0;  
-  
   commandRead = 0;
   
   timer0_pwm   = new timer0();
@@ -34,30 +33,7 @@ brushless::brushless() {
 
   timer0_pwm->start();
   
-
-  
-
 }
-
-//void brushless::startupcalc(startupData valueData, int slow) {
-//	//start_values ritorno;
-//	unsigned int delta = valueData->currentValue - valueData->end;
-//	
-//	float minus = delta * valueData->decrement;
-//	if (minus >= 1) {
-//		valueData->currentValue = valueData->currentValue - floor(minus);
-//	} else {
-//		if (slow == 1) {
-//			valueData->resto = valueData->resto + minus;
-//			if (valueData->resto >= 1) {
-//				valueData->currentValue = valueData->currentValue	- floor(valueData->resto);
-//				valueData->resto = valueData->resto - floor(valueData->resto);
-//			}
-//		} else if (slow == 0) {
-//			valueData->currentValue = valueData->currentValue - 1;
-//		}
-//	}
-//}
 
 int brushless::getStartupValueHz(int gain, int ssGain) {
 
@@ -136,13 +112,11 @@ void brushless::startup() {
 
       if (freqData->currentValue < freqData->end) {
 
-        //startupcalc(freqData, 1);
         freqData->currentValue = getStartupValueHz(freqData->gain, freqData->start);
         timer1_pwm->setFrequency(freqData->currentValue);
       }
 
 //      if (dutyData->currentValue > dutyData->end) {
-//        //startupcalc(dutyData, 1);
 //        dutyData->currentValue = getStartupValueHz(dutyData->gain, dutyData->start);
 //        timer0_pwm->setDuty(dutyData->currentValue);
 //      }
@@ -151,10 +125,8 @@ void brushless::startup() {
       //debug(String("f:")+timer1_pwm->getFrequency()+" time:"+msTime,3);
       //delay(100);
       
-     
     } 
    
-
       debug(String("Startup took: ")+msTime+" ms", 3);
       
     }
@@ -163,14 +135,14 @@ void brushless::startup() {
 
 void brushless::iterate() {
 
-  // else parse latestcommand
+  // parse latestcommand
   if (commandRead == 0) {
     latestMessage = parseCommand(latestCommand);
     commandRead = 1;
   }
 }
 
-void brushless::setTime(){
+void brushless::incrementTime(){
   msTime = msTime + 10;
 }
 
@@ -178,45 +150,59 @@ String brushless::parseCommand(Command command){
 
   switch(command->type){
 
+// Print time
   case 't':
     return  String(msTime)+ "ms\n";    
     
+// Set frequency commutation of state machine
   case 'f':
     timer1_pwm->setFrequency(command->value);
     return String(timer1_pwm->getFrequency());
     
+// Set duty cycle of pwm
   case 'n':
     timer1_pwm->setDuty(command->value);
     return String(timer1_pwm->getDuty());
 
+// Set frequency pwm switching
   case 'b':
     timer0_pwm->setFrequency(command->value);
     return String(timer0_pwm->getFrequency());
+
+// Set duty
   case 'd':
     timer0_pwm->setDuty(command->value);
     return String(timer0_pwm->getDuty());
+
+// Print frequency values
   case 'r':
     return angSpeed();
     
+// Launch piecewise startup
   case 'q':
     startuppone();
     return "Startup end";
-    
-    case 's':
+
+// Launch normal startup    
+  case 's':
     startup();
     return "Startup end";
 
+// Set end value of startup ramp
   case 'u': 
-    freqData->end = command->value;//io ho settato diretto Ale, non incazzarti se vuoi sotto ci sono delle SET :D
+    freqData->end = command->value;
     return String(freqData->end); 
     
+// Set gain for startup ramp
   case 'i':
     freqData->gain = (command->value); 
     return String(freqData->gain); 
 
+// Debug print
   case 'o':
     return "GAIN:"+String(freqData->gain)+" END:"+String(freqData->end); 
     
+// Formatted print for parsing
   case 'p':
     return  String( "\n--QUERY--\n") +
       String("f_t1 ") + String(timer1_pwm->getFrequency())	+ String(" Hz\n") +
@@ -248,8 +234,7 @@ void brushless::start(){
 }
 
 String brushless::angSpeed(){
-        int conv_Hz_rpm = 60 / NUM_STATES; // questo passaggio serve per non causare un overflow nella riga dopo !
-	unsigned int RPM_e = floor(timer1_pwm->getFrequency() * conv_Hz_rpm);
+	unsigned int RPM_e = floor( (timer1_pwm->getFrequency()/NUM_STATES) * 60);
 	unsigned int RPM_m = floor(RPM_e * 2 / NUM_POLES);
 	int rads_e = floor(RPM_e /60 * 2 * 3.14159);
 	int rads_m = floor(RPM_m /60 * 2 * 3.14159);
@@ -257,8 +242,6 @@ String brushless::angSpeed(){
 	return "RPM elettrici:"+String(RPM_e)+", RPM meccanici:"+String(RPM_m)+", RAD/s elettrici:"+String(rads_e)+", RAD/s meccanici:"+String(rads_m);
 }
 
-
-//PROBLEMSSSSS
 //  int brushless::setStartupfreqEnd (int val) {
 //      if (val < 0 || val > 30000)
 //      return -1;

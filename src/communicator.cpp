@@ -1,5 +1,4 @@
 #include "communicator.h"
-
 #include "usart.cpp"
 
 
