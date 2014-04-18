@@ -84,14 +84,21 @@ void brushless::startuppone() {
   freqData->gain = 400; //gain 
   startup();
   
-    freqData->end = 2002;   //end value in Hz
+    freqData->end = 2010;   //end value in Hz
   freqData->gain = 10; //gain 
   startup();
   
-    freqData->end = 4000;   //end value in Hz
-  freqData->gain = 50; //gain 
+    freqData->end = 2200;   //end value in Hz
+  freqData->gain = 100; //gain 
   startup();
   
+      freqData->end = 2210;   //end value in Hz
+  freqData->gain = 5; //gain 
+  startup();
+  
+//      freqData->end = 4000;   //end value in Hz
+//  freqData->gain = 10; //gain 
+//  startup();
   
   free(freqData);
   free(dutyData);

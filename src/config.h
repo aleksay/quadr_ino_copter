@@ -23,7 +23,7 @@
 =====================================================
  */
 #define DEFAULT_T0_INIT_FREQUENCY 200 //ancora in TOP
-#define DEFAULT_T0_INIT_DUTY 90
+#define DEFAULT_T0_INIT_DUTY 98
 #define DEFAULT_T0_INIT_PRESCALER 1
 
 #define RAMP_FIN_DUTY_T0 90 
@@ -39,5 +39,5 @@
 #define DEFAULT_T1_INIT_PRESCALER 1
 
 #define RAMP_END_FREQUENCY_T1 350 //non utilizzato
-#define RAMP_GAIN_FREQUENCY_T1 10
+#define RAMP_GAIN_FREQUENCY_T1 20
 
