@@ -9,10 +9,13 @@ public timer
 public:
   timer1() {
 
+		frequency = 0;
+  	
 	//initialize timer1 global variable
-//    frequency = DEFAULT_T1_INIT_FREQUENCY;
-//    duty = DEFAULT_T1_INIT_DUTY;
-    prescaler = DEFAULT_T1_INIT_PRESCALER;
+		setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+    setDuty(DEFAULT_T1_INIT_DUTY);
+    
+    //prescaler = DEFAULT_T1_INIT_PRESCALER;
 	
 	//configure timer1
     _timer1_fastPwm_ocr1atop_init();
@@ -41,17 +44,9 @@ public:
     //SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
     //SET_TIMER1_INTERRUPT_OVERFLOW;
     TIMER1_RESET;
-
     SET_TIMER1_PINB;
-	
-    setFrequency(DEFAULT_T1_INIT_FREQUENCY);
-    setDuty(DEFAULT_T1_INIT_DUTY);
-
-    //SET_TIMER1_PINOUT(B);
     SET_TIMER1_MODE_FASTPWM_OCR1A;
     SET_TIMER1_PINB_NOTINVERTING(0);
-
-
 
     return 0;
   }
@@ -73,8 +68,6 @@ public:
   //}
 
   int setPrescaler(int _prescaler){
-
-
     
     switch(_prescaler) {
     
@@ -118,38 +111,34 @@ public:
  
 	int setFrequency(unsigned int freqHz) {
 	
-	// check value
-	if (freqHz == frequency) {
-	  return -1;
-	}
-	//update global variable frequency
-	frequency = freqHz;
+		// check value
+		if (freqHz == frequency) {
+			return -1;
+		}
+		//update global variable frequency
+		frequency = freqHz;
 	
-	//debug(frequency,3);
-	
-	//convert value to microcontroller TOP
-	unsigned int _top = Hz2top(freqHz);
-        //debug(_top,3);
-	
-	//check TOP consistency
-	if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
-	  return -1;
-	}
-	if (_top == top) {
-	  return -1;
-	}
 
-	int zDuty = -10;
-         
-	//set new value on the register
-        SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
+		//convert value to microcontroller TOP
+		top = Hz2top(freqHz);
+		      //debug(_top,3);
 	
-	//update global variable top
-	top = _top;
-	
-    zDuty = setDuty(duty);
+		//check TOP consistency
+//		if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
+//			return -1;
+//		}
+//		if (_top == top) {
+//			return -1;
+//		}
 
-    return zDuty;
+		int zDuty = 1;
+		       
+		//set new value on the register
+		SET_TIMER1_FREQUENCY_OCR1ATOP(top);
+	
+		zDuty = setDuty(duty);
+
+	  return zDuty;
   }
 
   int setDuty(int val) {
@@ -158,7 +147,7 @@ public:
       return -1;
 
     duty = val;
-    _dutyVal = map(duty, 0, 100, 0, frequency);
+    _dutyVal = map(duty, 0, 100, 0, top);
     SET_TIMER1_DUTY_CHAN_B(_dutyVal);
     return 0;
 

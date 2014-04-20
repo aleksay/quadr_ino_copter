@@ -21,7 +21,7 @@ typedef struct _startup_data {
   unsigned int start;
   unsigned int end;
   int gain;
-  unsigned int currentValue;
+ // unsigned int currentValue;
 }
 
 *startupData;
@@ -42,6 +42,8 @@ public:
   void startupping();
   int setStartupfreqEnd (int val);
   int setStartupfreqGain (int val);
+	int setStartupDutyEnd (int val);
+  int setStartupDutyGain (int val);
 private:
 
   Command latestCommand;
