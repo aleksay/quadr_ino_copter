@@ -6,7 +6,6 @@
 
 #define DEBUG 1
 #define DEBUG_LEVEL 4 // change me to desired logging level
-
 #ifdef DEBUG
 
 #define FILE (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
@@ -20,12 +19,10 @@
 				Serial.println(msg);		\
 			}
 #else
-	#define debug(msg)
+#define debug(msg)
 #endif
 
-
 static int logLevel = 4;
-
 
 typedef struct _command {
 	char type;
@@ -37,11 +34,11 @@ class communicator {
 public:
 
 	communicator();
-	int 		 getHaveCommand();
-	Command  getCommand();
-	void 		 eventHandler();
-	void 		 iterate();
-	
+	int getHaveCommand();
+	Command getCommand();
+	void eventHandler();
+	void iterate();
+
 private:
 	String inputBuffer;
 	int haveCommand;

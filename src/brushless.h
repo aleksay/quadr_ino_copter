@@ -12,16 +12,11 @@
 #include "timer.h"
 #include "mosfetSequencecontroller.h"
 
-
-
-
-
-
 typedef struct _startup_data {
-  unsigned int start;
-  unsigned int end;
-  int gain;
- // unsigned int currentValue;
+	unsigned int start;
+	unsigned int end;
+	int gain;
+	// unsigned int currentValue;
 }
 
 *startupData;
@@ -29,32 +24,31 @@ typedef struct _startup_data {
 class brushless {
 
 public:
-  brushless();
-  void startup();
-  void startuppone();
-  void iterate();
-  void start();
-  int setCommand(Command command);  
-  String getResponse();
-  void incrementTime();
-  int Hz2top();
-  String angSpeed();
-  void startupping();
-  int setStartupfreqEnd (int val);
-  int setStartupfreqGain (int val);
-	int setStartupDutyEnd (int val);
-  int setStartupDutyGain (int val);
+	brushless();
+	void startup();
+	void startuppone();
+	void iterate();
+	void start();
+	int setCommand(Command command);
+	String getResponse();
+	void incrementTime();
+	int Hz2top();
+	String angSpeed();
+	void startupping();
+	int setStartupfreqEnd(int val);
+	int setStartupfreqGain(int val);
+	int setStartupDutyEnd(int val);
+	int setStartupDutyGain(int val);
 private:
 
-  Command latestCommand;
-  
-  int commandRead;
-  String latestMessage;
-  unsigned int msTime;
-  
+	Command latestCommand;
 
-  String parseCommand(Command command);
-  int getStartupValueHz(int gain, int ssGain);
+	int commandRead;
+	String latestMessage;
+	unsigned int msTime;
+
+	String parseCommand(Command command);
+	int getStartupValueHz(int gain, int ssGain);
 };
 
 #endif

@@ -4,18 +4,17 @@
 #include <Arduino.h>
 #include "config.h"
 
-
 /*
-=====================================================
+ =====================================================
  
- 		           Timer 0 Section
+ Timer 0 Section
  
  =====================================================
  */
 #define TIMER0_RESET TCCR0B=0;TCCR0A=0;TCNT0=0
 
 /*
-0 0 0 No clock source (Timer/Counter stopped)
+ 0 0 0 No clock source (Timer/Counter stopped)
  0 0 1 clkI/O/1 (No prescaling)
  0 1 0 clkI/O/8 (From prescaler)
  0 1 1 clkI/O/64 (From prescaler)
@@ -33,7 +32,7 @@
 #define SET_TIMER0_PRESCALER_1024 TCCR0B |= (1 << CS02) | (0 << CS01) | (1 << CS00)
 
 /*
-WGM02 WGM01 WGM00 Timer/Counter 
+ WGM02 WGM01 WGM00 Timer/Counter
  1 0 1 PWM, Phase Correct OCRA TOP BOTTOM
  1 1 1 Fast PWM OCRA BOTTOM TOP
  */
@@ -57,9 +56,9 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER0_INTERRUPT_OVERFLOW        TIMSK0 |= (1 << TOIE0 )
 
 /*
-=====================================================
+ =====================================================
  
- 		           Timer 1 Section
+ Timer 1 Section
  
  =====================================================
  */
@@ -80,8 +79,6 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER1_PRESCALER_64   TCCR1B |= (0 << CS12) | (1 << CS11) | (1 << CS10)
 #define SET_TIMER1_PRESCALER_256  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10)
 #define SET_TIMER1_PRESCALER_1024 TCCR1B |= (1 << CS12) | (0 << CS11) | (1 << CS10)
-
-
 
 /*
  WGM13 | WGM12 | WGM11 | WGM10 | Timer/Counter Mode of Operation | TOP | Update of OCR1x at | TOV1 Flag Set on
@@ -128,17 +125,15 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER1_DUTY_CHAN_B(val)        OCR1B = val
 #define SET_TIMER1_DUTY_CHAN_A(val)        OCR1A = val
 
-
 /*
-=====================================================
+ =====================================================
  
- 		Mosfet Sequence Controller Section
+ Mosfet Sequence Controller Section
  
  =====================================================
  */
 //#define	automa_register_D
 #define automa_register_B
-
 
 #ifdef automa_register_D
 #define AUTOMA_PIN_INIT DDRD |= 0b00111111 
@@ -149,8 +144,6 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define AUTOMA_PIN_INIT DDRB |= 0b00111111 
 #define AUTOMA_ITERATE(state) PORTB=states[state]
 #endif
-
-
 
 #endif
 
