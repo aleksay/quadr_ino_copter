@@ -42,8 +42,7 @@ public:
   void startupping();
   int setStartupfreqEnd (int val);
   int setStartupfreqGain (int val);
-	int setStartupDutyEnd (int val);
-  int setStartupDutyGain (int val);
+
 private:
 
   Command latestCommand;
