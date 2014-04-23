@@ -4,10 +4,10 @@
 // - extern variable definitions
 // In the appropriate section
 
-#ifndef _quadr_ino_copter_H_
-#define _quadr_ino_copter_H_
+#ifndef _src_H_
+#define _src_H_
 #include "Arduino.h"
-//add your includes for the project quadr_ino_copter here
+//add your includes for the project src here
 
 
 //end of add your includes here
@@ -20,10 +20,10 @@ void setup();
 } // extern "C"
 #endif
 
-//add your function definitions for the project quadr_ino_copter here
+//add your function definitions for the project src here
 
 
 
 
 //Do not add code below this line
-#endif /* _quadr_ino_copter_H_ */
+#endif /* _src_H_ */
