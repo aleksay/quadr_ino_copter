@@ -1,27 +1,24 @@
 #include "communicator.h"
-
 #include "usart.cpp"
-
 
 usart* usart_module = NULL;
 
 communicator::communicator() {
 
+	bufferLength = 0;
 
-	bufferLength          = 0;
-
-	inputBuffer           = "";
+	inputBuffer = "";
 	inputBuffer.reserve(20);
 
-	haveCommand           = 0;
+	haveCommand = 0;
 
-	currentCommand        = (Command) malloc(sizeof(_command));
-	currentCommand->type  = '\n';
+	currentCommand = (Command) malloc(sizeof(_command));
+	currentCommand->type = '\n';
 	currentCommand->value = 0;
 
-	usart_module          = new usart(9600);
-	
-	debug(String("Entering constructor for: ") + __func__,3)
+	usart_module = new usart(9600);
+
+	debug(String("Entering constructor fo+r: ") + __func__, 3)
 
 	if (usart_module != NULL)
 		debug("Serial initialized. ", 3);
@@ -53,8 +50,8 @@ void communicator::eventHandler() {
 				i++;
 			}
 			currentCommand->type = inputBuffer[0];
-			currentCommand->value = strtol(inputStringValue,NULL,0);
-			
+			currentCommand->value = strtol(inputStringValue, NULL, 0);
+
 			haveCommand = 1;
 		}
 	}
@@ -62,13 +59,13 @@ void communicator::eventHandler() {
 
 Command communicator::getCommand() {
 
-	Command tmpCommand    = (Command) malloc(sizeof(_command));
-	tmpCommand->type      = currentCommand->type;
-	tmpCommand->value     = currentCommand->value;
+	Command tmpCommand = (Command) malloc(sizeof(_command));
+	tmpCommand->type = currentCommand->type;
+	tmpCommand->value = currentCommand->value;
 
-	inputBuffer           = "";
-	haveCommand           = 0;
-	currentCommand->type  = '\n';
+	inputBuffer = "";
+	haveCommand = 0;
+	currentCommand->type = '\n';
 	currentCommand->value = 0;
 
 	return tmpCommand;
@@ -77,5 +74,4 @@ Command communicator::getCommand() {
 int communicator::getHaveCommand() {
 	return haveCommand;
 }
-
 

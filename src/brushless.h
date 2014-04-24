@@ -1,6 +1,6 @@
 /*
  Header file for brshless control module
-
+ 
  */
 
 #ifndef BRUSHLESS_h
@@ -12,39 +12,44 @@
 #include "timer.h"
 #include "mosfetSequencecontroller.h"
 
-
-#define RAMP_FIN_FREQUENCY_T1 5000
-#define RAMP_FIN_DUTY_T0 90
-
-
-
 typedef struct _startup_data {
 	unsigned int start;
 	unsigned int end;
-	float decrement;
-	unsigned int currentValue;
-	float resto;
-}*startupData;
+	int gain;
+	// unsigned int currentValue;
+}
+
+*startupData;
 
 class brushless {
 
 public:
 	brushless();
-	int startup();
+	void startup();
+	void startuppone();
 	void iterate();
-	int start();
-	int setCommand(Command command);  
+	void start();
+	int setCommand(Command command);
 	String getResponse();
-
+	void incrementTime();
+	int Hz2top();
+	String angSpeed();
+	void startupping();
+	int setStartupfreqEnd(int val);
+	int setStartupfreqGain(int val);
+	int setStartupDutyEnd(int val);
+	int setStartupDutyGain(int val);
 private:
 
 	Command latestCommand;
-	int startupping;
+
 	int commandRead;
 	String latestMessage;
+	unsigned int msTime;
 
 	String parseCommand(Command command);
-	void startupcalc(startupData valueData, int slow);
+	int getStartupValueHz(int gain, int ssGain);
 };
 
 #endif
+
