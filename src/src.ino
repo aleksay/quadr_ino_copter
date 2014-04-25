@@ -20,6 +20,38 @@ Command latestCommand;
 // Flag for indicating if serial messages are available
 int commandExecute = 0;
 
+// Software reset
+void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
+void wdt_init(void)
+{
+  MCUSR = 0;
+  wdt_disable();
+  return;
+}
+
+
+
+String parseCommand(Command command){
+
+  switch(command->type){
+  case 'R':
+    wdt_init();
+  default:
+    return "";
+  }
+}
+
+// Callback function for reserved Arduino keyword serial polling
+void serialEvent(){
+  serialCommPtr->eventHandler();
+}
+
+
+void globalSetTime()
+{
+  brushlessPtr->incrementTime();
+}
+
 
 void setup() {
 
@@ -82,35 +114,3 @@ void loop() {
     commandExecute = 0;
   }
 }
-
-
-String parseCommand(Command command){
-
-  switch(command->type){
-  case 'R':
-    wdt_init();
-  default:
-    return "";
-  }	  
-}
-
-// Callback function for reserved Arduino keyword serial polling
-void serialEvent(){
-  serialCommPtr->eventHandler();
-}
-
-// Software reset 
-void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
-void wdt_init(void)
-{
-  MCUSR = 0;
-  wdt_disable();
-  return;
-}
-
-void globalSetTime()
-{
-  brushlessPtr->incrementTime();
-}
-
-
