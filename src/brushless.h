@@ -43,6 +43,7 @@ public:
   int setStartupfreqEnd (int val);
   int setStartupfreqGain (int val);
 	int setStartupDutyEnd (int val);
+	void motor_init();
   int setStartupDutyGain (int val);
 private:
 

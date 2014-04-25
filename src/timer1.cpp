@@ -110,7 +110,7 @@ public:
   
  
 	int setFrequency(unsigned int freqHz) {
-	
+		int _top=0;
 		// check value
 		if (freqHz == frequency) {
 			return -1;
@@ -120,13 +120,15 @@ public:
 	
 
 		//convert value to microcontroller TOP
-		top = Hz2top(freqHz);
+		_top = Hz2top(freqHz);
 		      //debug(_top,3);
 	
 		//check TOP consistency
-//		if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
-//			return -1;
-//		}
+		if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
+			return -1;
+		}
+		top=_top;
+		
 //		if (_top == top) {
 //			return -1;
 //		}
