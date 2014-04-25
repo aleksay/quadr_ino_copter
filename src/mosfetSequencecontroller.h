@@ -24,11 +24,15 @@ public:
   int getDirection();
   int setDirection(int clockwise);
   int commutePole();
-  int setAutomaRate(int val);
-  int getAutomaRate();
-  int getAutomaState();
+  int start();
+  int stop();
+  
+  // int setAutomaRate(int val);
+  //int getAutomaRate();
+  //int getAutomaState();
   int getState();
-  int getAutomaState(int st);
+  int setState(int _state);
+  //int getAutomaState(int st);
 private:
 
 };

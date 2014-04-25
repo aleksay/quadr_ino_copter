@@ -46,6 +46,38 @@ int brushless::getStartupValueHz(int gain, int ssGain) {
   //debug(time,3);
   return freqHz;
 }
+
+void brushless::motor_init() {
+  // procedura di inizializzazione del motore	
+
+  timer0_pwm->setDuty(1);
+  msTime=0;
+  
+  int gain = 80;
+  
+  automa->stop();
+  automa->setState(0);
+  debug(__func__+String(" start duty ramp"),3);
+  while ( timer0_pwm->getDuty() > 40)
+  {
+  	timer0_pwm->setDuty(gain * msTime * 0.001);
+  }
+  debug(__func__+String(" first ramp took")+msTime,3);
+  timer1_pwm->setFrequency(300);
+  automa->start();
+  msTime=0;
+  
+  while ( timer0_pwm->getDuty() > 80)
+  {
+  	timer0_pwm->setDuty(gain * msTime * 0.001);
+  }
+  debug(__func__+String(" second ramp took")+msTime,3);
+  
+  setStartupfreqEnd(3300);
+  setStartupfreqGain(200);
+  startup();
+}
+
 void brushless::startuppone() {
   // inizializzazione startup ( da spostare e migliorare ) ma deve esserci sempre la struttura cosi si può comandare il motore con delle rette invece che settare valori uno a uno
   freqData = (startupData) malloc(sizeof(_startup_data));
@@ -56,25 +88,25 @@ void brushless::startuppone() {
   
   startup();
   
-  freqData->end = 2000;   //end value in Hz
-  freqData->gain = 400; //gain 
-  startup();
-  
-    freqData->end = 2010;   //end value in Hz
-  freqData->gain = 10; //gain 
-  startup();
-  
-    freqData->end = 2200;   //end value in Hz
-  freqData->gain = 100; //gain 
-  startup();
-  
-      freqData->end = 2210;   //end value in Hz
-  freqData->gain = 5; //gain 
-  startup();
-  
-//      freqData->end = 4000;   //end value in Hz
+//  freqData->end = 2000;   //end value in Hz
+//  freqData->gain = 400; //gain 
+//  startup();
+//  
+//    freqData->end = 2010;   //end value in Hz
 //  freqData->gain = 10; //gain 
 //  startup();
+//  
+//    freqData->end = 2200;   //end value in Hz
+//  freqData->gain = 100; //gain 
+//  startup();
+//  
+//      freqData->end = 2210;   //end value in Hz
+//  freqData->gain = 5; //gain 
+//  startup();
+//  
+////      freqData->end = 4000;   //end value in Hz
+////  freqData->gain = 10; //gain 
+////  startup();
   
   free(freqData);
   free(dutyData);
@@ -183,9 +215,9 @@ String brushless::parseCommand(Command command){
     startuppone();
     return "Startup end";
 
-// Launch normal startup    
+// Motor init. procedure    
   case 's':
-    startup();
+    motor_init();
     return "Startup end";
 
 // Set end value of startup ramp
@@ -259,5 +291,9 @@ String brushless::angSpeed(){
 //  
 //      return 0;
 //}
+
+ISR(TIMER1_COMPA_vect) {
+	automa->commutePole();
+}
 
 

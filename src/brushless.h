@@ -32,6 +32,7 @@ public:
   brushless();
   void startup();
   void startuppone();
+  void motor_init();
   void iterate();
   void start();
   int setCommand(Command command);  
