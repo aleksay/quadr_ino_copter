@@ -9,16 +9,16 @@ public timer
 public:
   timer1() {
 
-		frequency = 0;
+	frequency = 0;
   	
 	//initialize timer1 global variable
-		setFrequency(DEFAULT_T1_INIT_FREQUENCY);
-    setDuty(DEFAULT_T1_INIT_DUTY);
+	setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+	setDuty(DEFAULT_T1_INIT_DUTY);
     
-    //prescaler = DEFAULT_T1_INIT_PRESCALER;
+	prescaler = DEFAULT_T1_INIT_PRESCALER;
 	
 	//configure timer1
-    _timer1_fastPwm_ocr1atop_init();
+	_timer1_fastPwm_ocr1atop_init();
 
   }
 
@@ -110,7 +110,7 @@ public:
   
  
 	int setFrequency(unsigned int freqHz) {
-		int _top=0;
+		unsigned int _top=0;
 		// check value
 		if (freqHz == frequency) {
 			return -1;
@@ -124,23 +124,17 @@ public:
 		      //debug(_top,3);
 	
 		//check TOP consistency
-		if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
+		if (_top == top || _top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
 			return -1;
 		}
 		top=_top;
 		
-//		if (_top == top) {
-//			return -1;
-//		}
-
-		int zDuty = 1;
-		       
+       
 		//set new value on the register
 		SET_TIMER1_FREQUENCY_OCR1ATOP(top);
 	
-		zDuty = setDuty(duty);
-
-	  return zDuty;
+		
+	  	return setDuty(duty);
   }
 
   int setDuty(int val) {
