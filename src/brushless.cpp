@@ -48,6 +48,11 @@ int brushless::getStartupValueHz(int gain, int ssGain) {
 }
 
 void brushless::motor_init() {
+    freqData = (startupData) malloc(sizeof(_startup_data));
+  freqData->start = timer1_pwm->getFrequency();  //start value in Hz
+  freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
+  freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
+  freqData->currentValue = timer1_pwm->getFrequency();
   // procedura di inizializzazione del motore	
 
   timer0_pwm->setDuty(1);
@@ -80,11 +85,7 @@ void brushless::motor_init() {
 
 void brushless::startuppone() {
   // inizializzazione startup ( da spostare e migliorare ) ma deve esserci sempre la struttura cosi si può comandare il motore con delle rette invece che settare valori uno a uno
-  freqData = (startupData) malloc(sizeof(_startup_data));
-  freqData->start = timer1_pwm->getFrequency();  //start value in Hz
-  freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
-  freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
-  freqData->currentValue = timer1_pwm->getFrequency();
+
   
   startup();
   
@@ -219,6 +220,10 @@ String brushless::parseCommand(Command command){
   case 's':
     motor_init();
     return "Startup end";
+    
+  case 'z':
+    automa->start();
+    return "Startup end";
 
 // Set end value of startup ramp
   case 'u': 
@@ -274,23 +279,23 @@ String brushless::angSpeed(){
 	return "RPM elettrici:"+String(RPM_e)+", RPM meccanici:"+String(RPM_m)+", RAD/s elettrici:"+String(rads_e)+", RAD/s meccanici:"+String(rads_m);
 }
 
-//  int brushless::setStartupfreqEnd (int val) {
-//      if (val < 0 || val > 30000)
-//      return -1;
-//      
-//      freqData->end = val;   //end value in Hz
-//  
-//      return 0;
-//}
-//
-//  int brushless::setStartupfreqGain (int val) {
-//      if (val < 0 || val > 2500)
-//      return -1;
-//      
-//      freqData->gain = val;   //end value in Hz
-//  
-//      return 0;
-//}
+  int brushless::setStartupfreqEnd (int val) {
+      if (val < 0 || val > 30000)
+      return -1;
+      
+      freqData->end = val;   //end value in Hz
+  
+      return 0;
+}
+
+  int brushless::setStartupfreqGain (int val) {
+      if (val < 0 || val > 2500)
+      return -1;
+      
+      freqData->gain = val;   //end value in Hz
+  
+      return 0;
+}
 
 ISR(TIMER1_COMPA_vect) {
 	automa->commutePole();

@@ -51,7 +51,7 @@ int mosfetSequencecontroller::setState(int _state){
 int mosfetSequencecontroller::init() {
 
   AUTOMA_PIN_INIT;
-  AUTOMA_ITERATE(state);
+  setState(0);
 }
 
 int mosfetSequencecontroller::commutePole() {
