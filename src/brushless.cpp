@@ -48,66 +48,44 @@ int brushless::getStartupValueHz(int gain, int ssGain) {
 }
 
 void brushless::motor_init() {
-    freqData = (startupData) malloc(sizeof(_startup_data));
-  freqData->start = timer1_pwm->getFrequency();  //start value in Hz
-  freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
-  freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
-  freqData->currentValue = timer1_pwm->getFrequency();
+  
+  
   // procedura di inizializzazione del motore	
-
   timer0_pwm->setDuty(1);
   msTime=0;
   
-  int gain = 80;
-  
+  // da creare define 
+  int gains = 35;
+  int dutys = 50;
+  int gaine = 30;
+  int dutye =80;
   automa->stop();
   automa->setState(0);
   debug(__func__+String(" start duty ramp"),3);
-  while ( timer0_pwm->getDuty() > 40)
+  
+  while ( timer0_pwm->getDuty() <= dutys)
   {
-  	timer0_pwm->setDuty(gain * msTime * 0.001);
+  	timer0_pwm->setDuty(gains * msTime * 0.001);
   }
+  
   debug(__func__+String(" first ramp took")+msTime,3);
-  timer1_pwm->setFrequency(300);
+  timer1_pwm->setFrequency(DEFAULT_T1_INIT_FREQUENCY);
   automa->start();
   msTime=0;
   
-  while ( timer0_pwm->getDuty() > 80)
+  while ( timer0_pwm->getDuty() <= dutye)
   {
-  	timer0_pwm->setDuty(gain * msTime * 0.001);
+  	timer0_pwm->setDuty(gaine * msTime * 0.001 + dutys);
   }
   debug(__func__+String(" second ramp took")+msTime,3);
   
-  setStartupfreqEnd(3300);
-  setStartupfreqGain(200);
-  startup();
-}
+  freqData = (startupData) malloc(sizeof(_startup_data));
+  freqData->start = timer1_pwm->getFrequency();  //start value in Hz
+  freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
+  freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
+  //freqData->currentValue = timer1_pwm->getFrequency();
 
-void brushless::startuppone() {
-  // inizializzazione startup ( da spostare e migliorare ) ma deve esserci sempre la struttura cosi si può comandare il motore con delle rette invece che settare valori uno a uno
-
-  
-  startup();
-  
-//  freqData->end = 2000;   //end value in Hz
-//  freqData->gain = 400; //gain 
-//  startup();
-//  
-//    freqData->end = 2010;   //end value in Hz
-//  freqData->gain = 10; //gain 
-//  startup();
-//  
-//    freqData->end = 2200;   //end value in Hz
-//  freqData->gain = 100; //gain 
-//  startup();
-//  
-//      freqData->end = 2210;   //end value in Hz
-//  freqData->gain = 5; //gain 
-//  startup();
-//  
-////      freqData->end = 4000;   //end value in Hz
-////  freqData->gain = 10; //gain 
-////  startup();
+  startup(); 
   
   free(freqData);
   free(dutyData);
@@ -115,54 +93,38 @@ void brushless::startuppone() {
 
 void brushless::startup() {
 
-  debug(String("starting ramp") , 3);
+  debug(String("starting ramp from:")+ String(timer1_pwm->getFrequency())+ " to:" + String(freqData->end)+ " at gain:"+String(freqData->gain), 3);
 
-  //freqData = (startupData) malloc(sizeof(_startup_data));
   freqData->start = timer1_pwm->getFrequency();  //start value in Hz
-  //freqData->end = 4000;   //end value in Hz
-  //freqData->gain = 1000; //gain 
-  freqData->currentValue = timer1_pwm->getFrequency();
-  
-  dutyData = (startupData) malloc(sizeof(_startup_data));
-  dutyData->start = timer0_pwm->getDuty();
-  dutyData->end = RAMP_FIN_DUTY_T0;
-  dutyData->gain = 0.01;
-  dutyData->currentValue = dutyData->start;
-  //dutyData->resto = 0;
-
-  startupping();
-    
-}
-
-  //if startup mode do startup
-
-  void brushless::startupping() {
+ 
+ 
+  //get motor ready to accelerate
+  timer0_pwm->setDuty(99);
   //Resetta il riferimento temporale
   msTime = 0;
   
-    while ((freqData->currentValue < freqData->end) )//||  (dutyData->currentValue > dutyData->end)) 
-    {
 
-      if (freqData->currentValue < freqData->end) {
 
-        freqData->currentValue = getStartupValueHz(freqData->gain, freqData->start);
-        timer1_pwm->setFrequency(freqData->currentValue);
-      }
+  while ((timer1_pwm->getFrequency() < freqData->end) )
+  {
 
-//      if (dutyData->currentValue > dutyData->end) {
-//        dutyData->currentValue = getStartupValueHz(dutyData->gain, dutyData->start);
-//        timer0_pwm->setDuty(dutyData->currentValue);
-//      }
-  
-      //debug(String("f:")+timer1_pwm->getFrequency()+String(" top:")+timer1_pwm->getTop()+" time:"+msTime+" d:"+String(timer0_pwm->getDuty()),3);
-      //debug(String("f:")+timer1_pwm->getFrequency()+" time:"+msTime,3);
-      //delay(100);
-      
-    } 
-   
-      debug(String("Startup took: ")+msTime+" ms", 3);
-      
+    if (timer1_pwm->getFrequency() < freqData->end) {
+
+      timer1_pwm->setFrequency(getStartupValueHz(freqData->gain, freqData->start));
     }
+	
+    //debug(String("f:")+timer1_pwm->getFrequency()+String(" top:")+timer1_pwm->getTop()+" time:"+msTime+" d:"+String(timer0_pwm->getDuty()),3);
+    //debug(String("f:")+timer1_pwm->getFrequency()+" time:"+msTime,3);
+    //delay(100);
+    
+  } 
+  
+  //reduce duty for steady speed 
+ // timer0_pwm->setDuty(90);
+
+  debug(String("Startup took: ")+msTime+" ms", 3);
+    
+}
 
   
 
@@ -211,10 +173,6 @@ String brushless::parseCommand(Command command){
   case 'r':
     return angSpeed();
     
-// Launch piecewise startup
-  case 'q':
-    startuppone();
-    return "Startup end";
 
 // Motor init. procedure    
   case 's':
@@ -223,7 +181,7 @@ String brushless::parseCommand(Command command){
     
   case 'z':
     automa->start();
-    return "Startup end";
+    return "Commuting";
 
 // Set end value of startup ramp
   case 'u': 

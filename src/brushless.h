@@ -21,7 +21,7 @@ typedef struct _startup_data {
   unsigned int start;
   unsigned int end;
   int gain;
-  unsigned int currentValue;
+  //unsigned int currentValue;
 }
 
 *startupData;
@@ -31,7 +31,6 @@ class brushless {
 public:
   brushless();
   void startup();
-  void startuppone();
   void motor_init();
   void iterate();
   void start();
