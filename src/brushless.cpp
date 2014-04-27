@@ -230,7 +230,7 @@ void brushless::start(){
 
 String brushless::angSpeed(){
 	unsigned int RPM_e = floor( (timer1_pwm->getFrequency()/NUM_STATES) * 60);
-	unsigned int RPM_m = floor(RPM_e * 2 / NUM_POLES);
+	unsigned int RPM_m = floor(RPM_e /(NUM_POLES/2));
 	int rads_e = floor(RPM_e /60 * 2 * 3.14159);
 	int rads_m = floor(RPM_m /60 * 2 * 3.14159);
        
