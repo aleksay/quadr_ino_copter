@@ -231,8 +231,8 @@ void brushless::start(){
 String brushless::angSpeed(){
 	unsigned int RPM_e = floor( (timer1_pwm->getFrequency()/NUM_STATES) * 60);
 	unsigned int RPM_m = floor(RPM_e /(NUM_POLES/2));
-	int rads_e = floor(RPM_e /60 * 2 * 3.14159);
-	int rads_m = floor(RPM_m /60 * 2 * 3.14159);
+	int rads_e = floor(RPM_e /60 * 2 * M_PI);
+	int rads_m = floor(RPM_m /60 * 2 * M_PI);
        
 	return "RPM elettrici:"+String(RPM_e)+", RPM meccanici:"+String(RPM_m)+", RAD/s elettrici:"+String(rads_e)+", RAD/s meccanici:"+String(rads_m);
 }
