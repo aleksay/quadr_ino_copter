@@ -30,6 +30,7 @@ class brushless {
 
 public:
   brushless();
+  ~brushless();
   void startup();
   void motor_init();
   void iterate();

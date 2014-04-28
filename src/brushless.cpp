@@ -31,8 +31,14 @@ brushless::brushless() {
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
 
+  freqData = (startupData) malloc(sizeof(_startup_data));
+
   timer0_pwm->start();
   
+}
+
+brushless::~brushless() {
+	free(freqData);
 }
 
 int brushless::getStartupValueHz(int gain, int ssGain) {
@@ -53,7 +59,7 @@ void brushless::motor_init() {
   // procedura di inizializzazione del motore	
   timer0_pwm->setDuty(1);
   msTime=0;
-  
+
   // da creare define 
   int gains = 35;
   int dutys = 50;
@@ -79,15 +85,15 @@ void brushless::motor_init() {
   }
   debug(__func__+String(" second ramp took")+msTime,3);
   
-  freqData = (startupData) malloc(sizeof(_startup_data));
-  freqData->start = timer1_pwm->getFrequency();  //start value in Hz
-  freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
+
+ // freqData->start = timer1_pwm->getFrequency();  //start value in Hz
+  freqData->end  = RAMP_END_FREQUENCY_T1;   //end value in Hz
   freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
   //freqData->currentValue = timer1_pwm->getFrequency();
 
   startup(); 
   
-  free(freqData);
+  //free(freqData); //to be deleted: se globale non fare la free qui
   //free(dutyData);
 }
 
