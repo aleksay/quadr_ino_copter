@@ -9,7 +9,7 @@ timer0 *timer0_pwm = NULL;
 mosfetSequencecontroller * automa = NULL;
 
 startupData freqData;
-startupData dutyData;
+//startupData dutyData;
 
 
 
@@ -88,7 +88,7 @@ void brushless::motor_init() {
   startup(); 
   
   free(freqData);
-  free(dutyData);
+  //free(dutyData);
 }
 
 void brushless::startup() {
@@ -213,7 +213,7 @@ String brushless::parseCommand(Command command){
   }
 }
 
-int brushless::setCommand(Command command) {
+void brushless::setCommand(Command command) {
   latestCommand = command;
   commandRead = 0;
 }

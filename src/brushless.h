@@ -34,7 +34,7 @@ public:
   void motor_init();
   void iterate();
   void start();
-  int setCommand(Command command);  
+  void setCommand(Command command);
   String getResponse();
   void incrementTime();
   int Hz2top();
