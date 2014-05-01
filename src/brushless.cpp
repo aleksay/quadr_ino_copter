@@ -9,7 +9,7 @@ timer0 *timer0_pwm = NULL;
 mosfetSequencecontroller * automa = NULL;
 
 startupData freqData;
-startupData dutyData;
+//startupData dutyData;
 
 
 
@@ -31,6 +31,8 @@ brushless::brushless() {
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
 
+  freqData = (startupData) malloc(sizeof(_startup_data));
+  
   timer0_pwm->start();
   
 }
@@ -57,10 +59,11 @@ void brushless::motor_init() {
   // da creare define 
   int gains = 35;
   int dutys = 50;
-  int gaine = 30;
-  int dutye =80;
+  int gaine = 10;
+  int dutye =95;
   automa->stop();
   automa->setState(0);
+  
   debug(__func__+String(" start duty ramp"),3);
   
   while ( timer0_pwm->getDuty() <= dutys)
@@ -70,6 +73,7 @@ void brushless::motor_init() {
   
   debug(__func__+String(" first ramp took")+msTime,3);
   timer1_pwm->setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+  //automa->setState(0);
   automa->start();
   msTime=0;
   
@@ -78,8 +82,14 @@ void brushless::motor_init() {
   	timer0_pwm->setDuty(gaine * msTime * 0.001 + dutys);
   }
   debug(__func__+String(" second ramp took")+msTime,3);
+  msTime=0;
+   while ( msTime <= 150)
+  {
+	delay(1);
+  }
+  debug(__func__+String(" third ramp took")+msTime,3);
   
-  freqData = (startupData) malloc(sizeof(_startup_data));
+  
   freqData->start = timer1_pwm->getFrequency();  //start value in Hz
   freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
   freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
@@ -87,8 +97,9 @@ void brushless::motor_init() {
 
   startup(); 
   
-  free(freqData);
-  free(dutyData);
+  
+  //free(freqData); //to be deleted: se globale non fare la free qui
+  //free(dutyData);
 }
 
 void brushless::startup() {
@@ -199,7 +210,7 @@ String brushless::parseCommand(Command command){
     
 // Formatted print for parsing
   case 'p':
-    return  String( "\n--QUERY--\n") +
+    return  String( "--QUERY--\n") +
       String("f_t1 ") + String(timer1_pwm->getFrequency())	+ String(" Hz\n") +
       String("TOP_t1 ") + String(timer1_pwm->getTop())	        + String("\n") +
       String("d_t1 ") + String(timer1_pwm->getDuty())     	+ String("\n") +
@@ -213,7 +224,7 @@ String brushless::parseCommand(Command command){
   }
 }
 
-int brushless::setCommand(Command command) {
+void brushless::setCommand(Command command) {
   latestCommand = command;
   commandRead = 0;
 }
@@ -231,8 +242,8 @@ void brushless::start(){
 String brushless::angSpeed(){
 	unsigned int RPM_e = floor( (timer1_pwm->getFrequency()/NUM_STATES) * 60);
 	unsigned int RPM_m = floor(RPM_e /(NUM_POLES/2));
-	int rads_e = floor(RPM_e /60 * 2 * 3.14159);
-	int rads_m = floor(RPM_m /60 * 2 * 3.14159);
+	int rads_e = floor(RPM_e /60 * 2 * M_PI);
+	int rads_m = floor(RPM_m /60 * 2 * M_PI);
        
 	return "RPM elettrici:"+String(RPM_e)+", RPM meccanici:"+String(RPM_m)+", RAD/s elettrici:"+String(rads_e)+", RAD/s meccanici:"+String(rads_m);
 }
@@ -254,6 +265,11 @@ String brushless::angSpeed(){
   
       return 0;
 }
+
+
+brushless::~brushless() {
+ 	free(freqData);
+ }
 
 ISR(TIMER1_COMPA_vect) {
 	automa->commutePole();
