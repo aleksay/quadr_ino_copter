@@ -31,7 +31,7 @@ brushless::brushless() {
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
 
-  freqData = (startupData) malloc(sizeof(_startup_data));
+  
   
   timer0_pwm->start();
   
@@ -89,7 +89,7 @@ void brushless::motor_init() {
   }
   debug(__func__+String(" third ramp took")+msTime,3);
   
-  
+  freqData = (startupData) malloc(sizeof(_startup_data));
   freqData->start = timer1_pwm->getFrequency();  //start value in Hz
   freqData->end = RAMP_END_FREQUENCY_T1;   //end value in Hz
   freqData->gain = RAMP_GAIN_FREQUENCY_T1; //gain 
@@ -98,7 +98,7 @@ void brushless::motor_init() {
   startup(); 
   
   
-  //free(freqData); //to be deleted: se globale non fare la free qui
+  free(freqData); 
   //free(dutyData);
 }
 
@@ -268,7 +268,7 @@ String brushless::angSpeed(){
 
 
 brushless::~brushless() {
- 	free(freqData);
+ 	
  }
 
 ISR(TIMER1_COMPA_vect) {
