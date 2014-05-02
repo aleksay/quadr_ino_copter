@@ -57,7 +57,7 @@ public:
   }
 
   int start() {
-    //debug(String("prescaler set to: ")+ prescaler,3);
+  debug(String("prescaler set to: ")+ prescaler,3);
     
     setPrescaler(prescaler);
     return 0;
