@@ -41,7 +41,7 @@ void setup() {
   debug("Brushless constructor DONE", 3);
 
   debug("Starting brushless", 5);
-  brushlessPtr->start(); //set prescaler and start the iteration
+  brushlessPtr->start();
   debug("brushlessPtr->start() DONE", 3);
 
   //timer 2 init.
@@ -59,7 +59,7 @@ void setup() {
 
   // Run main loop
 void loop() { 
-
+ debug("debug printa", 5);
 
   // check for serial command
   if(serialCommPtr->getHaveCommand() == 1){
@@ -72,7 +72,7 @@ void loop() {
     //and then set flag for catching responses
     commandExecute = 1;
   }
-
+ debug("debug printb", 5);
   brushlessPtr->iterate();	
 
   if(commandExecute == 1){
