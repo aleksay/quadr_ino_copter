@@ -17,10 +17,10 @@
 #define startupStateMotorOff 0
 #define startupStatePWMStarted 1
 #define startupStateRotorAligned 2
-#define startupStatePWMDutyIncreasing 3
-#define startupStateAutomaStarted 4
-#define startupStateFrequencyAutomaAndPWMDutyIncreasing 5
-#define startupStateFrequencyAutomaIncreasing 6
+#define startupStateSetupAutomaRampA 3
+#define startupStateAutomaRampA 4
+#define startupStateSetupAutomaRampB 5
+#define startupStateAutomaRampB 6
 #define startupStateStartupFinished 7
 
 
@@ -61,7 +61,7 @@ private:
   // variables
   int starting;
   int startupState;
-  int msTime;
+  unsigned int msTime;
   int commandRead;
   String latestMessage;
   Command latestCommand;

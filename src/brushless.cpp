@@ -11,16 +11,16 @@ mosfetSequencecontroller * automa = NULL;
 
 
 brushless::brushless() {
-  debug(String("Entering constructor for: ") + __func__,3)
-  rampPWMDuty.gain = 1;
+  debug(String("Entering constructor for: ") + __func__,3);
+  rampPWMDuty.gain = 5;
   rampPWMDuty.offset = 1;
   rampPWMDuty.currentValue = 0;
   rampPWMDuty.end = 95;
-  rampAutomaFrequencyA.gain = 1;
+  rampAutomaFrequencyA.gain = 100;
   rampAutomaFrequencyA.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyA.currentValue = 0;
   rampAutomaFrequencyA.end = 1000;
-  rampAutomaFrequencyB.gain = 1;
+  rampAutomaFrequencyB.gain = 100;
   rampAutomaFrequencyB.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyB.currentValue = 0;
   rampAutomaFrequencyB.end = 5000;
@@ -44,7 +44,10 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   // proportional open loop controller
   // y = K * t + y0 [Hz]
 
-  int OpenLoopValue = ramp.gain * msTime  + ramp.offset; 
+  float ang = (float)ramp.gain * msTime * 0.001;
+  int OpenLoopValue = ang + ramp.offset; 
+
+  debug(String("msTime ")+msTime+" gain "+ ramp.gain + "offset " + ramp.offset + "value" + OpenLoopValue,3);
   //debug (OpenLoopValue,3);
   return OpenLoopValue; 
 
@@ -58,51 +61,73 @@ int brushless::setStartupState(int state){
   // start pwm signal
   case startupStateMotorOff:
     pwm->start();
+    //TODO tirare giu tutti i pin logici setstate(OFF)
     startupState = startupStatePWMStarted;
     return  0;
    
-   // Stop motor for aligning ROTOR 
+   // Stop motor for aligning rotor
    case startupStatePWMStarted:
     automa->stop();
     automa->setState(0);
+    debug(String("In function: ") + __func__,3);
+    debug(String("PWM Started - Commencing rotor alignment ") ,3);
     startupState = startupStateRotorAligned;
     return  0;    
     
-   // start increasing pwm duty without changing mosfet state
+   // start increasing pwm duty without changing automa state
    case startupStateRotorAligned:
   	pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
-	if ( pwm->getDuty() >= 50){
-		startupState = startupStatePWMDutyIncreasing;
+	// keep rotor fixed, until pwm is 50% of end duty
+	if ( pwm->getDuty() >= rampPWMDuty.end/2 ){		
+		startupState = startupStateSetupAutomaRampA;
  	 }
 	return 0;
     
    // start automa
-   case startupStatePWMDutyIncreasing:
+   case startupStateSetupAutomaRampA:
+
+    // start drive sequence
     automa->start();
-    startupState = startupStateAutomaStarted;
+    // set ramp duty offset and reset clock
+    rampPWMDuty.offset = pwm->getDuty();
+    msTime=0;
+
+    debug(String("In function: ") + __func__,3);
+    debug(String("Starting Automa Ramp A ") ,3);
+    startupState = startupStateAutomaRampA;
     return  0;    
 
    // increase frequency of automa and pwm duty until max duty value is reached
-   case startupStateAutomaStarted:
+   case startupStateAutomaRampA:
+	// raise duty until end duty
+      if (  pwm->getDuty() < rampPWMDuty.end )
       pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
+
+	// raise automa frequency until end frequency
+      if (  automa_frequency->getFrequency() < rampAutomaFrequencyA.end )
       automa_frequency->setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
-      if (  pwm->getDuty() >= 99)
+
+	// set next state once pwm and duty reach end value
+      if (  pwm->getDuty() >= rampPWMDuty.end  &&  automa_frequency->getFrequency() >= rampAutomaFrequencyA.end  )
       {
-          startupState = startupStateFrequencyAutomaAndPWMDutyIncreasing;
+          startupState = startupStateSetupAutomaRampB;
       }
 	return  0;
    
    // increase automa frequency until max automa frequency of ramp A
-   case startupStateFrequencyAutomaAndPWMDutyIncreasing:
-      automa_frequency->setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
-      if (  automa_frequency->getFrequency() >= rampAutomaFrequencyA.end )
-      {
-          startupState = startupStateFrequencyAutomaIncreasing;
-      }
-   return  0;
+   case startupStateSetupAutomaRampB:
+
+    // set pwm offset and reset clock
+    rampAutomaFrequencyB.offset = pwm->getFrequency();
+    msTime=0;
+
+    debug(String("In function: ") + __func__,3);
+    debug(String("Starting Automa Ramp B ") ,3);
+    startupState = startupStateAutomaRampB;
+    return  0;
    
    // continue increasing automa frequency until max automa frequency of ramp B
-   case startupStateFrequencyAutomaIncreasing:
+   case startupStateAutomaRampB:
       automa_frequency->setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyB));
       if ( automa_frequency->getFrequency() >= rampAutomaFrequencyB.end)
       {
@@ -114,6 +139,7 @@ int brushless::setStartupState(int state){
    case startupStateStartupFinished:
 	// reduce duty for steady speed 
 	// pwm->setDuty(90);
+	debug(String("In function: ") + __func__,3);
 	debug(String("Startup Finished. Time is: ")+msTime+" ms", 3);
      	return  1;
 
@@ -125,6 +151,9 @@ int brushless::setStartupState(int state){
 }
 
 int brushless::startupCallback() {
+
+debug(String(startupState),3);
+
 if(setStartupState(startupState) == 1)
     	starting = 0;
     	
@@ -186,6 +215,7 @@ String brushless::parseCommand(Command command){
 // Start motor    
   case 's':
     starting=1;
+startupState = startupStateMotorOff;
     return "Starting";
     
 // Set end value of startup ramp
