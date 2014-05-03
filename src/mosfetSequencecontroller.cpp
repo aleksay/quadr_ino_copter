@@ -14,7 +14,7 @@ volatile int direction;
 
 
 mosfetSequencecontroller::mosfetSequencecontroller() {
-  state     = DEFAULT_INITIAL_STATE;
+  //state     = DEFAULT_INITIAL_STATE;
   isRunning = 1;
   direction = 1;
 
@@ -40,7 +40,9 @@ int mosfetSequencecontroller::stop(){
 
 int mosfetSequencecontroller::setState(int _state){
 
-	if(_state < 0 || _state >= NUM_STATES){
+	if(_state < 0 || _state >= NUM_STATES+1){
+		
+		
 		return -1;
 	}
 

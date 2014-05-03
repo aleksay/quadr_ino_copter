@@ -6,14 +6,14 @@
 
 
 
-const uint8_t states[NUM_STATES] = {	
+const uint8_t states[NUM_STATES+1] = {	
   0b00001010,
   0b00001100,
   0b00010100,
   0b00010001,
   0b00100001,
-  0b00100010 };
-
+  0b00100010, 
+  0b00000000 };
 class mosfetSequencecontroller {
 
 public:
