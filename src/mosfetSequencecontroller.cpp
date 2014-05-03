@@ -90,7 +90,9 @@ int mosfetSequencecontroller::getDirection() {
   return direction;
 }
 
-
+void mosfetSequencecontroller::setOpenInverter() {
+  AUTOMA_OPEN_INVERTER;
+}
 
 
 

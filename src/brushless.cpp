@@ -35,7 +35,7 @@ brushless::brushless() {
   automa->init();
   
   setStartupState(startupState_MotorOff);
-
+  
   // allocate buffer for char array
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
@@ -62,7 +62,7 @@ int brushless::setStartupState(int state){
 	
   // start pwm signal
   case startupState_MotorOff:
-    automa->setState(DEFAULT_INITIAL_STATE); //motore con tutti i pin low 
+    automa->setOpenInverter(); //micro con tutti i pin logici low 
 	
     startupState = startupState_MotorInit;
     return  0;
@@ -78,7 +78,7 @@ int brushless::setStartupState(int state){
    // Stop motor for aligning rotor
    case startupState_PWMStarted:
     automa->stop();
-    automa->setState(0);
+    automa->setState(DEFAULT_INITIAL_STATE);
     //debug(String("In function: ") + __func__,3);
     debug(String("PWM Started - Commencing rotor alignment ") ,3);
     startupState = startupState_RotorAligned;
@@ -228,7 +228,7 @@ String brushless::parseCommand(Command command){
     return String(automa_frequency->getFrequency());
 	
   case 'l':
-    
+    automa_frequency->setPrescaler(command->value);
     return String(automa_frequency->getPrescaler());
 
 // Print frequency values

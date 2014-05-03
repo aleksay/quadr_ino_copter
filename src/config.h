@@ -13,7 +13,7 @@
 =====================================================
  */
  
-#define DEFAULT_INITIAL_STATE 6
+#define DEFAULT_INITIAL_STATE 0
 #define NUM_STATES 6
 #define NUM_POLES 14
  
