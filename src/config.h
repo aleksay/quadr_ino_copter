@@ -35,7 +35,7 @@
 =====================================================
  */
 #define DEFAULT_T1_INIT_FREQUENCY 250 //244 //Hz-> TOP:65534
-#define DEFAULT_T1_INIT_DUTY 1
+#define DEFAULT_T1_INIT_DUTY 5
 #define DEFAULT_T1_INIT_PRESCALER 8
 
 #define RAMP_END_FREQUENCY_T1 3600 //NON UTILIZZATI ATTUALMENTE

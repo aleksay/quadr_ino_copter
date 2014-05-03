@@ -12,7 +12,7 @@ mosfetSequencecontroller * automa = NULL;
 
 brushless::brushless() {
   debug(String("Entering constructor for: ") + __func__,3);
-  rampPWMDuty.gain = 20;
+  rampPWMDuty.gain = 15;
   rampPWMDuty.offset = 1;
   rampPWMDuty.currentValue = 0;
   rampPWMDuty.end = 95;
@@ -88,7 +88,7 @@ int brushless::setStartupState(int state){
    case startupState_RotorAligned:
   	pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
 	// keep rotor fixed, until pwm is 50% of end duty
-	if ( pwm->getDuty() >= rampPWMDuty.end/2 ){		
+	if ( pwm->getDuty() >= rampPWMDuty.end-40 ){		
 		startupState = startupState_SetupAutomaRampA;
  	 }
 	return 0;
@@ -125,6 +125,11 @@ int brushless::setStartupState(int state){
       }
 	return  0;
    
+   
+   /////////////////////////////////////////////////////////////////////////   
+   /////////////////////////////////////////////////////////////////////////
+   
+   
    // increase automa frequency until max automa frequency of ramp A
    case startupState_SetupAutomaRampB:
   
@@ -135,12 +140,23 @@ int brushless::setStartupState(int state){
     //PROBLEMI SUL PASSAGGIO DA 8 a 1 , il passaggio 8->64 è ok !
     //automa_frequency->setPrescaler(64);
     //automa_frequency->setFrequency(360);
+    debug(String("PRESCALER") ,3);
+    
+    TCCR1B &= (0 << CS12) | ~(1 << CS11)  | (0 << CS10);
+
+    automa_frequency->setPrescaler(1);
+    automa_frequency->setFrequency(automa_frequency->getFrequency()+1);
+    
+    //TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10);
+    //TCCR0B |= (0 << CS02) | (0 << CS01) | (1 << CS00);
+    
     //debug(String("In function: ") + __func__,3);
     debug(String("Starting Automa Ramp B ") ,3);
     startupState = startupState_AutomaRampB;
     return  0;
 
- 
+   /////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////// 
    
    // continue increasing automa frequency until max automa frequency of ramp B
    case startupState_AutomaRampB:
