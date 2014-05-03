@@ -1,3 +1,4 @@
+#include <config.h>  // include first !
 #include <avr/wdt.h>
 #include <avr/interrupt.h> 
 #include <Arduino.h>
