@@ -127,20 +127,20 @@ int brushless::setStartupState(int state){
    
    // increase automa frequency until max automa frequency of ramp A
    case startupState_SetupAutomaRampB:
-
+  
     // set pwm offset and reset clock
-    rampAutomaFrequencyB.offset = pwm->getFrequency();
+    rampAutomaFrequencyB.offset = automa_frequency->getFrequency();
     msTime=0;
-
+    
+    //PROBLEMI SUL PASSAGGIO DA 8 a 1 , il passaggio 8->64 è ok !
+    //automa_frequency->setPrescaler(64);
+    //automa_frequency->setFrequency(360);
     //debug(String("In function: ") + __func__,3);
     debug(String("Starting Automa Ramp B ") ,3);
     startupState = startupState_AutomaRampB;
     return  0;
 
-    //debug(String("In function: ") + __func__,3);
-    //debug(String("Starting Automa Ramp B ") ,3);
-    startupState = startupState_AutomaRampB;
-    return  1;
+ 
    
    // continue increasing automa frequency until max automa frequency of ramp B
    case startupState_AutomaRampB:
@@ -259,11 +259,8 @@ String brushless::parseCommand(Command command){
   case 'p':
     return  String( "--QUERY--\n") +
       String("f_t1 ") + String(automa_frequency->getFrequency())	+ String(" Hz\n") +
-      String("TOP_t1 ") + String(automa_frequency->getTop())	        + String("\n") +
-      String("d_t1 ") + String(pwm->getDuty())     	+ String("\n") +
-      String("f_t0 ") + String(pwm->getFrequency()) 	+ String("\n") +
-      String("d_t0 ") + String(pwm->getDuty())   	+ String("\n") +
-      String( "----\n"); 
+      String("TOP_t1 ") + String(automa_frequency->getTop())	        + String("\n");    
+
       
   default:
     return "";
