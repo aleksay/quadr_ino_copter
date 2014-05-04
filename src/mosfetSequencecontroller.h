@@ -12,8 +12,8 @@ const uint8_t states[NUM_STATES] = {
   0b00010100,
   0b00010001,
   0b00100001,
-  0b00100010 };
-
+  0b00100010
+ };
 class mosfetSequencecontroller {
 
 public:
@@ -26,6 +26,7 @@ public:
   int commutePole();
   int start();
   int stop();
+  void setOpenInverter();
   
   // int setAutomaRate(int val);
   //int getAutomaRate();

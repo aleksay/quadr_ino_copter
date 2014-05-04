@@ -33,6 +33,7 @@ public:
 
   int start() {
     setPrescaler(prescaler);
+	
     return 0;
   }
   int start(int _prescaler) {

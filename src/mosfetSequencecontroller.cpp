@@ -1,7 +1,7 @@
 #include "mosfetSequencecontroller.h"
 
 #include "atmegax8.h"
-
+#include "communicator.h"
 
 #define DEFAULT_INITIAL_RATE 100
 
@@ -14,8 +14,8 @@ volatile int direction;
 
 
 mosfetSequencecontroller::mosfetSequencecontroller() {
-  state     = DEFAULT_INITIAL_STATE;
-  isRunning = 0;
+  //state     = DEFAULT_INITIAL_STATE;
+  isRunning = 1;
   direction = 1;
 
 }
@@ -29,7 +29,9 @@ int mosfetSequencecontroller::getState(){
 }
 
 int mosfetSequencecontroller::start(){
+    
 	isRunning = 1;
+	//debug(String("Running " +isRunning),3);
 }
 
 int mosfetSequencecontroller::stop(){
@@ -38,7 +40,9 @@ int mosfetSequencecontroller::stop(){
 
 int mosfetSequencecontroller::setState(int _state){
 
-	if(_state < 0 || _state >= NUM_STATES){
+	if(_state < 0 || _state >= NUM_STATES+1){
+		
+		
 		return -1;
 	}
 
@@ -86,7 +90,9 @@ int mosfetSequencecontroller::getDirection() {
   return direction;
 }
 
-
+void mosfetSequencecontroller::setOpenInverter() {
+  AUTOMA_OPEN_INVERTER;
+}
 
 
 

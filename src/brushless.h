@@ -15,14 +15,15 @@
 
 
 //TODO change to startupState_MotorOff with __UNDERSCORE__
-#define startupStateMotorOff 0
-#define startupStatePWMStarted 1
-#define startupStateRotorAligned 2
-#define startupStateSetupAutomaRampA 3
-#define startupStateAutomaRampA 4
-#define startupStateSetupAutomaRampB 5
-#define startupStateAutomaRampB 6
-#define startupStateStartupFinished 7
+#define startupState_MotorOff 0
+#define startupState_MotorInit 1
+#define startupState_PWMStarted 2
+#define startupState_RotorAligned 3
+#define startupState_SetupAutomaRampA 4
+#define startupState_AutomaRampA 5
+#define startupState_SetupAutomaRampB 6
+#define startupState_AutomaRampB 7
+#define startupState_StartupFinished 8
 
 
 typedef struct ramp {
