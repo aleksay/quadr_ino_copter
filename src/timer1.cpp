@@ -122,7 +122,7 @@ public:
 		
 	//convert value to microcontroller TOP
 	unsigned int _top = Hz2top(freqHz);
-        //debug(_top,3);
+        //debug("%d",_top);
 	
 	//check TOP consistency
 	if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler

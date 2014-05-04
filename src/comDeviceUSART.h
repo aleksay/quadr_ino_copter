@@ -11,4 +11,4 @@
 int uart_putchar(char c, FILE *stream);
 int uart_getchar(char c, FILE *stream);
 int uart_available();
-void uart_init(void);
+void uart_init(int baud);

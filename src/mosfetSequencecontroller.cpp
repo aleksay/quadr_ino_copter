@@ -31,7 +31,7 @@ int mosfetSequencecontroller::getState(){
 int mosfetSequencecontroller::start(){
     
 	isRunning = 1;
-	//debug(String("Running " +isRunning),3);
+	//debug("Running: %d" , isRunning);
 }
 
 int mosfetSequencecontroller::stop(){

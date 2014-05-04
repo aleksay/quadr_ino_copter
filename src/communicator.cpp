@@ -23,7 +23,7 @@ void communicator::eventHandler() {
   while (uart_available() ) {
 
     // get the new byte
-    inChar = (char) getchar();
+    inChar = (char) Serial.read();
 
     // concatenate to the  input string
     inputBuffer += inChar;

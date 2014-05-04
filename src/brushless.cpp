@@ -50,7 +50,7 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   int OpenLoopValue = ang + ramp.offset; 
 
   debug("msTime: %d, gain: %d, offset: %d, value: %d",msTime,ramp.gain,ramp.offset,OpenLoopValue);
-  //debug (OpenLoopValue);
+  //debug ("%d",OpenLoopValue);
   return OpenLoopValue; 
 
 }
@@ -79,7 +79,7 @@ int brushless::setStartupState(int state){
     automa->stop();
     automa->setState(DEFAULT_INITIAL_STATE);
     debug("PWM Started - Commencing rotor alignment ");
-    startupState = startupStateRotorAligned;
+    startupState = startupState_RotorAligned;
     return  0;    
     
    // start increasing pwm duty without changing automa state
@@ -87,7 +87,7 @@ int brushless::setStartupState(int state){
   	pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
 	// keep rotor fixed, until pwm is 50% of end duty
 	if ( pwm->getDuty() >= rampPWMDuty.end/2 ){		
-		startupState = startupStateSetupAutomaRampA;
+		startupState = startupState_SetupAutomaRampA;
  	 }
 	return 0;
     
@@ -101,8 +101,8 @@ int brushless::setStartupState(int state){
     rampPWMDuty.offset = pwm->getDuty();
     msTime=0;
 
-    debug(String("In function: ") + __func__,3);
-    debug(String("Starting Automa Ramp A ") ,3);
+
+    debug("Starting Automa Ramp A");
     startupState = startupState_AutomaRampA;
     return  0;    
 
@@ -165,7 +165,7 @@ int brushless::setStartupState(int state){
 
 int brushless::startupCallback() {
 
-debug("Startup state is: ",startupState);
+debug("Startup state is: %d",startupState);
 
 if(setStartupState(startupState) == 1)
     	starting = 0;

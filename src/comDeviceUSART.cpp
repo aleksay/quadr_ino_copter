@@ -17,8 +17,7 @@ int uart_available() {
     return Serial.available();
   }
 
-void uart_init(void) {
-    int baud = 9600;
+void uart_init(int baud) {
     Serial.begin(baud);
     static FILE fd_in = {0};
     static FILE fd_out = {0};

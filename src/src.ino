@@ -27,7 +27,7 @@ int commandExecute = 0;
 void setup() {
 
   //initialize uart
-  uart_init();
+  uart_init(BAUD);
 
   // Initialize serial parser    
   debug("Entering SerialComm constructor");
@@ -45,7 +45,7 @@ void setup() {
   }
   debug("Brushless constructor DONE");
 
-  debug("Starting brushless", 5);
+  debug("Starting brushless");
   brushlessPtr->start();
   debug("brushlessPtr->start() DONE");
 
