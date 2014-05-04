@@ -64,6 +64,7 @@ void setup() {
 
   // Run main loop
 void loop() { 
+debug("freeRAM = %d", freeRam());
 
   // check for serial command
   if(serialCommPtr->getHaveCommand() == 1){
