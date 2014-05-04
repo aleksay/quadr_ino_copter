@@ -1,6 +1,6 @@
 #include "timer.h"
 #include "communicator.h"
-
+#include "comLogger.h"
 
 class timer0: 
 public timer
@@ -47,27 +47,27 @@ public:
     case 1:
       SET_TIMER0_PRESCALER_1;
       prescaler = 1;
-      debug(String(prescaler),3);
+      debug("prescaler set to: %d",prescaler);
       return 0;
     case 8:
       SET_TIMER0_PRESCALER_8;
       prescaler = 8;
-      debug(String(prescaler),3);
+      debug("prescaler set to: %d",prescaler);
       return 0;
     case 64:
       SET_TIMER0_PRESCALER_64;
       prescaler = 64;
-      debug(String(prescaler),3);
+      debug("prescaler set to: %d",prescaler);
       return 0;	
     case 256:
       SET_TIMER0_PRESCALER_256;
       prescaler = 256;
-      debug(String(prescaler),3);
+      debug("prescaler set to: %d",prescaler);
       return 0;
     case 1024:
       SET_TIMER0_PRESCALER_1024;
       prescaler = 1024;
-      debug(String(prescaler),3);
+      debug("prescaler set to: %d",prescaler);
       return 0;			
     }
     return 1;

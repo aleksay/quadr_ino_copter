@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 #include "atmegax8.h"
-
+#include "comLogger.h"
 
 
 const uint8_t states[NUM_STATES] = {	

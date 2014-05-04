@@ -2,6 +2,7 @@
 #define Timer
 
 #include "atmegax8.h"
+#include "comLogger.h"
 
 class timer {
 

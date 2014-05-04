@@ -9,6 +9,7 @@
 #include <Arduino.h>
 #include <WString.h>
 #include "communicator.h"
+#include "comLogger.h"
 #include "timer.h"
 #include "mosfetSequencecontroller.h"
 

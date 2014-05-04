@@ -2,6 +2,7 @@
 #define Timer_h
 #include "timer.h"
 #include "communicator.h"
+#include "comLogger.h"
 
 class timer1: 
 public timer
@@ -57,13 +58,13 @@ public:
   }
 
   int start() {
-    //debug(String("prescaler set to: ")+ prescaler,3);
+    //debug("prescaler set to: %d",prescaler);
     
     setPrescaler(prescaler);
     return 0;
   }
   int start(int _prescaler) {
-    //debug(String("_prescaler set to: " + _prescaler) ,3);
+    //debug("prescaler set to: %d",prescaler);
     setPrescaler(_prescaler);
     return 0;
   }
@@ -79,7 +80,7 @@ public:
     switch(_prescaler) {
     
     case 1:
-      debug(_prescaler,3);
+      debug("prescaler set to: %d",prescaler);
       SET_TIMER1_PRESCALER_1;
       prescaler = 1;
       return 0;
@@ -105,13 +106,7 @@ public:
   }
 
 	//convert to TOP value
-	int Hz2top(int freqHz) {
-//         debug("funzione di conversione:",3);
-//         debug(freqHz,3);
-//         debug(F_CPU,3);
-//         debug(getPrescaler(),3);
-//         debug(floor(F_CPU/(getPrescaler() * freqHz)-1),3);
-         
+	int Hz2top(int freqHz) {         
 	 return floor(F_CPU/(getPrescaler() * freqHz)-1);
 	}
   
@@ -124,12 +119,9 @@ public:
 	}
 	//update global variable frequency
 	frequency = freqHz;
-	
-	//debug(frequency,3);
-	
+		
 	//convert value to microcontroller TOP
 	unsigned int _top = Hz2top(freqHz);
-        //debug(_top,3);
 	
 	//check TOP consistency
 	if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler

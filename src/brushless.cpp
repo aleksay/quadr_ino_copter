@@ -11,7 +11,7 @@ mosfetSequencecontroller * automa = NULL;
 
 
 brushless::brushless() {
-  debug(String("Entering constructor for: ") + __func__,3);
+  debug("Entering constructor");
   rampPWMDuty.gain = 5;
   rampPWMDuty.offset = 1;
   rampPWMDuty.currentValue = 0;
@@ -47,8 +47,8 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   float ang = (float)ramp.gain * msTime * 0.001;
   int OpenLoopValue = ang + ramp.offset; 
 
-  debug(String("msTime ")+msTime+" gain "+ ramp.gain + "offset " + ramp.offset + "value" + OpenLoopValue,3);
-  //debug (OpenLoopValue,3);
+  debug("msTime: %d, gain: %d, offset: %d, value: %d",msTime,ramp.gain,ramp.offset,OpenLoopValue);
+  //debug (OpenLoopValue);
   return OpenLoopValue; 
 
 }
@@ -69,8 +69,7 @@ int brushless::setStartupState(int state){
    case startupStatePWMStarted:
     automa->stop();
     automa->setState(0);
-    debug(String("In function: ") + __func__,3);
-    debug(String("PWM Started - Commencing rotor alignment ") ,3);
+    debug("PWM Started - Commencing rotor alignment ");
     startupState = startupStateRotorAligned;
     return  0;    
     
@@ -92,8 +91,7 @@ int brushless::setStartupState(int state){
     rampPWMDuty.offset = pwm->getDuty();
     msTime=0;
 
-    debug(String("In function: ") + __func__,3);
-    debug(String("Starting Automa Ramp A ") ,3);
+    debug("Starting Automa Ramp A ");
     startupState = startupStateAutomaRampA;
     return  0;    
 
@@ -121,8 +119,7 @@ int brushless::setStartupState(int state){
     rampAutomaFrequencyB.offset = pwm->getFrequency();
     msTime=0;
 
-    debug(String("In function: ") + __func__,3);
-    debug(String("Starting Automa Ramp B ") ,3);
+    debug("Starting Automa Ramp B ");
     startupState = startupStateAutomaRampB;
     return  0;
    
@@ -139,8 +136,7 @@ int brushless::setStartupState(int state){
    case startupStateStartupFinished:
 	// reduce duty for steady speed 
 	// pwm->setDuty(90);
-	debug(String("In function: ") + __func__,3);
-	debug(String("Startup Finished. Time is: ")+msTime+" ms", 3);
+	debug("Startup Finished. Time is[ms]: %d",msTime);
      	return  1;
 
 
@@ -152,7 +148,7 @@ int brushless::setStartupState(int state){
 
 int brushless::startupCallback() {
 
-debug(String(startupState),3);
+debug("Startup state is: ",startupState);
 
 if(setStartupState(startupState) == 1)
     	starting = 0;

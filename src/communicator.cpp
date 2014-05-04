@@ -1,8 +1,5 @@
 #include "communicator.h"
-#include "usart.cpp"
 
-
-usart* usart_module = NULL;
 
 communicator::communicator() {
 
@@ -17,23 +14,16 @@ communicator::communicator() {
   currentCommand        = (Command) malloc(sizeof(_command));
   currentCommand->type  = '\n';
   currentCommand->value = 0;
-
-  usart_module          = new usart(9600);
-
-  debug(String("Entering constructor for: ") + __func__,3)
-
-    if (usart_module != NULL)
-      debug("Serial initialized. ", 3);
 }
 
 void communicator::eventHandler() {
 
   char inChar = NULL;
 
-  while (usart_module->available()) {
+  while (uart_available() ) {
 
     // get the new byte
-    inChar = (char) usart_module->read();
+    inChar = (char) getchar();
 
     // concatenate to the  input string
     inputBuffer += inChar;
