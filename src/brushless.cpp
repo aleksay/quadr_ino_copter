@@ -15,15 +15,15 @@ brushless::brushless() {
   rampPWMDuty.gain = 15;
   rampPWMDuty.offset = 1;
   rampPWMDuty.currentValue = 0;
-  rampPWMDuty.end = 95;
+  rampPWMDuty.end = 98;
   rampAutomaFrequencyA.gain = 50;
   rampAutomaFrequencyA.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyA.currentValue = 0;
-  rampAutomaFrequencyA.end = 350;
-  rampAutomaFrequencyB.gain = 50;
+  rampAutomaFrequencyA.end = 250;
+  rampAutomaFrequencyB.gain = 150;
   rampAutomaFrequencyB.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyB.currentValue = 0;
-  rampAutomaFrequencyB.end = 1000;
+  rampAutomaFrequencyB.end = 2000;
   
   // initialize timer objects
   pwm   = new timer0();
@@ -62,21 +62,21 @@ int brushless::setStartupState(int state){
 	
   // start pwm signal
   case startupState_MotorOff:
-    automa->setOpenInverter(); //micro con tutti i pin logici low 
+      automa->setOpenInverter(); //micro con tutti i pin logici low 
+  	
+      startupState = startupState_MotorInit;
+      return  0;
 	
-    startupState = startupState_MotorInit;
-    return  0;
-	
-	case startupState_MotorInit:
-    pwm->start();
-	automa_frequency->start();
-    //TODO tirare giu tutti i pin logici setstate(OFF)
-    startupState = startupState_PWMStarted;
-    return  0;
+  case startupState_MotorInit:
+        pwm->start();
+        automa_frequency->start();
+        //TODO tirare giu tutti i pin logici setstate(OFF)
+        startupState = startupState_PWMStarted;
+        return  0;
 	
    
    // Stop motor for aligning rotor
-   case startupState_PWMStarted:
+  case startupState_PWMStarted:
     automa->stop();
     automa->setState(DEFAULT_INITIAL_STATE);
     //debug(String("In function: ") + __func__,3);
@@ -85,10 +85,13 @@ int brushless::setStartupState(int state){
     return  0;    
     
    // start increasing pwm duty without changing automa state
-   case startupState_RotorAligned:
+  case startupState_RotorAligned:
+        
+        
   	pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
 	// keep rotor fixed, until pwm is 50% of end duty
-	if ( pwm->getDuty() >= rampPWMDuty.end-40 ){		
+	if ( pwm->getDuty() >= 60 ){	
+                	
 		startupState = startupState_SetupAutomaRampA;
  	 }
 	return 0;
@@ -122,6 +125,7 @@ int brushless::setStartupState(int state){
       if (  pwm->getDuty() >= rampPWMDuty.end  &&  automa_frequency->getFrequency() >= rampAutomaFrequencyA.end  )
       {
           startupState = startupState_SetupAutomaRampB;
+          
       }
 	return  0;
    
@@ -275,8 +279,8 @@ String brushless::parseCommand(Command command){
   case 'p':
     return  String( "--QUERY--\n") +
       String("f_t1 ") + String(automa_frequency->getFrequency())	+ String(" Hz\n") +
-      String("TOP_t1 ") + String(automa_frequency->getTop())	        + String("\n");    
-
+      String("TOP_t1 ") + String(automa_frequency->getTop())	        + String("\n")+    
+      String("d_t0 ") + String(pwm->getDuty())   	+ String("\n") ;
       
   default:
     return "";

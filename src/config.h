@@ -34,7 +34,7 @@
  		           PARAMETRI Timer1
 =====================================================
  */
-#define DEFAULT_T1_INIT_FREQUENCY 250 //244 //Hz-> TOP:65534
+#define DEFAULT_T1_INIT_FREQUENCY 40 //244 //Hz-> TOP:65534
 #define DEFAULT_T1_INIT_DUTY 5
 #define DEFAULT_T1_INIT_PRESCALER 8
 
