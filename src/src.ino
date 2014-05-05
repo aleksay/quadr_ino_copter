@@ -16,6 +16,8 @@
 brushless *brushlessPtr     = NULL;
 communicator *serialCommPtr = NULL;
 
+// Initialization of command struct
+Command latestCommand;
 
 void setup() {
 
@@ -60,9 +62,11 @@ void loop() {
 
   // check for serial command
   if(serialCommPtr->getHaveCommand() == 1){
-    brushlessPtr->setCommand( serialCommPtr->getCommand() );
-    serialCommPtr->emptyBuffer();
+
+    latestCommand = serialCommPtr->getCommand();
+    brushlessPtr->setCommand(latestCommand);
     
+    //debug("Received latestCommand->type:%c",latestCommand->type);
   }
   brushlessPtr->iterate();	
 }

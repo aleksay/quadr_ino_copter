@@ -50,19 +50,18 @@ void communicator::eventHandler() {
 }
 
 Command communicator::getCommand() {
-  return currentCommand;
-}
 
-int communicator::emptyBuffer() {
+  Command tmpCommand    = (Command) malloc(sizeof(_command));
+  tmpCommand->type      = currentCommand->type;
+  tmpCommand->value     = currentCommand->value;
 
   inputBuffer           = "";
   haveCommand           = 0;
   currentCommand->type  = '\n';
   currentCommand->value = 0;
 
-  return 0;
+  return tmpCommand;
 }
-
 
 int communicator::getHaveCommand() {
   return haveCommand;

@@ -165,7 +165,7 @@ int brushless::setStartupState(int state){
 
 int brushless::startupCallback() {
 
-debug("Startup state is: %d",startupState);
+//debug("Startup state is: %d",startupState);
 
 if(setStartupState(startupState) == 1)
     	starting = 0;
@@ -179,7 +179,7 @@ int brushless::iterate() {
 
   // parse latestcommand
   if (commandRead == 0) {
-    latestMessage = parseCommand(latestCommand);
+    parseCommand(latestCommand);
     commandRead = 1;
   }
   
@@ -198,76 +198,101 @@ int brushless::incrementTime(){
       	return 0;
 }
 
-String brushless::parseCommand(Command command){
+int brushless::parseCommand(Command command){
 
+  //debug("Received command->type:%c",command->type);
   switch(command->type){
 
 // Print time
   case 't':
-    return  String(msTime)+ "ms\n";    
+    free(command); 
+    log_info("%dms",msTime);    
+    return  0;
     
 // Set pwm frequency
   case 'f':
     pwm->setFrequency(command->value);
-    return String(pwm->getFrequency());
+    free(command); 
+    log_info("pwm->getFrequency():%d",pwm->getFrequency());
+    return 0;
     
 // Set pwm duty cycle
   case 'd':
     pwm->setDuty(command->value);
-    return String(pwm->getDuty());
+    free(command); 
+    log_info("pwm->getDuty():%d",pwm->getDuty());
+    return 0;
 
 // Set automa frequency
   case 'a':
     automa_frequency->setFrequency(command->value);
-    return String(automa_frequency->getFrequency());
-	
+    free(command); 
+    log_info("automa_frequency->getFrequency():%d",automa_frequency->getFrequency());
+    return 0;
+// Set prescaler value
   case 'l':
     automa_frequency->setPrescaler(command->value);
-    return String(automa_frequency->getPrescaler());
+    free(command);
+    log_info("automa_frequency->getPrescaler function is missing!");
+    return 0;
 
-	// Print frequency values
+// Print angular speed
   case 'b':
-    return angSpeed();
+    free(command);
+    //log_info("angSpeed():%d",angSpeed()); // BROKEN
+    return 0;
 
-	// Print free RAM
+// Print free RAM
   case 'r':
-	debug("freeRAM = %d", freeRam());
-	return String(freeRam());    
+     free(command); 
+     log_info("freeRAM = %d", freeRam());
+     return 0;    
 
-	// watchdog reset
+// watchdog reset
   case 'R':
-	//wdt_init(); // broken for now
-	return "";
+     free(command);
+     log_info("resetting...");
+     wdt_init(); // broken for now ??
+     return 0;
 	
 // Start motor    
   case 's':
+     free(command); 
     starting=1;
     //startupState = startupState_MotorOff;
-    return "Starting";
+    log_info("Starting...");
+    return 0;
     
 // Set end value of startup ramp
   case 'u': 
     rampAutomaFrequencyA.end = command->value;
-    return String(rampAutomaFrequencyA.end); 
+    free(command);
+    log_info("rampAutomaFrequencyA.end = %d", rampAutomaFrequencyA.end);
+    return 0; 
     
 // Set gain for startup ramp
   case 'i':
-    rampAutomaFrequencyA.gain = (command->value); 
-    return String(rampAutomaFrequencyA.gain); 
+    rampAutomaFrequencyA.gain = (command->value);
+    free(command);
+    log_info("rampAutomaFrequencyA.gain = %d", rampAutomaFrequencyA.gain);
+    return 0; 
 
 // Debug print
   case 'o':
-    return "GAIN:"+String(rampAutomaFrequencyA.gain)+" END:"+String(rampAutomaFrequencyA.end); 
+    free(command);
+    log_info("GAIN:%d,  END:%d", rampAutomaFrequencyA.gain, rampAutomaFrequencyA.end);
+    return 0; 
     
 // Formatted print for parsing
   case 'p':
-    return  String( "--QUERY--\n") +
-      String("f_t1 ") + String(automa_frequency->getFrequency())	+ String(" Hz\n") +
-      String("TOP_t1 ") + String(automa_frequency->getTop())	        + String("\n");    
-
-      
+    free(command);  
+    log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%d", automa_frequency->getFrequency(), automa_frequency->getTop() );
+    return  0;
+          
   default:
-    return "";
+     free(command); 
+     log_warn("empty message");
+     return 0;
 
   }
 }

@@ -54,7 +54,7 @@ public:
 private:
 
   // methods
-  String parseCommand(Command command);
+  int parseCommand(Command command);
   String angSpeed();
   int getStartupOpenLoopValue(ramp ramp);
   int setStartupState(int state);
