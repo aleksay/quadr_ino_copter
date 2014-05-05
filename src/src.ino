@@ -65,6 +65,7 @@ void setup() {
   // Run main loop
 void loop() { 
 
+
   // check for serial command
   if(serialCommPtr->getHaveCommand() == 1){
 
