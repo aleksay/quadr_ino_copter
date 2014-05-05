@@ -228,7 +228,12 @@ String brushless::parseCommand(Command command){
 // Print frequency values
   case 'r':
     return angSpeed();
-    
+
+	// Print free RAM
+  case 'R':
+	debug("freeRAM = %d", freeRam());
+	return String(freeRam());    
+	
 // Start motor    
   case 's':
     starting=1;
