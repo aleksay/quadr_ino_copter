@@ -164,8 +164,8 @@ int brushless::setStartupState(int state){
 }
 
 int brushless::startupCallback() {
-debug("ciao");
- // debug("Startup state is: %d",startupState);
+
+debug("Startup state is: %d",startupState);
 
 if(setStartupState(startupState) == 1)
     	starting = 0;
@@ -225,14 +225,19 @@ String brushless::parseCommand(Command command){
     automa_frequency->setPrescaler(command->value);
     return String(automa_frequency->getPrescaler());
 
-// Print frequency values
-  case 'r':
+	// Print frequency values
+  case 'b':
     return angSpeed();
 
 	// Print free RAM
-  case 'R':
+  case 'r':
 	debug("freeRAM = %d", freeRam());
 	return String(freeRam());    
+
+	// watchdog reset
+  case 'R':
+	//wdt_init(); // broken for now
+	return "";
 	
 // Start motor    
   case 's':
@@ -262,7 +267,6 @@ String brushless::parseCommand(Command command){
 
       
   default:
-    log_err("Invalid option");
     return "";
 
   }

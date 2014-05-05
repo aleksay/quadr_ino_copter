@@ -2,8 +2,9 @@
 #define ATMEGAX8 
 
 #include <Arduino.h>
+#include <avr/wdt.h>
+#include <avr/interrupt.h> 
 #include "config.h"
-
 
 /*
 =====================================================
@@ -152,6 +153,12 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define AUTOMA_OPEN_INVERTER PORTB=0b00000000
 #endif
 
+
+
+int freeRam () ;
+
+// Software reset 
+void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
 
 
 #endif

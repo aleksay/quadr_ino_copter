@@ -18,6 +18,7 @@ public:
 	communicator();
 	int 		 getHaveCommand();
 	Command  getCommand();
+        int emptyBuffer();
 	void 		 eventHandler();
 	void 		 iterate();
 	
