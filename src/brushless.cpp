@@ -164,8 +164,8 @@ int brushless::setStartupState(int state){
 }
 
 int brushless::startupCallback() {
-
-debug("Startup state is: %d",startupState);
+debug("ciao");
+ // debug("Startup state is: %d",startupState);
 
 if(setStartupState(startupState) == 1)
     	starting = 0;
@@ -257,6 +257,7 @@ String brushless::parseCommand(Command command){
 
       
   default:
+    log_err("Invalid option");
     return "";
 
   }
