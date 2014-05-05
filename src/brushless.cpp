@@ -12,7 +12,7 @@ mosfetSequencecontroller * automa = NULL;
 
 brushless::brushless() {
   debug(String("Entering constructor for: ") + __func__,3);
-  rampPWMDuty.gain = 15;
+  rampPWMDuty.gain = 20;
   rampPWMDuty.offset = 1;
   rampPWMDuty.currentValue = 0;
   rampPWMDuty.end = 98;
@@ -23,7 +23,7 @@ brushless::brushless() {
   rampAutomaFrequencyB.gain = 150;
   rampAutomaFrequencyB.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyB.currentValue = 0;
-  rampAutomaFrequencyB.end = 2000;
+  rampAutomaFrequencyB.end = 2800;
   
   // initialize timer objects
   pwm   = new timer0();
@@ -63,7 +63,8 @@ int brushless::setStartupState(int state){
   // start pwm signal
   case startupState_MotorOff:
       automa->setOpenInverter(); //micro con tutti i pin logici low 
-  	
+	  automa->stop();
+  	  pwm->setDuty(DEFAULT_T0_INIT_DUTY);
       startupState = startupState_MotorInit;
       return  0;
 	
@@ -71,27 +72,29 @@ int brushless::setStartupState(int state){
         pwm->start();
         automa_frequency->start();
         //TODO tirare giu tutti i pin logici setstate(OFF)
+		
         startupState = startupState_PWMStarted;
         return  0;
 	
    
    // Stop motor for aligning rotor
   case startupState_PWMStarted:
-    automa->stop();
+    
     automa->setState(DEFAULT_INITIAL_STATE);
     //debug(String("In function: ") + __func__,3);
     debug(String("PWM Started - Commencing rotor alignment ") ,3);
+	msTime=0; 
     startupState = startupState_RotorAligned;
     return  0;    
     
    // start increasing pwm duty without changing automa state
   case startupState_RotorAligned:
         
-        
   	pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
 	// keep rotor fixed, until pwm is 50% of end duty
+	
 	if ( pwm->getDuty() >= 60 ){	
-                	
+               	
 		startupState = startupState_SetupAutomaRampA;
  	 }
 	return 0;
