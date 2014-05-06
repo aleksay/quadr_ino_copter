@@ -10,7 +10,6 @@ public:
   timer0(){
 
     frequency = DEFAULT_T0_INIT_FREQUENCY;
-    setDuty(DEFAULT_T0_INIT_DUTY);
     prescaler = DEFAULT_T0_INIT_PRESCALER;
 
     _timer0_fastPwm_ocr0atop_init();

@@ -11,7 +11,6 @@
 
 
 
-
 // Initialization of objects
 brushless *brushlessPtr     = NULL;
 communicator *serialCommPtr = NULL;
@@ -64,13 +63,14 @@ void loop() {
   if(serialCommPtr->getHaveCommand() == 1){
 
     latestCommand = serialCommPtr->getCommand();
+
+    //here put a setCommand for each module in the sketch
     brushlessPtr->setCommand(latestCommand);
-    
     //debug("Received latestCommand->type:%c",latestCommand->type);
   }
   brushlessPtr->iterate();	
-}
 
+}
 
 
 // Callback function for reserved Arduino keyword serial polling
