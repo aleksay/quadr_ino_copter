@@ -80,9 +80,11 @@ public:
 
   int setFrequency(unsigned int val) {
     if (val < 0 || val > 254)
+	log_err("invalid value:%u",val);
       return -1;
 
     if (val == frequency) 
+	log_warn("value unchanged");
       return -1;
 
 
@@ -101,6 +103,7 @@ public:
   int setDuty(int val) {
 
     if (val < 0 || val >= 100)
+	log_err("invalid value:%d",val);
       return -1;
 
     duty = val;
