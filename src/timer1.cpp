@@ -14,6 +14,10 @@ public:
     frequency = DEFAULT_T1_INIT_FREQUENCY;
     duty = DEFAULT_T1_INIT_DUTY;
     prescaler = DEFAULT_T1_INIT_PRESCALER;
+    
+    frequency=0;
+    top=0;
+
 	
 	//configure timer1
     _timer1_fastPwm_ocr1atop_init();
