@@ -1,8 +1,6 @@
 #include "config.h"  // include first !
 
 #include <Arduino.h>
-#include <WString.h>
-
 #include "brushless.h"
 #include "communicator.h"
 #include "comLogger.h"
@@ -39,9 +37,6 @@ void setup() {
   }
   debug("Brushless constructor returned");
 
-//  debug("Starting brushless");
-//  brushlessPtr->start();
-//  debug("Starting brushless DONE");
 
   //timer 2 init.
   // MsTimer2::set(50, brushlessPtr->incrementTime ); // Doesnt work

@@ -321,22 +321,13 @@ int brushless::setCommand(Command command) {
       	return 0;
 }
 
-String brushless::getResponse() {
-  return latestMessage;
-}
-
-int brushless::start(){
-// NOT USED
-    	return 0;
-}
-
-String brushless::angSpeed(){
+int brushless::angSpeed(){
 	unsigned int RPM_e = floor( (automa_frequency->getFrequency()/NUM_STATES) * 60);
 	unsigned int RPM_m = floor(RPM_e /(NUM_POLES/2));
 	int rads_e = floor(RPM_e /60 * 2 * M_PI);
 	int rads_m = floor(RPM_m /60 * 2 * M_PI);
-       
-	return "RPM elettrici:"+String(RPM_e)+", RPM meccanici:"+String(RPM_m)+", RAD/s elettrici:"+String(rads_e)+", RAD/s meccanici:"+String(rads_m);
+       log_info("RPM elettrici:%u, RPM meccanici:%u, RAD/s elettrici:%d, RAD/s meccanici:%d",RPM_e, RPM_m, rads_e, rads_m);
+        return 0;
 }
 
   int brushless::setStartupFreqEnd (int val) {

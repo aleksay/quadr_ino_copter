@@ -3,13 +3,9 @@
 
 communicator::communicator() {
 
-
   bufferLength          = 0;
-
-  inputBuffer           = "";
-  inputBuffer.reserve(20);
-
   haveCommand           = 0;
+  strcpy(inputBuffer, "");
 
   currentCommand        = (Command) malloc(sizeof(_command));
   currentCommand->type  = '\n';
@@ -26,14 +22,14 @@ void communicator::eventHandler() {
     inChar = (char) Serial.read();
 
     // concatenate to the  input string
-    inputBuffer += inChar;
+    inputBuffer[strlen(inputBuffer)] = inChar; /* copy the string as last */
 
     // if the incoming character is a newline, set a flag
     // extract integer value from string:
     if (inChar == '\n') {
 
       inChar = NULL;
-      bufferLength = inputBuffer.length();
+      bufferLength = strlen(inputBuffer);
       char inputStringValue[bufferLength - 1];
 
       int i = 1;
@@ -42,7 +38,7 @@ void communicator::eventHandler() {
         i++;
       }
       currentCommand->type = inputBuffer[0];
-      currentCommand->value = strtol(inputStringValue,NULL,0);
+      currentCommand->value = strtol(inputStringValue, NULL, 0);
 
       haveCommand = 1;
     }
@@ -55,7 +51,7 @@ Command communicator::getCommand() {
   tmpCommand->type      = currentCommand->type;
   tmpCommand->value     = currentCommand->value;
 
-  inputBuffer           = "";
+  strcpy(inputBuffer, "");
   haveCommand           = 0;
   currentCommand->type  = '\n';
   currentCommand->value = 0;

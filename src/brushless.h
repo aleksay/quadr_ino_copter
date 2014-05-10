@@ -7,7 +7,6 @@
 #define BRUSHLESS_h
 
 #include <Arduino.h>
-#include <WString.h>
 #include "communicator.h"
 #include "comLogger.h"
 #include "timer.h"
@@ -47,15 +46,13 @@ public:
   int incrementTime();
   int setStartupFreqEnd (int val);
   int setStartupFreqGain (int val);
-  int start();
   int setCommand(Command command);
-  String getResponse();
 
 private:
 
   // methods
   int parseCommand(Command command);
-  String angSpeed();
+  int angSpeed();
   int getStartupOpenLoopValue(ramp ramp);
   int setStartupState(int state);
   int startupCallback();
@@ -65,7 +62,6 @@ private:
   int startupState;
   unsigned int msTime;
   int commandRead;
-  String latestMessage;
   Command latestCommand;
   ramp rampPWMDuty, rampAutomaFrequencyA, rampAutomaFrequencyB;
 

@@ -2,7 +2,7 @@
 #define COMUNICATOR_h
 
 #include <Arduino.h>
-#include <WString.h>
+#include <string.h>
 #include "comLogger.h"
 #include "comDeviceUSART.h"
 
@@ -22,7 +22,7 @@ public:
 	void 		 iterate();
 	
 private:
-	String inputBuffer;
+	char inputBuffer[10];
 	int haveCommand;
 	Command currentCommand;
 	int bufferLength;
