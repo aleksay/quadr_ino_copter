@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <avr/pgmspace.h>
 
 // Remove text preceding / and \ from FILE preprocessor directive
 #define __FILE_NO_PATH__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
@@ -12,12 +13,12 @@
 #ifdef NDEBUG
 #define debug(M, ...)
 #else
-#define debug(M, ...) fprintf(stdout, "DEBUG %s:%d: " M "\n", __FILE_NO_PATH__, __LINE__, ##__VA_ARGS__)
+#define debug(M, ...) fprintf_P(stdout, PSTR("DEBUG %s:%d " M "\n"), __FILE_NO_PATH__, __LINE__, ##__VA_ARGS__)
 #endif
 
-#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d) " M "\n", __FILE_NO_PATH__, __LINE__,  ##__VA_ARGS__)
-#define log_warn(M, ...) fprintf(stderr, "[WARN] (%s:%d) " M "\n", __FILE_NO_PATH__, __LINE__,  ##__VA_ARGS__)
-#define log_info(M, ...) fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE_NO_PATH__, __LINE__, ##__VA_ARGS__)
+#define log_err(M, ...) fprintf_P(stderr,PSTR("[ERROR] (%s:%d) " M "\n"), __FILE_NO_PATH__, __LINE__,  ##__VA_ARGS__)
+#define log_warn(M, ...) fprintf_P(stderr, PSTR("[WARN] (%s:%d) " M "\n"), __FILE_NO_PATH__, __LINE__,  ##__VA_ARGS__)
+#define log_info(M, ...) fprintf_P(stderr, PSTR("[INFO] (%s:%d) " M "\n"), __FILE_NO_PATH__, __LINE__, ##__VA_ARGS__)
 
 
 /*
