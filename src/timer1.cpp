@@ -11,9 +11,13 @@ public:
   timer1() {
 
 	//initialize timer1 global variable
-//    frequency = DEFAULT_T1_INIT_FREQUENCY;
-//    duty = DEFAULT_T1_INIT_DUTY;
+    frequency = DEFAULT_T1_INIT_FREQUENCY;
+    duty = DEFAULT_T1_INIT_DUTY;
     prescaler = DEFAULT_T1_INIT_PRESCALER;
+    
+    frequency=0;
+    top=0;
+
 	
 	//configure timer1
     _timer1_fastPwm_ocr1atop_init();
@@ -111,10 +115,11 @@ public:
 	}
   
  
-	int setFrequency(unsigned int freqHz) {
+int setFrequency(unsigned int freqHz) {
 	
 	// check value
 	if (freqHz == frequency) {
+		log_warn("Value unchanged!");
 	  return -1;
 	}
 	//update global variable frequency
@@ -126,9 +131,11 @@ public:
 	
 	//check TOP consistency
 	if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
+		log_err("Bad TOP!");
 	  return -1;
 	}
 	if (_top == top) {
+		log_warn("Value unchanged!");
 	  return -1;
 	}
 
@@ -148,6 +155,7 @@ public:
   int setDuty(int val) {
 
     if (val < 0 || val > 100)
+	log_err("bad duty");
       return -1;
 
     duty = val;

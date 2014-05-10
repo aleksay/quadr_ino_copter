@@ -81,7 +81,7 @@ int brushless::setStartupState(int state){
   case startupState_PWMStarted:
     
     automa->setState(DEFAULT_INITIAL_STATE);
-    debug("PWM Started - Commencing rotor alignment ");
+    debug("PWM Started - Commencing rotor alignment");
 	msTime=0; 
     startupState = startupState_RotorAligned;
     return  0;    
@@ -147,7 +147,7 @@ int brushless::setStartupState(int state){
     automa_frequency->setPrescaler(1);
     automa_frequency->setFrequency(automa_frequency->getFrequency()+1);
     
-    debug("Starting Automa Ramp B ");
+    debug("Starting Automa Ramp B");
     startupState = startupState_AutomaRampB;
     return  0;
 
@@ -174,6 +174,7 @@ int brushless::setStartupState(int state){
 
 
   default:
+	log_err("invalid state:%d",state);
     return -1;
 
   }
@@ -303,7 +304,7 @@ int brushless::parseCommand(Command command){
 // Formatted print for parsing
   case 'p':
     free(command);  
-    log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%d", automa_frequency->getFrequency(), automa_frequency->getTop() );
+    log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", automa_frequency->getFrequency(), automa_frequency->getTop() );
     return  0;
           
   default:
@@ -340,6 +341,7 @@ String brushless::angSpeed(){
 
   int brushless::setStartupFreqEnd (int val) {
       if (val < 0 || val > 30000)
+	log_err("invalid start freq:%d",val);
       return -1;
       
       rampAutomaFrequencyA.end = val;   //end value in Hz
@@ -348,6 +350,7 @@ String brushless::angSpeed(){
 
   int brushless::setStartupFreqGain (int val) {
       if (val < 0 || val > 2500)
+	log_err("invalid start gain:%d",val);
       return -1;
       
       rampAutomaFrequencyA.gain = val;   //end value in Hz

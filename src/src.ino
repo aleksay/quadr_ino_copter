@@ -26,31 +26,28 @@ void setup() {
     printAndClearResetSource();
   
   // Initialize serial parser    
-  debug("Entering SerialComm constructor");
   if (serialCommPtr == NULL)
   {
     serialCommPtr = new communicator(); 
   }
-  debug("SerialComm constructor DONE");
+  debug("SerialComm constructor returned");
 
   // Initialize brushless object
-  debug("Entering Brushless constructor");
   if (brushlessPtr == NULL)
   {
     brushlessPtr  = new brushless();  
   }
-  debug("Brushless constructor DONE");
+  debug("Brushless constructor returned");
 
-  debug("Starting brushless");
-  brushlessPtr->start();
-  debug("Starting brushless DONE");
+//  debug("Starting brushless");
+//  brushlessPtr->start();
+//  debug("Starting brushless DONE");
 
   //timer 2 init.
   // MsTimer2::set(50, brushlessPtr->incrementTime ); // Doesnt work
-  debug("Starting timer2 counter");
   MsTimer2::set(10, globalSetTime ); // 10ms period
   MsTimer2::start();
-  debug("Starting timer2 counter DONE");
+  debug("timer2 counter initialized");
 
 
 }
