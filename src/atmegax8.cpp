@@ -25,11 +25,11 @@ void printAndClearResetSource(void)
 
   if (bit_get(MCUSR, BIT(0)))
   {
-    log_info("Power-on reset");
+    //log_info("Power-on reset");
   }
   if (bit_get(MCUSR, BIT(1)))
   {
-    log_info("External reset");
+    //log_info("External reset");
   }
   if (bit_get(MCUSR, BIT(2)))
   {
