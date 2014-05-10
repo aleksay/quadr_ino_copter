@@ -23,6 +23,8 @@ void setup() {
   //initialize uart
   uart_init(BAUD); // BAUD is 9600 by default
 
+    printAndClearResetSource();
+  
   // Initialize serial parser    
   debug("Entering SerialComm constructor");
   if (serialCommPtr == NULL)
@@ -49,7 +51,6 @@ void setup() {
   MsTimer2::set(10, globalSetTime ); // 10ms period
   MsTimer2::start();
   debug("Starting timer2 counter DONE");
-
 
 
 }
