@@ -18,6 +18,13 @@ void wdt_init(void)
   return;
 }
 
+void wdt_sw_reset(void)
+{
+  wdt_enable(WDTO_30MS);
+  while(1)
+  {
+  }
+}
 
 // Software reset
 void printAndClearResetSource(void)

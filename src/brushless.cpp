@@ -270,7 +270,7 @@ int brushless::parseCommand(Command command){
   case 'R':
      free(command);
      log_info("resetting...");
-     wdt_init(); // broken for now ??
+     wdt_sw_reset(); // broken for now ??
      return 0;
 	
 // Start motor    

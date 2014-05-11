@@ -201,8 +201,11 @@ WGM02 WGM01 WGM00 Timer/Counter
 
 int freeRam () ;
 
-// Software reset 
+
 void wdt_init(void) __attribute__((naked)) __attribute__((section(".init3")));
+
+// Software reset 
+void wdt_sw_reset(void);
 
 // get reset cause
 void printAndClearResetSource(void);
