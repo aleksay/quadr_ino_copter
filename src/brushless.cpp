@@ -46,7 +46,7 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   float ang = (float)ramp.gain * msTime * 0.001;
   int OpenLoopValue = ang + ramp.offset; 
 
-  debug("msTime: %d, gain: %d, offset: %d, value: %d",msTime,ramp.gain,ramp.offset,OpenLoopValue);
+  debug("msTime: %u, gain: %d, offset: %d, value: %d",msTime,ramp.gain,ramp.offset,OpenLoopValue);
   //debug ("%d",OpenLoopValue);
   return OpenLoopValue; 
 
@@ -302,6 +302,7 @@ int brushless::parseCommand(Command command){
   case 'p':
     free(command);  
     log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", automa_frequency.getFrequency(), automa_frequency.getTop() );
+    debug("OCR1A %u OCR1B %u OCR0A %u OCR0B %u",OCR1A,OCR1B,OCR0A,OCR0B);
     return  0;
           
   default:

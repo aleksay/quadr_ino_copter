@@ -103,8 +103,10 @@ public:
   int setDuty(int val) {
 
     if (val < 0 || val >= 100)
-	log_err("invalid value:%d",val);
+    {
+      log_err("invalid value:%d",val);
       return -1;
+    }
 
     duty = val;
     _dutyVal = map(duty, 0, 100, 0, frequency);
