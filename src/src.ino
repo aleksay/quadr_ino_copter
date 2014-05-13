@@ -10,7 +10,9 @@
 
 
 // Initialization of objects
-brushless *brushlessPtr     = NULL;
+//brushless *brushlessPtr     = NULL;
+brushless brushless;
+
 communicator *serialCommPtr = NULL;
 
 // Initialization of command struct
@@ -31,11 +33,11 @@ void setup() {
   debug("SerialComm constructor returned");
 
   // Initialize brushless object
-  if (brushlessPtr == NULL)
-  {
-    brushlessPtr  = new brushless();  
-  }
-  debug("Brushless constructor returned");
+//  if (brushlessPtr == NULL)
+//  {
+ //   brushlessPtr  = new brushless();  
+//  }
+//  debug("Brushless constructor returned");
 
 
   //timer 2 init.
@@ -58,10 +60,10 @@ void loop() {
     latestCommand = serialCommPtr->getCommand();
 
     //here put a setCommand for each module in the sketch
-    brushlessPtr->setCommand(latestCommand);
+    brushless.setCommand(latestCommand);
     //debug("Received latestCommand->type:%c",latestCommand->type);
   }
-  brushlessPtr->iterate();	
+  brushless.iterate();	
 
 }
 
@@ -76,7 +78,7 @@ void serialEvent()
 
 void globalSetTime()
 {
-  brushlessPtr->incrementTime();
+  brushless.incrementTime();
 }
 
 
