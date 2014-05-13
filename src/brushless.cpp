@@ -5,9 +5,9 @@
 #include "timer.h"
 
 
-timer1 *automa_frequency = NULL;
-timer0 *pwm = NULL;
-mosfetSequencecontroller * automa = NULL;
+timer1 automa_frequency;
+timer0 pwm;
+mosfetSequencecontroller automa;
 
 
 brushless::brushless() {
@@ -25,14 +25,11 @@ brushless::brushless() {
   rampAutomaFrequencyB.currentValue = 0;
   rampAutomaFrequencyB.end = 2800;
   
-  // initialize timer objects
-  pwm   = new timer0();
-  automa_frequency   = new timer1();
+
   // TODO bring timer 2 here
 
   // Get state machine ready for callbacks
-  automa	     = new mosfetSequencecontroller();
-  automa->init();
+  automa.init();
   
   setStartupState(startupState_MotorOff);
   
@@ -62,15 +59,15 @@ int brushless::setStartupState(int state){
 
   // start pwm signal
   case startupState_MotorOff:
-      automa->setOpenInverter(); //micro con tutti i pin logici low 
-	  automa->stop();
-  	  pwm->setDuty(DEFAULT_T0_INIT_DUTY);
+      automa.setOpenInverter(); //micro con tutti i pin logici low 
+	  automa.stop();
+  	  pwm.setDuty(DEFAULT_T0_INIT_DUTY);
       startupState = startupState_MotorInit;
       return  0;
 	
   case startupState_MotorInit:
-        pwm->start();
-        automa_frequency->start();
+        pwm.start();
+        automa_frequency.start();
         //TODO tirare giu tutti i pin logici setstate(OFF)
 		
         startupState = startupState_PWMStarted;
@@ -80,7 +77,7 @@ int brushless::setStartupState(int state){
    // Stop motor for aligning rotor
   case startupState_PWMStarted:
     
-    automa->setState(DEFAULT_INITIAL_STATE);
+    automa.setState(DEFAULT_INITIAL_STATE);
     debug("PWM Started - Commencing rotor alignment");
 	msTime=0; 
     startupState = startupState_RotorAligned;
@@ -89,10 +86,10 @@ int brushless::setStartupState(int state){
    // start increasing pwm duty without changing automa state
   case startupState_RotorAligned:
 
-  	pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
+  	pwm.setDuty(getStartupOpenLoopValue(rampPWMDuty));
 	// keep rotor fixed, until pwm is 50% of end duty
 
-	if ( pwm->getDuty() >= 60 ){	
+	if ( pwm.getDuty() >= 60 ){	
 
 		startupState = startupState_SetupAutomaRampA;
  	 }
@@ -102,10 +99,10 @@ int brushless::setStartupState(int state){
    case startupState_SetupAutomaRampA:
 
     // start drive sequence
-	//automa_frequency->start();
-    automa->start();
+	//automa_frequency.start();
+    automa.start();
     // set ramp duty offset and reset clock
-    rampPWMDuty.offset = pwm->getDuty();
+    rampPWMDuty.offset = pwm.getDuty();
     msTime=0;
 
 
@@ -116,15 +113,15 @@ int brushless::setStartupState(int state){
    // increase frequency of automa and pwm duty until max duty value is reached
    case startupState_AutomaRampA:
 	// raise duty until end duty
-      if (  pwm->getDuty() < rampPWMDuty.end )
-      pwm->setDuty(getStartupOpenLoopValue(rampPWMDuty));
+      if (  pwm.getDuty() < rampPWMDuty.end )
+      pwm.setDuty(getStartupOpenLoopValue(rampPWMDuty));
 
 	// raise automa frequency until end frequency
-      if (  automa_frequency->getFrequency() < rampAutomaFrequencyA.end )
-      automa_frequency->setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
+      if (  automa_frequency.getFrequency() < rampAutomaFrequencyA.end )
+      automa_frequency.setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
 
 	// set next state once pwm and duty reach end value
-      if (  pwm->getDuty() >= rampPWMDuty.end  &&  automa_frequency->getFrequency() >= rampAutomaFrequencyA.end  )
+      if (  pwm.getDuty() >= rampPWMDuty.end  &&  automa_frequency.getFrequency() >= rampAutomaFrequencyA.end  )
       {
           startupState = startupState_SetupAutomaRampB;
       }
@@ -139,13 +136,13 @@ int brushless::setStartupState(int state){
    case startupState_SetupAutomaRampB:
   
     // set pwm offset and reset clock
-    rampAutomaFrequencyB.offset = automa_frequency->getFrequency();
+    rampAutomaFrequencyB.offset = automa_frequency.getFrequency();
     msTime=0;   
   
     TCCR1B &= (0 << CS12) | ~(1 << CS11)  | (0 << CS10);
 
-    automa_frequency->setPrescaler(1);
-    automa_frequency->setFrequency(automa_frequency->getFrequency()+1);
+    automa_frequency.setPrescaler(1);
+    automa_frequency.setFrequency(automa_frequency.getFrequency()+1);
     
     debug("Starting Automa Ramp B");
     startupState = startupState_AutomaRampB;
@@ -156,8 +153,8 @@ int brushless::setStartupState(int state){
    
    // continue increasing automa frequency until max automa frequency of ramp B
    case startupState_AutomaRampB:
-      automa_frequency->setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyB));
-      if ( automa_frequency->getFrequency() >= rampAutomaFrequencyB.end)
+      automa_frequency.setFrequency(getStartupOpenLoopValue(rampAutomaFrequencyB));
+      if ( automa_frequency.getFrequency() >= rampAutomaFrequencyB.end)
       {   
 	  
 		
@@ -168,7 +165,7 @@ int brushless::setStartupState(int state){
     // finish
    case startupState_StartupFinished:
 	// reduce duty for steady speed 
-	// pwm->setDuty(90);
+	// pwm.setDuty(90);
 	debug("Startup Finished. Time is[ms]: %d",msTime);
      	return  1;
 
@@ -218,7 +215,7 @@ int brushless::incrementTime(){
 
 int brushless::parseCommand(Command command){
 
-  //debug("Received command->type:%c",command->type);
+  //debug("Received command.type:%c",command.type);
   switch(command->type){
 
 // Print time
@@ -229,29 +226,29 @@ int brushless::parseCommand(Command command){
     
 // Set pwm frequency
   case 'f':
-    pwm->setFrequency(command->value);
+    pwm.setFrequency(command->value);
     free(command); 
-    log_info("pwm->getFrequency():%d",pwm->getFrequency());
+    log_info("pwm.getFrequency():%d",pwm.getFrequency());
     return 0;
     
 // Set pwm duty cycle
   case 'd':
-    pwm->setDuty(command->value);
+    pwm.setDuty(command->value);
     free(command); 
-    log_info("pwm->getDuty():%d",pwm->getDuty());
+    log_info("pwm.getDuty():%d",pwm.getDuty());
     return 0;
 
 // Set automa frequency
   case 'a':
-    automa_frequency->setFrequency(command->value);
+    automa_frequency.setFrequency(command->value);
     free(command); 
-    log_info("automa_frequency->getFrequency():%d",automa_frequency->getFrequency());
+    log_info("automa_frequency.getFrequency():%d",automa_frequency.getFrequency());
     return 0;
 // Set prescaler value
   case 'l':
-    automa_frequency->setPrescaler(command->value);
+    automa_frequency.setPrescaler(command->value);
     free(command);
-    log_info("automa_frequency->getPrescaler function is missing!");
+    log_info("automa_frequency.getPrescaler function is missing!");
     return 0;
 
 // Print angular speed
@@ -304,7 +301,7 @@ int brushless::parseCommand(Command command){
 // Formatted print for parsing
   case 'p':
     free(command);  
-    log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", automa_frequency->getFrequency(), automa_frequency->getTop() );
+    log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", automa_frequency.getFrequency(), automa_frequency.getTop() );
     return  0;
           
   default:
@@ -322,7 +319,7 @@ int brushless::setCommand(Command command) {
 }
 
 int brushless::angSpeed(){
-	unsigned int RPM_e = floor( (automa_frequency->getFrequency()/NUM_STATES) * 60);
+	unsigned int RPM_e = floor( (automa_frequency.getFrequency()/NUM_STATES) * 60);
 	unsigned int RPM_m = floor(RPM_e /(NUM_POLES/2));
 	int rads_e = floor(RPM_e /60 * 2 * M_PI);
 	int rads_m = floor(RPM_m /60 * 2 * M_PI);
@@ -350,13 +347,10 @@ int brushless::angSpeed(){
 
 
 brushless::~brushless() {
- 	free(pwm); 
- 	free(automa); 
- 	free(automa_frequency ); 
  }
 
 ISR(TIMER1_COMPA_vect) {
-	automa->commutePole();
+	automa.commutePole();
 }
 
 
