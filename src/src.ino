@@ -19,7 +19,8 @@ Command latestCommand;
 void setup() {
 
   //initialize uart
-  uart_init(BAUD); // BAUD is 9600 by default
+  uart_init(); // BAUD is 9600 by default
+  stdio_init();
 
   printAndClearResetSource();
   
