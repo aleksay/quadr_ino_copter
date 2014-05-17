@@ -1,7 +1,7 @@
 #ifndef ATMEGAX8
 #define ATMEGAX8 
 
-#include <Arduino.h>
+
 #include <avr/wdt.h>
 #include <avr/interrupt.h> 
 #include "comLogger.h"

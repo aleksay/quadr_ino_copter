@@ -1,11 +1,11 @@
+
 #include "config.h"  // include first !
 
-#include <Arduino.h>
 #include "brushless.h"
 #include "communicator.h"
 #include "comLogger.h"
-#include "comDeviceUSART.h"
 #include "MsTimer2.h"
+#include "comDeviceUSART.h"
 
 
 
@@ -15,15 +15,14 @@ communicator serialCommPtr;
 
 // Initialization of command struct
 Command latestCommand;
-
 void setup() {
 
   // undo arduino init() serial de-init nastiness
-#if defined(UCSRB)
-  UCSRB = 1;
-#elif defined(UCSR0B)
-  UCSR0B = 1;
-#endif
+//#if defined(UCSRB)
+//  UCSRB = 1;
+//#elif defined(UCSR0B)
+//  UCSR0B = 1;
+//#endif
 
   //initialize uart
   uart_init(); // BAUD is 9600 by default
@@ -38,7 +37,6 @@ void setup() {
   debug("timer2 counter initialized");
 
 }
-
 
 
 // Run main loop
@@ -56,14 +54,6 @@ void loop() {
   brushless.iterate();
 
 }
-
-
-// Callback function for reserved Arduino keyword serial polling
-void serialEvent()
-{
-  serialCommPtr.eventHandler();
-}
-
 
 
 void globalSetTime()

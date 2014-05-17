@@ -1,17 +1,20 @@
+#ifndef aSDFASDF
+#define aSDFASDF
+
+#include <stdio.h>
+#include <stdint.h>
+
+
 /*
  Wrapper functions for Arduino library HardwareSerial 
  */
-
-#include <stdio.h>
-#include <Arduino.h>
-
 
 /*
 =====================================================
  
  		Clear bit, and set bit macros
  
- =====================================================
+=====================================================
  */
 
 #ifndef cbi
@@ -21,10 +24,23 @@
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif 
 
+#include <inttypes.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <string.h>
+#include <stdio.h>
 
+#define inputBufferLength 20
+
+
+char acsiiMessage; // AGHHHHHH
 int uart_putchar(char c, FILE *stream);
 int uart_getchar(char c, FILE *stream);
-int uart_available();
+int uart_available(void);
+void uart_flush(void);
 //void uart_init(void) __attribute__((naked)) __attribute__((section(".init7")));
-void uart_init();
+void uart_init(void);
 void stdio_init(void);
+
+
+#endif
