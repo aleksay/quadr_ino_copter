@@ -31,13 +31,7 @@ void uart_init(void) {
   UBRR0L = (((F_CPU/BAUD_RATE)/16)-1);
   UCSR0B |= (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);  // enable Rx & Tx and enable Rx interrupt
   UCSR0C |= (1<<UCSZ01)|(1<<UCSZ00);  // config USART; 8N1
-  
-  
-//    Command tmpCommand    = (Command) malloc(sizeof(_command));
-//  const int inputBufferLength = 10;
-//    memset(inputBuffer,0,sizeof(inputBuffer));
-//volatile  const char  * inputBuffer;
-  
+ 
 }
 
 
@@ -56,18 +50,18 @@ void stdio_init(void) {
 }
 
 ISR(USART_RX_vect){
-  static char inputBuffer[inputBufferLength];
+  char inputBuffer[inputBufferLength];
   char inChar = UDR0;
   
-  //uint8_t len = inputBufferLength;
-  inputBuffer[inputBufferLength] = inChar;
+  uint8_t len = sizeof(inputBufferLength);
+  inputBuffer[len] = inChar;
 
   if (inChar == '\n') 
   {
-    inputBuffer[inputBufferLength] = '\0';
-    //strcpy(acsiiMessage,inputBuffer);
-    memset(inputBuffer,0,sizeof(inputBuffer));
+    inputBuffer[len] = '\0';
     //printf("inputBuffer: %s", inputBuffer);
+    memset(inputBuffer,0,len);
+
   }
 }
 //

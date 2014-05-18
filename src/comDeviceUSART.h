@@ -33,7 +33,7 @@
 #define inputBufferLength 20
 
 
-char acsiiMessage; // AGHHHHHH
+extern char inputBuffer[inputBufferLength];
 int uart_putchar(char c, FILE *stream);
 int uart_getchar(char c, FILE *stream);
 int uart_available(void);
