@@ -31,7 +31,7 @@ void uart_init(void) {
   UBRR0L = (((F_CPU/BAUD_RATE)/16)-1);
   UCSR0B |= (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);  // enable Rx & Tx and enable Rx interrupt
   UCSR0C |= (1<<UCSZ01)|(1<<UCSZ00);  // config USART; 8N1
- 
+  
 }
 
 
@@ -49,17 +49,22 @@ void stdio_init(void) {
    stdin = &fd_in ;
 }
 
+char inputBuffer[inputBufferLength] ="";
 ISR(USART_RX_vect){
-  char inputBuffer[inputBufferLength];
+
+while ( !(UCSR0A & (1<<RXC0)) )
+;
   char inChar = UDR0;
+  printf("inChar: %c\n", inChar);
   
-  uint8_t len = sizeof(inputBufferLength);
+  uint8_t len = strlen(inputBuffer);
+    printf("strlen: %d\n", len);
   inputBuffer[len] = inChar;
 
   if (inChar == '\n') 
   {
     inputBuffer[len] = '\0';
-    //printf("inputBuffer: %s", inputBuffer);
+    printf("inputBuffer: %s\n", inputBuffer);
     memset(inputBuffer,0,len);
 
   }
