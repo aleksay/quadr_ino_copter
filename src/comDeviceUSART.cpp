@@ -50,24 +50,30 @@ void stdio_init(void) {
 }
 
 char inputBuffer[inputBufferLength] ="";
+char asciiMessage[inputBufferLength] ="";
+bool haveAsciiMessage=0;
 ISR(USART_RX_vect){
 
-while ( !(UCSR0A & (1<<RXC0)) )
-;
+while ( !(UCSR0A & (1<<RXC0)) );
   char inChar = UDR0;
-  printf("inChar: %c\n", inChar);
-  
+  //printf("inChar: %c\n", inChar);
+
   uint8_t len = strlen(inputBuffer);
-    printf("strlen: %d\n", len);
+    //printf("strlen: %d\n", len);
   inputBuffer[len] = inChar;
 
   if (inChar == '\n') 
   {
     inputBuffer[len] = '\0';
-    printf("inputBuffer: %s\n", inputBuffer);
+
+    strcpy(asciiMessage,inputBuffer);
+          haveAsciiMessage =1;
+    //printf("inputBuffer: %s\n", inputBuffer);
     memset(inputBuffer,0,len);
 
   }
+  else
+  haveAsciiMessage=0;
 }
 //
 //

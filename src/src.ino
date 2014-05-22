@@ -52,7 +52,10 @@ void loop() {
     //debug("Received latestCommand->type:%c",latestCommand->type);
   }
   brushless.iterate();
-
+if(haveAsciiMessage==1) {
+  debug("asciiMessage:%s",asciiMessage);
+  haveAsciiMessage=0;
+}
 }
 
 

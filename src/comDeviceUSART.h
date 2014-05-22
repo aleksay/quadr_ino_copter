@@ -34,10 +34,12 @@
 
 
 extern char inputBuffer[inputBufferLength];
+extern char asciiMessage[inputBufferLength];
 int uart_putchar(char c, FILE *stream);
 int uart_getchar(char c, FILE *stream);
 int uart_available(void);
 void uart_flush(void);
+extern bool haveAsciiMessage;
 //void uart_init(void) __attribute__((naked)) __attribute__((section(".init7")));
 void uart_init(void);
 void stdio_init(void);
