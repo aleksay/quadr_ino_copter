@@ -26,9 +26,18 @@ while ( UCSR0A & (1<<RXC0) ) dummy = UDR0;
 
 
 void uart_init(void) {
-  uint16_t BAUD_RATE = 9600;
-  UBRR0H = (((F_CPU/BAUD_RATE)/16)-1)>>8; 	// set baud rate
-  UBRR0L = (((F_CPU/BAUD_RATE)/16)-1);
+  #include <util/setbaud.h>
+  
+  UBRR0H = UBRRH_VALUE;	// set baud rate
+  UBRR0L = UBRRL_VALUE;
+  
+  //UCSR0A &= ~(_BV(U2X0));
+   #if USE_2X
+   UCSR0A |= (1 << U2X0);
+   #else
+   UCSR0A &= ~(1 << U2X0);
+   #endif
+   
   UCSR0B |= (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);  // enable Rx & Tx and enable Rx interrupt
   UCSR0C |= (1<<UCSZ01)|(1<<UCSZ00);  // config USART; 8N1
   
@@ -50,23 +59,19 @@ void stdio_init(void) {
 }
 
 char inputBuffer[inputBufferLength] ="";
+int i=0;
 ISR(USART_RX_vect){
-
-while ( !(UCSR0A & (1<<RXC0)) )
-;
-  char inChar = UDR0;
-  printf("inChar: %c\n", inChar);
-  
-  uint8_t len = strlen(inputBuffer);
-    printf("strlen: %d\n", len);
-  inputBuffer[len] = inChar;
-
-  if (inChar == '\n') 
-  {
-    inputBuffer[len] = '\0';
+while ( !(UCSR0A & (1<<RXC0)) ); 
+  inputBuffer[i] = UDR0;
+  //UDR0 = inputBuffer[i];
+  if (inputBuffer[i] == '\n') 
+  {  
+    inputBuffer[i] = '\0';
     printf("inputBuffer: %s\n", inputBuffer);
-    memset(inputBuffer,0,len);
-
+    memset(inputBuffer,0,i);
+    i=0;
+  }else{
+    i++;
   }
 }
 //

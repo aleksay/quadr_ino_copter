@@ -4,9 +4,11 @@
   =====================================================
  */
 
-//#define F_CPU 8000000UL  //Uncomment for arduino Fio
-#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
+#define F_CPU 8000000UL  //Uncomment for arduino Fio
+//#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
+
 #define BAUD 9600
+
 /*
 =====================================================
  		           PARAMETRI MOTORE
