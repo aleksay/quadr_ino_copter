@@ -53,7 +53,7 @@ void loop() {
   }
   brushless.iterate();
 if(haveAsciiMessage==1) {
-  debug("asciiMessage:%s",asciiMessage);
+  debug("asciiMessage:%s ",asciiMessage);
   haveAsciiMessage=0;
 }
 }

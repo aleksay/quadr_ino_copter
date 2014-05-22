@@ -4,7 +4,7 @@
  */
 #include "comDeviceUSART.h"
 
-int uart_putchar(char c, FILE *stream) 
+int uart_putchar(char c, FILE *stream)
 {
   if (c == '\n') {
     uart_putchar('\r', stream);
@@ -13,67 +13,86 @@ int uart_putchar(char c, FILE *stream)
   UDR0 = c;
 }
 
-int uart_getchar(char c, FILE *stream) 
+int uart_getchar(char c, FILE *stream)
 {
   return UDR0;
 }
 
 void uart_flush( void )
 {
-unsigned char dummy;
-while ( UCSR0A & (1<<RXC0) ) dummy = UDR0;
+  unsigned char dummy;
+  while ( UCSR0A & (1 << RXC0) ) dummy = UDR0;
 }
 
 
 void uart_init(void) {
-  uint16_t BAUD_RATE = 9600;
-  UBRR0H = (((F_CPU/BAUD_RATE)/16)-1)>>8; 	// set baud rate
-  UBRR0L = (((F_CPU/BAUD_RATE)/16)-1);
-  UCSR0B |= (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);  // enable Rx & Tx and enable Rx interrupt
-  UCSR0C |= (1<<UCSZ01)|(1<<UCSZ00);  // config USART; 8N1
-  
+#include <util/setbaud.h>
+
+  UBRR0H = UBRRH_VALUE;	// set baud rate
+  UBRR0L = UBRRL_VALUE;
+
+  //UCSR0A &= ~(_BV(U2X0));
+#if USE_2X
+  UCSR0A |= (1 << U2X0);
+#else
+  UCSR0A &= ~(1 << U2X0);
+#endif
+
+  UCSR0B |= (1 << RXEN0) | (1 << TXEN0) | (1 << RXCIE0); // enable Rx & Tx and enable Rx interrupt
+  UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00); // config USART; 8N1
+
 }
 
 
 void stdio_init(void) {
-    static FILE fd_in = {0};
-    static FILE fd_out = {0};
+  static FILE fd_in = {0};
+  static FILE fd_out = {0};
 
-   // fill in the UART file descriptor with pointer to writer.
-   fdev_setup_stream (&fd_out, uart_putchar, NULL, _FDEV_SETUP_WRITE);
-   fdev_setup_stream (&fd_in, uart_getchar, NULL, _FDEV_SETUP_READ);
+  // fill in the UART file descriptor with pointer to writer.
+  fdev_setup_stream (&fd_out, uart_putchar, NULL, _FDEV_SETUP_WRITE);
+  fdev_setup_stream (&fd_in, uart_getchar, NULL, _FDEV_SETUP_READ);
 
-   // The uart is the standard output device STDOUT.
-   stdout = &fd_out ;
-   stderr = &fd_out ;
-   stdin = &fd_in ;
+  // The uart is the standard output device STDOUT.
+  stdout = &fd_out ;
+  stderr = &fd_out ;
+  stdin = &fd_in ;
 }
 
-char inputBuffer[inputBufferLength] ="";
-char asciiMessage[inputBufferLength] ="";
-bool haveAsciiMessage=0;
-ISR(USART_RX_vect){
+char inputBuffer[inputBufferLength] = "";
+char asciiMessage[inputBufferLength] = "";
+bool haveAsciiMessage = 0;
 
-while ( !(UCSR0A & (1<<RXC0)) );
+ISR(USART_RX_vect) {
+
+  // go ahead when message is present
+  while ( !(UCSR0A & (1 << RXC0)) );
   char inChar = UDR0;
-  //printf("inChar: %c\n", inChar);
-
   uint8_t len = strlen(inputBuffer);
-    //printf("strlen: %d\n", len);
-  inputBuffer[len] = inChar;
 
-  if (inChar == '\n') 
-  {
-    inputBuffer[len] = '\0';
+  // buffer overflow check
+  if (len < inputBufferLength) {
+    inputBuffer[len] = inChar;
 
-    strcpy(asciiMessage,inputBuffer);
-          haveAsciiMessage =1;
-    //printf("inputBuffer: %s\n", inputBuffer);
-    memset(inputBuffer,0,len);
+    // replace endline with string terminator, and export string
+    if (inChar == '\n')
+    {
+      inputBuffer[len] = '\0';
+      strcpy(asciiMessage, inputBuffer);
+      haveAsciiMessage = 1;
+      memset(inputBuffer, 0, len);
 
+    }
+    // if input string is incomplete
+    else
+      haveAsciiMessage = 0;
   }
-  else
-  haveAsciiMessage=0;
+  // in case of buffer overflow
+  else {
+    haveAsciiMessage = 0;
+    memset(inputBuffer, 0, len);
+    uart_flush();
+    log_warn("message too long, dropping");
+  }
 }
 //
 //
@@ -111,7 +130,7 @@ while ( !(UCSR0A & (1<<RXC0)) );
 ////{
 ////  uint16_t baud = 9600;
 ////  byte config = SERIAL_8N1;
-////  
+////
 ////  // Try u2x mode first
 ////  uint16_t baud_setting = (F_CPU / 4 / baud - 1) / 2;
 ////  UCSR0A = 1 << U2X0;

@@ -4,8 +4,12 @@
   =====================================================
  */
 
-//#define F_CPU 8000000UL  //Uncomment for arduino Fio
-#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
+#ifndef F_CPU
+#pragma warn F_CPU unset, setting to 8 MHz
+#define F_CPU 8000000UL  //Uncomment for arduino Fio
+//#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
+#endif // F_CPU
+
 #define BAUD 9600
 /*
 =====================================================
