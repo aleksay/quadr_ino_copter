@@ -82,16 +82,17 @@ ISR(USART_RX_vect) {
       memset(inputBuffer, 0, len);
 
     }
-    // if input string is incomplete
-    else
-      haveAsciiMessage = 0;
   }
   // in case of buffer overflow
   else {
-    haveAsciiMessage = 0;
+    //haveAsciiMessage = 0;
+    if (inChar == '\n')
+    {
     memset(inputBuffer, 0, len);
     uart_flush();
     log_warn("message too long, dropping");
+    }
+    
   }
 }
 //
