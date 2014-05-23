@@ -9,6 +9,24 @@ communicator::communicator() {
   currentCommand->value = 0;
 }
 
+
+void communicator::asciiString2Message( char * asciiMessage ){
+      int len = strlen(asciiMessage);
+      char inputStringValue[len - 1];
+
+      int i = 1;
+      while (i < (len - 1) ) {
+        inputStringValue[i - 1] = asciiMessage[i];
+        i++;
+      }
+      currentCommand->type = asciiMessage[0];
+      currentCommand->value = strtol(inputStringValue, NULL, 0);
+
+debug("command received:%c , Value:%d",currentCommand->type,currentCommand->value);
+
+}
+
+
 //void communicator::eventHandler() {
 //debug("event");
 //

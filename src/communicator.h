@@ -15,7 +15,9 @@ class communicator {
 
 public:
 
+  
 	communicator();
+  void asciiString2Message(char * asciiMessage);
 	int 		 getHaveCommand();
 	Command  getCommand();
 	void 		 iterate();

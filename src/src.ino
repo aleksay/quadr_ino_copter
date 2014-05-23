@@ -41,21 +41,16 @@ void setup() {
 
 // Run main loop
 void loop() {
-
-  // check for serial command
-  if (serialCommPtr.getHaveCommand() == 1) {
-
-    latestCommand = serialCommPtr.getCommand();
-
-    //here put a setCommand for each module in the sketch
-    brushless.setCommand(latestCommand);
-    //debug("Received latestCommand->type:%c",latestCommand->type);
-  }
-  brushless.iterate();
 if(haveAsciiMessage==1) {
   debug("asciiMessage:%s ",asciiMessage);
+  serialCommPtr.asciiString2Message(asciiMessage);
   haveAsciiMessage=0;
+  latestCommand = serialCommPtr.getCommand();
+  brushless.setCommand(latestCommand);
 }
+
+  brushless.iterate();
+
 }
 
 
