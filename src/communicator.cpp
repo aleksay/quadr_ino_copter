@@ -15,7 +15,7 @@ void communicator::asciiString2Message( char * asciiMessage ){
       char inputStringValue[len - 1];
 
       int i = 1;
-      while (i < (len - 1) ) {
+      while (i < len) {
         inputStringValue[i - 1] = asciiMessage[i];
         i++;
       }
