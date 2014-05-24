@@ -154,10 +154,10 @@ int setFrequency(unsigned int freqHz) {
 
   int setDuty(int val) {
 
-    if (val < 0 || val > 100)
+    if (val < 0 || val > 100){
 	log_err("bad duty");
       return -1;
-
+	  }
     duty = val;
     _dutyVal = map(duty, 0, 100, 0, frequency);
     SET_TIMER1_DUTY_CHAN_B(_dutyVal);
