@@ -10,16 +10,16 @@ public timer
 public:
   timer1() {
 
-	//initialize timer1 global variable
+    //initialize timer1 global variable
     frequency = DEFAULT_T1_INIT_FREQUENCY;
     duty = DEFAULT_T1_INIT_DUTY;
     prescaler = DEFAULT_T1_INIT_PRESCALER;
-    
+
     frequency=0;
     top=0;
 
-	
-	//configure timer1
+
+    //configure timer1
     _timer1_fastPwm_ocr1atop_init();
 
   }
@@ -48,7 +48,7 @@ public:
     TIMER1_RESET;
 
     SET_TIMER1_PINB;
-	
+
     setFrequency(DEFAULT_T1_INIT_FREQUENCY);
     setDuty(DEFAULT_T1_INIT_DUTY);
 
@@ -63,7 +63,7 @@ public:
 
   int start() {
     //debug("prescaler set to: %d",prescaler);
-    
+
     setPrescaler(prescaler);
     return 0;
   }
@@ -80,9 +80,9 @@ public:
   int setPrescaler(int _prescaler){
 
 
-    
+
     switch(_prescaler) {
-    
+
     case 1:
       debug("prescaler set to: %d",prescaler);
       SET_TIMER1_PRESCALER_1;
@@ -109,44 +109,44 @@ public:
     return 1;
   }
 
-	//convert to TOP value
-	int Hz2top(int freqHz) {         
-	 return floor(F_CPU/(getPrescaler() * freqHz)-1);
-	}
-  
- 
-int setFrequency(unsigned int freqHz) {
-	
-	// check value
-	if (freqHz == frequency) {
-		log_warn("Value unchanged!");
-	  return -1;
-	}
-	//update global variable frequency
-	frequency = freqHz;
-		
-	//convert value to microcontroller TOP
-	unsigned int _top = Hz2top(freqHz);
-        //debug("%d",_top);
-	
-	//check TOP consistency
-	if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
-		log_err("Bad TOP!");
-	  return -1;
-	}
-	if (_top == top) {
-		log_warn("Value unchanged!");
-	  return -1;
-	}
+  //convert to TOP value
+  int Hz2top(int freqHz) {         
+    return floor(F_CPU/(getPrescaler() * freqHz)-1);
+  }
 
-	int zDuty = -10;
-         
-	//set new value on the register
-        SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
-	
-	//update global variable top
-	top = _top;
-	
+
+  int setFrequency(unsigned int freqHz) {
+
+    // check value
+    if (freqHz == frequency) {
+      log_warn("Value unchanged!");
+      return -1;
+    }
+    //update global variable frequency
+    frequency = freqHz;
+
+    //convert value to microcontroller TOP
+    unsigned int _top = Hz2top(freqHz);
+    //debug("%d",_top);
+
+    //check TOP consistency
+    if (_top < 245 || _top > 65535){ //limiti x non bloccare il microcontrollore non avendo il controllo sul prescaler
+      log_err("Bad TOP!");
+      return -1;
+    }
+    if (_top == top) {
+      log_warn("Value unchanged!");
+      return -1;
+    }
+
+    int zDuty = -10;
+
+    //set new value on the register
+    SET_TIMER1_FREQUENCY_OCR1ATOP(_top);
+
+    //update global variable top
+    top = _top;
+
     zDuty = setDuty(duty);
 
     return zDuty;
@@ -155,11 +155,11 @@ int setFrequency(unsigned int freqHz) {
   int setDuty(int val) {
 
     if (val < 0 || val > 100){
-	log_err("bad duty");
+      log_err("bad duty");
       return -1;
-	  }
+    }
     duty = val;
-    _dutyVal = map(duty, 0, 100, 0, frequency);
+    _dutyVal = map(duty, 0, 100, 0, top);
     SET_TIMER1_DUTY_CHAN_B(_dutyVal);
     return 0;
 
@@ -168,18 +168,18 @@ int setFrequency(unsigned int freqHz) {
   unsigned int getFrequency() {
     return frequency;
   }
-  
+
   unsigned int getTop() {
     return top;
   }
   int getDuty() {
     return duty;
   }
-  
+
   int getPrescaler(){
     return prescaler;
   }
-  
+
   void _timer1_ovf_handler(){
     SET_TIMER1_FREQUENCY_OCR1ATOP(frequency);
     SET_TIMER1_DUTY_CHAN_B(_dutyVal);
@@ -192,5 +192,6 @@ private:
   int prescaler;
 };
 #endif
+
 
 
