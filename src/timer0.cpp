@@ -12,10 +12,10 @@ public:
     frequency = DEFAULT_T0_INIT_FREQUENCY;
     prescaler = DEFAULT_T0_INIT_PRESCALER;
 
-    _timer0_fastPwm_ocr0atop_init();
+    _timer0_phasecorrect_ocr0atop_init();
   }
 
-  void _timer0_fastPwm_ocr0atop_init(){
+  void _timer0_phasecorrect_ocr0atop_init(){
     //cli();
     SET_TIMER0_PINB;
     TIMER0_RESET;
@@ -79,14 +79,14 @@ public:
 
 
   int setFrequency(unsigned int val) {
-    if (val < 0 || val > 254)
+    if (val < 0 || val > 254){
 	log_err("invalid value:%u",val);
       return -1;
-
-    if (val == frequency) 
+    }
+    if (val == frequency){
 	log_warn("value unchanged");
       return -1;
-
+    }
 
     int zDuty = -10;
 
