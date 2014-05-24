@@ -244,6 +244,14 @@ int brushless::parseCommand(Command command){
     free(command); 
     log_info("automa_frequency.getFrequency():%d",automa_frequency.getFrequency());
     return 0;
+    
+// Set automa frequency
+  case 'q':
+    automa_frequency.setDuty(command->value);
+    free(command); 
+    log_info("automa_frequency.getDuty():%d",automa_frequency.getDuty());
+    return 0;
+    
 // Set prescaler value
   case 'l':
     automa_frequency.setPrescaler(command->value);

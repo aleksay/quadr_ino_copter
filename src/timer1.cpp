@@ -10,18 +10,13 @@ public timer
 public:
   timer1() {
 
-    //initialize timer1 global variable
-    frequency = DEFAULT_T1_INIT_FREQUENCY;
-    duty = DEFAULT_T1_INIT_DUTY;
-    prescaler = DEFAULT_T1_INIT_PRESCALER;
-
-    frequency=0;
-    top=0;
-
-
     //configure timer1
     _timer1_fastPwm_ocr1atop_init();
-
+    
+    //initialize timer1 global variable
+    duty = DEFAULT_T1_INIT_DUTY;
+    prescaler = DEFAULT_T1_INIT_PRESCALER;   
+    setFrequency(DEFAULT_T1_INIT_FREQUENCY);
   }
 
   int _timer1_fastPwm_icr1top_init() {
@@ -48,9 +43,6 @@ public:
     TIMER1_RESET;
 
     SET_TIMER1_PINB;
-
-    setFrequency(DEFAULT_T1_INIT_FREQUENCY);
-    setDuty(DEFAULT_T1_INIT_DUTY);
 
     //SET_TIMER1_PINOUT(B);
     SET_TIMER1_MODE_FASTPWM_OCR1A;
