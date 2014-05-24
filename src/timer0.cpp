@@ -8,19 +8,19 @@ public timer
 
 public:
   timer0(){
-
-    frequency = DEFAULT_T0_INIT_FREQUENCY;
-    prescaler = DEFAULT_T0_INIT_PRESCALER;
-
+    //configure timer0
     _timer0_phasecorrect_ocr0atop_init();
+    
+        //initialize timer1 global variable
+    duty = DEFAULT_T0_INIT_DUTY;
+    prescaler = DEFAULT_T0_INIT_PRESCALER;   
+    setFrequency(DEFAULT_T0_INIT_FREQUENCY);
   }
 
   void _timer0_phasecorrect_ocr0atop_init(){
     //cli();
     SET_TIMER0_PINB;
     TIMER0_RESET;
-    SET_TIMER0_FREQUENCY(frequency);
-    SET_TIMER0_DUTY(_dutyVal);
 
     SET_TIMER0_PINOUT(B);  
     SET_TIMER0_MODE_PHASE_CORRECT_OCR0A;
