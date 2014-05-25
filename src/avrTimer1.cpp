@@ -13,7 +13,13 @@ int timer1_prescaler;
 int timer1_init() {
 
   //configure timer1
-  //timer1_fastPwm_ocr1atop_init();
+  timer1_fastPwm_ocr1atop_init();
+  
+  //initialize timer1 global variable
+  timer1_duty = DEFAULT_T1_INIT_DUTY;
+  timer1_prescaler = DEFAULT_T1_INIT_PRESCALER;   
+  timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+  
   return 0;
 }
 
@@ -31,12 +37,6 @@ int timer1_fastPwm_icr1top_init() {
   SET_TIMER1_PINB_NOTINVERTING(0);
   SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
   //SET_TIMER1_PRESCALER_1;
-
-
-  //initialize timer1 global variable
-  timer1_duty = DEFAULT_T1_INIT_DUTY;
-  timer1_prescaler = DEFAULT_T1_INIT_PRESCALER;   
-  timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY);
 
   return 0;
 }
