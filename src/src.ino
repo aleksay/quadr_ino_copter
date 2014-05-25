@@ -2,7 +2,7 @@
 #include "config.h"  // include first !
 
 #include "brushless.h"
-#include "communicator.h"
+#include "comMessage.h"
 #include "comLogger.h"
 #include "MsTimer2.h"
 #include "comDeviceUSART.h"
@@ -11,7 +11,6 @@
 
 // Initialization of objects
 brushless brushless;
-communicator serialCommPtr;
 
 // Initialization of command struct
 Command latestCommand;
@@ -43,9 +42,8 @@ void setup() {
 void loop() {
 if(haveAsciiMessage==1) {
   debug("asciiMessage:%s ",asciiMessage);
-  serialCommPtr.asciiString2Message(asciiMessage);
+  latestCommand = asciiString2Message(asciiMessage);
   haveAsciiMessage=0;
-  latestCommand = serialCommPtr.getCommand();
   brushless.setCommand(latestCommand);
 }
 

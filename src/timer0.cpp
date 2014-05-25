@@ -1,5 +1,4 @@
 #include "timer.h"
-#include "communicator.h"
 #include "comLogger.h"
 
 class timer0: 

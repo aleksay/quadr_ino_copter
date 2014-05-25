@@ -1,7 +1,6 @@
 #ifndef Timer_h
 #define Timer_h
 #include "timer.h"
-#include "communicator.h"
 #include "comLogger.h"
 
 class timer1: 
