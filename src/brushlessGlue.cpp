@@ -33,23 +33,19 @@ int automaSetPrescaler(int prescaler){
 }
 
 int automaGetFrequency(){
-  timer1_getFrequency();
-  return 0;
+  return timer1_getFrequency();
 }
 
 int automaGetDuty(){
-  timer1_getDuty();
-  return 0;
+  return timer1_getDuty();;
 }
 
 int automaGetTop(){
-  timer1_getTop();
-  return 0;
+  return timer1_getTop();
 }
 
 int automaGetPrescaler(){
-  timer1_getPrescaler();
-  return 0;
+  return timer1_getPrescaler();
 }
 
 int pwmInit(){
