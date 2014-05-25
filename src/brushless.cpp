@@ -43,7 +43,7 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   float ang = (float)ramp.gain * msTime * 0.001;
   int OpenLoopValue = ang + ramp.offset; 
 
-  debug("msTime: %u, gain: %d, offset: %d, value: %d",msTime,ramp.gain,ramp.offset,OpenLoopValue);
+  //debug("msTime: %u, gain: %d, offset: %d, value: %d",msTime,ramp.gain,ramp.offset,OpenLoopValue);
   //debug ("%d",OpenLoopValue);
   return OpenLoopValue; 
 
@@ -253,7 +253,7 @@ int brushless::parseCommand(Command command){
   case 'l':
     automaSetPrescaler(command->value);
     free(command);
-    log_info("automa_frequency.getPrescaler function is missing!");
+    log_info("automaGetPrescaler():%d",automaGetPrescaler());
     return 0;
 
     // Print angular speed

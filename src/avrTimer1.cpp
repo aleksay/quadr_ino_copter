@@ -84,25 +84,29 @@ int timer1_setPrescaler(int _prescaler){
   switch(_prescaler) {
 
   case 1:
-    debug("prescaler set to: %d",timer1_prescaler);
     SET_TIMER1_PRESCALER_1;
     timer1_prescaler = 1;
+    debug("prescaler set to: %d",timer1_prescaler);
     return 0;
   case 8:
     SET_TIMER1_PRESCALER_8;
     timer1_prescaler = 8;
+    debug("prescaler set to: %d",timer1_prescaler);
     return 0;
   case 64:
     SET_TIMER1_PRESCALER_64;
     timer1_prescaler = 64;
+    debug("prescaler set to: %d",timer1_prescaler);
     return 0;	
   case 256:
     SET_TIMER1_PRESCALER_256;
     timer1_prescaler = 256;
+    debug("prescaler set to: %d",timer1_prescaler);
     return 0;
   case 1024:
     SET_TIMER1_PRESCALER_1024;
     timer1_prescaler = 1024;
+    debug("prescaler set to: %d",timer1_prescaler);
     return 0;			
   } 
 
@@ -119,7 +123,7 @@ int timer1_setFrequency(unsigned int freqHz) {
 
   // check value
   if (freqHz == timer1_frequency) {
-    log_warn("Value unchanged!");
+    //log_warn("Value unchanged!");
     return -1;
   }
   //update global variable frequency
