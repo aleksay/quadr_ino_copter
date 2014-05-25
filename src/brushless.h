@@ -7,7 +7,7 @@
 #define BRUSHLESS_h
 
 #include <Arduino.h>
-#include "communicator.h"
+#include "comMessage.h"
 #include "comLogger.h"
 #include "mosfetSequencecontroller.h"
 #include "brushlessGlue.h"

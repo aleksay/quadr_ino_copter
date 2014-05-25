@@ -1,8 +1,5 @@
 #include "mosfetSequencecontroller.h"
 
-#include "avrUtils.h"
-#include "communicator.h"
-
 #define DEFAULT_INITIAL_RATE 100
 
 
