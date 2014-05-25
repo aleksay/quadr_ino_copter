@@ -9,8 +9,9 @@
 #include <Arduino.h>
 #include "communicator.h"
 #include "comLogger.h"
-#include "timer.h"
 #include "mosfetSequencecontroller.h"
+#include "brushlessGlue.h"
+
 
 
 //TODO change to startupState_MotorOff with __UNDERSCORE__
@@ -30,7 +31,8 @@ typedef struct ramp {
   int gain;
   int currentValue;
   int end;
-}ramp;
+}
+ramp;
 
 
 
@@ -50,13 +52,14 @@ public:
 
 private:
 
+
   // methods
   int parseCommand(Command command);
   int angSpeed();
   int getStartupOpenLoopValue(ramp ramp);
   int setStartupState(int state);
   int startupCallback();
-  
+
   // variables
   int starting;
   int startupState;
@@ -68,4 +71,5 @@ private:
 };
 
 #endif
+
 

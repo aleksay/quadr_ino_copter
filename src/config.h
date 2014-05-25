@@ -1,3 +1,5 @@
+#ifndef CONFIG_H
+#define CONFIG_H
 /*
 =====================================================
  		           Global configuration Section
@@ -46,3 +48,4 @@
 #define RAMP_GAIN_FREQUENCY_T1 250 //NON UTILIZZATI ATTUALMENTE
 
 
+#endif // HEADER

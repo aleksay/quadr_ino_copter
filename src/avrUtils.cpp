@@ -1,5 +1,5 @@
 
-#include "atmegax8.h"
+#include "avrUtils.h"
 
 
 int freeRam ()
@@ -49,4 +49,9 @@ void printAndClearResetSource(void)
 
   MCUSR = 0; // clear reset flag for next reset
   return;
+}
+
+long avrMap(long x, long in_min, long in_max, long out_min, long out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

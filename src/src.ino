@@ -6,6 +6,7 @@
 #include "comLogger.h"
 #include "MsTimer2.h"
 #include "comDeviceUSART.h"
+#include "brushlessGlue.h"
 
 
 
@@ -18,17 +19,21 @@ Command latestCommand;
 void setup() {
 
   // undo arduino init() serial de-init nastiness
-//#if defined(UCSRB)
-//  UCSRB = 1;
-//#elif defined(UCSR0B)
-//  UCSR0B = 1;
-//#endif
+  //#if defined(UCSRB)
+  //  UCSRB = 1;
+  //#elif defined(UCSR0B)
+  //  UCSR0B = 1;
+  //#endif
 
   //initialize uart
   uart_init(); // BAUD is 9600 by default
   stdio_init();
 
   printAndClearResetSource();
+
+  // init timers
+  automaInit();
+  pwmInit();
 
   //timer 2 init.
   // MsTimer2::set(50, brushlessPtr->incrementTime ); // Doesnt work
@@ -41,13 +46,13 @@ void setup() {
 
 // Run main loop
 void loop() {
-if(haveAsciiMessage==1) {
-  debug("asciiMessage:%s ",asciiMessage);
-  serialCommPtr.asciiString2Message(asciiMessage);
-  haveAsciiMessage=0;
-  latestCommand = serialCommPtr.getCommand();
-  brushless.setCommand(latestCommand);
-}
+  if(haveAsciiMessage==1) {
+    debug("asciiMessage:%s ",asciiMessage);
+    serialCommPtr.asciiString2Message(asciiMessage);
+    haveAsciiMessage=0;
+    latestCommand = serialCommPtr.getCommand();
+    brushless.setCommand(latestCommand);
+  }
 
   brushless.iterate();
 
@@ -58,5 +63,7 @@ void globalSetTime()
 {
   brushless.incrementTime();
 }
+
+
 
 

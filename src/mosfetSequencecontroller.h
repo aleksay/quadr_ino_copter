@@ -2,7 +2,7 @@
 #define mosfetSeqController_h
 
 #include "Arduino.h"
-#include "atmegax8.h"
+#include "avrUtils.h"
 #include "comLogger.h"
 
 

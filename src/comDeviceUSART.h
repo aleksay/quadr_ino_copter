@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "atmegax8.h"
+#include "avrUtils.h"
 
 
 /*
