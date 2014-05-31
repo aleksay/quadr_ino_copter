@@ -45,7 +45,6 @@ public:
 
   // methods
   int iterate();  
-
   int setStartupFreqEnd (int val);
   int setStartupFreqGain (int val);
   int setCommand(Command command);

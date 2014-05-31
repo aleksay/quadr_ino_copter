@@ -65,6 +65,7 @@ int mosfetSequencecontroller::commutePole() {
     //state = abs(NUM_STATES - 1 + --state) % NUM_STATES;
     AUTOMA_ITERATE(state);
   }
+  //debug("%d",state);
   return 0;
 }
 

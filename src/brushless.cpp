@@ -354,6 +354,13 @@ int brushless::parseCommand(Command command){
     log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", automaGetFrequency(), automaGetTop() );
     debug("OCR1A %u OCR1B %u OCR0A %u OCR0B %u",OCR1A,OCR1B,OCR0A,OCR0B);
     return  0;
+  
+  case 'v':
+    automa.setDirection(command->value);
+    free(command);
+    log_info("automa.getDirection():%d",automa.getDirection());
+    return 0;	
+	
 
   default:
     free(command); 
