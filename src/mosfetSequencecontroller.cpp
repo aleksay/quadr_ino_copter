@@ -12,7 +12,7 @@ volatile int direction;
 
 mosfetSequencecontroller::mosfetSequencecontroller() {
   //state     = DEFAULT_INITIAL_STATE;
-    direction = 1;
+  direction = 1;
 
 }
 
