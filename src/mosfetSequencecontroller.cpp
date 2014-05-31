@@ -5,7 +5,7 @@
 
 
 volatile int state;
-volatile int isRunning;
+//volatile int isRunning;
 volatile int direction;
 
 
@@ -56,10 +56,6 @@ int mosfetSequencecontroller::init() {
 
 int mosfetSequencecontroller::commutePole() {
   
-   if (isRunning == 0) { 
-       return 0; 
-   }
-
   if (direction) {
     state = ++state % NUM_STATES;
     AUTOMA_ITERATE(state);
