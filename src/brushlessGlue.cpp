@@ -11,8 +11,6 @@ int automaStart(){
 }
 
 int automaStop(){
-
-  //TODO
   timer1_stop();
   return 0;
 }
@@ -59,7 +57,7 @@ int pwmStart(){
 }
 
 int pwmStop(){
-  // TODO
+  timer0_stop();
   return 0;
 }
 

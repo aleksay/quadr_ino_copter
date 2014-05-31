@@ -49,7 +49,7 @@ int timer1_fastPwm_ocr1atop_init() {
 
   SET_TIMER1_PINB;
 
-  //SET_TIMER1_PINOUT(B);
+  SET_TIMER1_PINOUT(B);
   SET_TIMER1_MODE_FASTPWM_OCR1A;
   SET_TIMER1_PINB_NOTINVERTING(0);
 
@@ -70,10 +70,10 @@ int timer1_start(int _prescaler) {
   return 0;
 }
 
-// TODO
-//not working with prescaler
+//stop timer1 by removing the prescaler
 int timer1_stop(){ 
   SET_TIMER1_STOP;
+  AUTOMA_OPEN_INVERTER;
   return 0;
 }
 
@@ -114,7 +114,8 @@ int timer1_setPrescaler(int _prescaler){
 }
 
 //convert to TOP value
-int timer1_Hz2top(int freqHz) {         
+int timer1_Hz2top(int freqHz) {  
+  debug("%u,%d,%d",F_CPU,timer1_getPrescaler(),freqHz);
   return floor(F_CPU/(timer1_getPrescaler() * freqHz)-1);
 }
 

@@ -57,14 +57,14 @@ int brushless::setStartupState(int state){
     // start pwm signal
   case startupState_MotorOff:
     automa.setOpenInverter(); //micro con tutti i pin logici low 
-    automa.stop();
+    automaStop();
     pwmSetDuty(DEFAULT_T0_INIT_DUTY);
     startupState = startupState_MotorInit;
     return  0;
 
   case startupState_MotorInit:
     pwmStart();
-    automaStart();
+    
     //TODO tirare giu tutti i pin logici setstate(OFF)
 
     startupState = startupState_PWMStarted;
@@ -97,7 +97,8 @@ int brushless::setStartupState(int state){
 
     // start drive sequence
     //automa_frequency.start();
-    automa.start();
+    //automa.start();
+	automaStart();
     // set ramp duty offset and reset clock
     rampPWMDuty.offset = pwmGetDuty();
     msTime=0;
@@ -205,8 +206,18 @@ int brushless::iterate() {
   return 0;
 }
 
-int brushless::incrementTime(){
+int brushless::incrementTime(){//DA SPOSTARE IN TIME.cpp
   msTime = msTime + 10;
+  return 0;
+}
+
+unsigned brushless::getTime(){//DA SPOSTARE IN TIME.cpp
+  
+  return msTime;
+}
+
+int brushless::resetTime(){//DA SPOSTARE IN TIME.cpp
+  msTime = 0;
   return 0;
 }
 
@@ -218,7 +229,7 @@ int brushless::parseCommand(Command command){
     // Print time
   case 't':
     free(command); 
-    log_info("%dms",msTime);    
+    log_info("%ums",msTime);    
     return  0;
 
     // Set pwm frequency
@@ -282,6 +293,40 @@ int brushless::parseCommand(Command command){
     //startupState = startupState_MotorOff;
     log_info("Starting...");
     return 0;
+	
+   //Stop automa
+  case 'x':
+    free(command); 
+    automaStop();
+    //automa.setOpenInverter();
+    //startupState = startupState_MotorOff;
+    log_info("stop automa");
+    return 0;
+
+  case 'm':
+    free(command); 
+    manualMode();
+    //automa.setOpenInverter();
+    //startupState = startupState_MotorOff;
+    log_info("Manual mode");
+    return 0;
+   
+   //Stop pwm
+  case 'y':
+    free(command); 
+    pwmStop();
+
+	//automa.setOpenInverter();
+    //startupState = startupState_MotorOff;
+    log_info("stop pwm");
+    return 0;
+
+  case 'k':
+    pwmSetPrescaler(command->value);
+    free(command);
+    log_info("pwmGetPrescaler():%d",pwmGetPrescaler());
+    return 0;
+	
 
     // Set end value of startup ramp
   case 'u': 
@@ -348,6 +393,17 @@ int brushless::setStartupFreqGain (int val) {
   return -1;
 
   rampAutomaFrequencyA.gain = val;   //end value in Hz
+  return 0;
+}
+
+int brushless::manualMode(){
+      pwmStart();
+      automaStart();
+	  automa.setState(DEFAULT_INITIAL_STATE);
+	  //automa.start();
+	  automaSetFrequency(300);
+	  pwmSetDuty(90);
+	  
   return 0;
 }
 

@@ -42,6 +42,16 @@ int timer0_start(int _prescaler) {
   return 0;
 }
 
+//stop timer1 by removing the prescaler
+int timer0_stop(){ 
+  
+  timer0_setDuty(0);
+  // BISOGNA ASPETTARE DEL TEMPO UTILIZZANDO GET TIME IN TIME.CPP prima di settare questo
+
+  //SET_TIMER0_STOP;
+  return 0;
+}
+
 int timer0_setPrescaler(int _prescaler){
 
   switch(_prescaler) {

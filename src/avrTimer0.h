@@ -25,7 +25,7 @@
  1 1 1 External clock source on T0 pin. Clock on rising edge
  */
 
-#define SET_TIMER0_STOP           TCCR0B |= (0 << CS02) | (0 << CS01) | (0 << CS00)
+#define SET_TIMER0_STOP           TCCR0B &= ~((1 << CS02) | (1 << CS01)  | (1 << CS00))
 #define SET_TIMER0_PRESCALER_1    TCCR0B |= (0 << CS02) | (0 << CS01) | (1 << CS00)
 #define SET_TIMER0_PRESCALER_8    TCCR0B |= (0 << CS02) | (1 << CS01) | (0 << CS00)
 #define SET_TIMER0_PRESCALER_64   TCCR0B |= (0 << CS02) | (1 << CS01) | (1 << CS00)
@@ -65,8 +65,9 @@ WGM02 WGM01 WGM00 Timer/Counter
 // FUNCTION DECLARATIONS
 int timer0_init();
 void timer0_phasecorrect_ocr0atop_init();
-int timer0_start() ;
+int timer0_start();
 int timer0_start(int _prescaler) ;
+int timer0_stop();
 int timer0_setPrescaler(int _prescaler);
 int timer0_getPrescaler();
 int timer0_setFrequency(unsigned int val) ;

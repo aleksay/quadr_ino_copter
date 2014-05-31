@@ -12,7 +12,7 @@
 //#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
 #endif // F_CPU
 
-#define BAUD 57600
+#define BAUD 115200
 /*
 =====================================================
  		           PARAMETRI MOTORE

@@ -24,7 +24,7 @@
  1 0 0 clkI/O/256 (From prescaler)
  1 0 1 clkI/O/1024 (From prescaler)
  */
-#define SET_TIMER1_STOP           TCCR1B |= (0 << CS12) | (0 << CS11) | (0 << CS10)
+#define SET_TIMER1_STOP           TCCR1B &= ~((1 << CS12) | (1 << CS11)  | (1 << CS10))
 #define SET_TIMER1_PRESCALER_1    TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10)
 #define SET_TIMER1_PRESCALER_8    TCCR1B |= (0 << CS12) | (1 << CS11) | (0 << CS10)
 #define SET_TIMER1_PRESCALER_64   TCCR1B |= (0 << CS12) | (1 << CS11) | (1 << CS10)

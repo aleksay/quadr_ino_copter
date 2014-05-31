@@ -45,11 +45,14 @@ public:
 
   // methods
   int iterate();  
-  int incrementTime();
+
   int setStartupFreqEnd (int val);
   int setStartupFreqGain (int val);
   int setCommand(Command command);
-
+  int incrementTime();  //DA SPOSTARE IN TIME.cpp
+  unsigned getTime();   //DA SPOSTARE IN TIME.cpp
+  int resetTime();      //DA SPOSTARE IN TIME.cpp
+ 
 private:
 
 
@@ -59,6 +62,7 @@ private:
   int getStartupOpenLoopValue(ramp ramp);
   int setStartupState(int state);
   int startupCallback();
+  int manualMode();
 
   // variables
   int starting;

@@ -24,8 +24,8 @@ public:
   int getDirection();
   int setDirection(int clockwise);
   int commutePole();
-  int start();
-  int stop();
+/*   int start();
+  int stop(); */
   void setOpenInverter();
   
   // int setAutomaRate(int val);
