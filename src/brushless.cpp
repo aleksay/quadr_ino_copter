@@ -26,6 +26,8 @@ brushless::brushless() {
   // allocate buffer for char array
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
+  
+  registerISRCallback ( automa.commutePole )
 }
 
 int brushless::getStartupOpenLoopValue(ramp ramp) {
@@ -395,9 +397,8 @@ int brushless::manualMode() {
 brushless::~brushless() {
 }
 
-ISR(TIMER1_COMPA_vect) {
-  automa.commutePole();
-}
+
+
 
 
 
