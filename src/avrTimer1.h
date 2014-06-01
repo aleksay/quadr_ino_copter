@@ -82,16 +82,16 @@
 
 
 #ifndef UINT16_MAX
-#define UINT16_MAX 65000
+#define UINT16_MAX 65534
 #endif
 
 
 // Variables
 extern uint16_t timer1_prescaler;
-extern uint16_t timer1_maxHzPrescaler1;
-extern uint16_t timer1_maxHzPrescaler8;
-extern uint16_t timer1_maxHzPrescaler64;
-extern uint16_t timer1_maxHzPrescaler256;
+extern uint16_t timer1_minHzPrescaler1;
+extern uint16_t timer1_minHzPrescaler8;
+extern uint16_t timer1_minHzPrescaler64;
+extern uint16_t timer1_minHzPrescaler256;
 
 
 // Functions
@@ -100,7 +100,7 @@ int8_t timer1_fastPwm_icr1top_init();
 int8_t timer1_fastPwm_ocr1atop_init();
 void timer1_start();
 void timer1_stop();
-void timer1_getPrescalerMaxHz(void);
+void timer1_getPrescalerMinHz(void);
 uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz);
 uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top);
 uint16_t timer1_getPrescalerRequired(uint16_t Hz);

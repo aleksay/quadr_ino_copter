@@ -3,17 +3,17 @@
 
 // Variables
 uint16_t timer1_prescaler;
-uint16_t timer1_maxHzPrescaler1;
-uint16_t timer1_maxHzPrescaler8;
-uint16_t timer1_maxHzPrescaler64;
-uint16_t timer1_maxHzPrescaler256;
+uint16_t timer1_minHzPrescaler1;
+uint16_t timer1_minHzPrescaler8;
+uint16_t timer1_minHzPrescaler64;
+uint16_t timer1_minHzPrescaler256;
 
 
 // FUNCTIONS
 int8_t timer1_init() {
 
   // calculate max values per prescaler
-  timer1_getPrescalerMaxHz();
+  timer1_getPrescalerMinHz();
 
   // configure timer1
   timer1_fastPwm_ocr1atop_init();
@@ -61,16 +61,16 @@ void timer1_stop() {
   AUTOMA_OPEN_INVERTER;
 }
 
-void timer1_getPrescalerMaxHz(void) {
-  timer1_maxHzPrescaler1 =  timer1_Top2Hz(1, UINT16_MAX);
-  timer1_maxHzPrescaler8 =  timer1_Top2Hz(8, UINT16_MAX);
-  timer1_maxHzPrescaler64 =  timer1_Top2Hz(64, UINT16_MAX);
-  timer1_maxHzPrescaler256 =  timer1_Top2Hz(256, UINT16_MAX);
+void timer1_getPrescalerMinHz(void) {
+  timer1_minHzPrescaler1 =   timer1_Top2Hz(1  , UINT16_MAX) + 1;
+  timer1_minHzPrescaler8 =   timer1_Top2Hz(8  , UINT16_MAX) + 1;
+  timer1_minHzPrescaler64 =  timer1_Top2Hz(64 , UINT16_MAX) + 1;
+  timer1_minHzPrescaler256 = timer1_Top2Hz(256, UINT16_MAX) + 1;
 
-  debug("timer1_maxHzPrescaler1:%u", timer1_maxHzPrescaler1);
-  debug("timer1_maxHzPrescaler8:%u", timer1_maxHzPrescaler8);
-  debug("timer1_maxHzPrescaler64:%u", timer1_maxHzPrescaler64);
-  debug("timer1_maxHzPrescaler256:%u", timer1_maxHzPrescaler256);
+  debug("timer1_minHzPrescaler1:%u", timer1_minHzPrescaler1);
+  debug("timer1_minHzPrescaler8:%u", timer1_minHzPrescaler8);
+  debug("timer1_minHzPrescaler64:%u", timer1_minHzPrescaler64);
+  debug("timer1_minHzPrescaler256:%u", timer1_minHzPrescaler256);
 
 }
 
@@ -80,21 +80,23 @@ uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz) {
   return floor(F_CPU / (prescaler * Hz) - 1);
 }
 
-// used for calculating max TOP
+// used for calculating max TOP, min frequency
 uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top) {
-  //debug("%lu,%d,%d",F_CPU,prescaler,top);
-  return F_CPU /  (top + 1) / prescaler + 1;
+  debug("%lu,%u,%u", F_CPU, prescaler, top);
+  return F_CPU /  (top + 1) / prescaler;
 }
 
 uint16_t timer1_getPrescalerRequired(uint16_t Hz) {
 
-  if (Hz < timer1_maxHzPrescaler1)
+
+
+  if (Hz >= timer1_minHzPrescaler1)
     return 1;
-  if (Hz < timer1_maxHzPrescaler8)
+  if (Hz >= timer1_minHzPrescaler8)
     return 8;
-  if (Hz < timer1_maxHzPrescaler64)
+  if (Hz >= timer1_minHzPrescaler64)
     return 64;
-  if (Hz < timer1_maxHzPrescaler256)
+  if (Hz >= timer1_minHzPrescaler256)
     return 256;
 }
 
