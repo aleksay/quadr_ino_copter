@@ -7,61 +7,42 @@
 #include "MsTimer2.h"
 #include "comDeviceUSART.h"
 #include "brushlessGlue.h"
+#include "avrTime.h"
 
 
-
-// Initialization of objects
+// Class declarations
 brushless brushless;
 
-// Initialization of command struct
+// Struct declarations
 Command latestCommand;
+
 void setup() {
 
-  // undo arduino init() serial de-init nastiness
-  //#if defined(UCSRB)
-  //  UCSRB = 1;
-  //#elif defined(UCSR0B)
-  //  UCSR0B = 1;
-  //#endif
-
   //initialize uart
-  uart_init(); // BAUD is 9600 by default
+  uart_init();
   stdio_init();
 
-  printAndClearResetSource();
+  printAndClearResetSource(); // TODO broken
 
   // init timers
   automaInit();
   pwmInit();
+  avrClockInit();
 
-  //timer 2 init.
-  // MsTimer2::set(50, brushlessPtr->incrementTime ); // Doesnt work
-  MsTimer2::set(10, globalSetTime ); // 10ms period
-  MsTimer2::start();
-  debug("timer2 counter initialized");
-
+  debug("setup finished");
 }
 
 
 // Run main loop
 void loop() {
-if(haveAsciiMessage==1) {
-  debug("asciiMessage:%s ",asciiMessage);
-  latestCommand = asciiString2Message(asciiMessage);
-  haveAsciiMessage=0;
-  brushless.setCommand(latestCommand);
-}
+  if (haveAsciiMessage == 1) {
+    debug("asciiMessage:%s ", asciiMessage);
+    latestCommand = asciiString2Message(asciiMessage);
+    haveAsciiMessage = 0;
+    brushless.setCommand(latestCommand);
+  }
 
   brushless.iterate();
 
 }
-
-
-void globalSetTime()
-{
-  brushless.incrementTime();
-}
-
-
-
 

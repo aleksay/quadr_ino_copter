@@ -1,90 +1,90 @@
 #include "brushlessGlue.h"
 
-int automaInit(){
+int automaInit() {
   timer1_init();
   return 0;
 }
 
-int automaStart(){
+int automaStart() {
   timer1_start();
   return 0;
 }
 
-int automaStop(){
+int automaStop() {
   timer1_stop();
   return 0;
 }
 
-int automaSetFrequency(int freqHz){
+int automaSetFrequency(int freqHz) {
   timer1_setFrequency(freqHz);
   return 0;
 }
 
-int automaSetDuty(int val){
+int automaSetDuty(int val) {
   timer1_setDuty(val);
   return 0;
 }
 
-int automaSetPrescaler(int prescaler){
+int automaSetPrescaler(int prescaler) {
   timer1_setPrescaler(prescaler);
   return 0;
 }
 
-int automaGetFrequency(){
+int automaGetFrequency() {
   return timer1_getFrequency();
 }
 
-int automaGetDuty(){
+int automaGetDuty() {
   return timer1_getDuty();;
 }
 
-int automaGetTop(){
+int automaGetTop() {
   return timer1_getTop();
 }
 
-int automaGetPrescaler(){
+int automaGetPrescaler() {
   return timer1_getPrescaler();
 }
 
-int pwmInit(){
+int pwmInit() {
   timer0_init();
   return 0;
 }
 
-int pwmStart(){
+int pwmStart() {
   timer0_start() ;
   return 0;
 }
 
-int pwmStop(){
+int pwmStop() {
   timer0_stop();
   return 0;
 }
 
-int pwmSetFrequency(unsigned int val){
+int pwmSetFrequency(unsigned int val) {
   timer0_setFrequency(val);
   return 0;
 }
 
-int pwmSetDuty(int val){
+int pwmSetDuty(int val) {
   timer0_setDuty(val);
   return 0;
 }
 
-int pwmSetPrescaler(int prescaler){
+int pwmSetPrescaler(int prescaler) {
   timer0_setPrescaler(prescaler);
   return 0;
 }
 
-unsigned int pwmGetFrequency(){
+unsigned int pwmGetFrequency() {
   return timer0_getFrequency();
 }
 
-int pwmGetDuty(){
+int pwmGetDuty() {
   return timer0_getDuty();
 }
 
-int pwmGetPrescaler(){
+int pwmGetPrescaler() {
   return timer0_getPrescaler();
 }
 

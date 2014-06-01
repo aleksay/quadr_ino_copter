@@ -1,6 +1,6 @@
 /*
  Header file for brshless control module
- 
+
  */
 
 #ifndef BRUSHLESS_h
@@ -11,7 +11,8 @@
 #include "comLogger.h"
 #include "mosfetSequencecontroller.h"
 #include "brushlessGlue.h"
-
+#include "avrUtils.h"
+#include "avrTime.h"
 
 
 //TODO change to startupState_MotorOff with __UNDERSCORE__
@@ -38,38 +39,35 @@ ramp;
 
 class brushless {
 
-public:
+  public:
 
-  brushless();
-  ~brushless();
+    brushless();
+    ~brushless();
 
-  // methods
-  int iterate();  
-  int setStartupFreqEnd (int val);
-  int setStartupFreqGain (int val);
-  int setCommand(Command command);
-  int incrementTime();  //DA SPOSTARE IN TIME.cpp
-  unsigned getTime();   //DA SPOSTARE IN TIME.cpp
-  int resetTime();      //DA SPOSTARE IN TIME.cpp
- 
-private:
+    // methods
+    int iterate();
+    int setStartupFreqEnd (int val);
+    int setStartupFreqGain (int val);
+    int setCommand(Command command);
+
+  private:
 
 
-  // methods
-  int parseCommand(Command command);
-  int angSpeed();
-  int getStartupOpenLoopValue(ramp ramp);
-  int setStartupState(int state);
-  int startupCallback();
-  int manualMode();
+    // methods
+    int parseCommand(Command command);
+    int angSpeed();
+    int getStartupOpenLoopValue(ramp ramp);
+    int setStartupState(int state);
+    int startupCallback();
+    int manualMode();
 
-  // variables
-  int starting;
-  int startupState;
-  unsigned int msTime;
-  int commandRead;
-  Command latestCommand;
-  ramp rampPWMDuty, rampAutomaFrequencyA, rampAutomaFrequencyB;
+    // variables
+    int starting;
+    int startupState;
+    unsigned long startTime;
+    int commandRead;
+    Command latestCommand;
+    ramp rampPWMDuty, rampAutomaFrequencyA, rampAutomaFrequencyB;
 
 };
 
