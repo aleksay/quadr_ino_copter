@@ -1,16 +1,17 @@
 #ifndef AVRTIMER1_H
-#define AVRTIMER1_H 
+#define AVRTIMER1_H
 
 #include "comLogger.h"
 #include "config.h"
 #include "avrUtils.h"
 #include "math.h"
+#include "stdint.h"
 
 /*
 =====================================================
- 
+
  		           Timer 1 Section
- 
+
  =====================================================
  */
 #define TIMER1_RESET TCCR1B=0;TCCR1A=0;TCNT1=0
@@ -67,8 +68,8 @@
 #define SET_TIMER1_PINB DDRB = DDRB | 0b00000100
 #define SET_TIMER1_PINA DDRB = DDRB | 0b00000010
 /*COM1A1/COM1B1 COM1A0/COM1B0*/
-#define SET_TIMER1_PINOUT(pin)   TCCR1A |= 1 << COM1##pin##1 
-#define UNSET_TIMER1_PINOUT(pin) TCCR1A &= ~(1 << COM1##pin##1) 
+#define SET_TIMER1_PINOUT(pin)   TCCR1A |= 1 << COM1##pin##1
+#define UNSET_TIMER1_PINOUT(pin) TCCR1A &= ~(1 << COM1##pin##1)
 
 #define SET_TIMER1_PINB_NOTINVERTING(notInverting) TCCR1A |= notInverting << COM1B0
 #define SET_TIMER1_PINA_NOTINVERTING(notInverting) TCCR1A |= notInverting << COM1A0
@@ -79,28 +80,38 @@
 #define SET_TIMER1_DUTY_CHAN_A(val)        OCR1A = val
 
 
+#ifndef UINT16_MAX
+#define UINT16_MAX 65536
+#endif
 
 
+// Variables
+extern uint16_t timer1_prescaler;
+extern uint16_t timer1_maxHzPrescaler1;
+extern uint16_t timer1_maxHzPrescaler8;
+extern uint16_t timer1_maxHzPrescaler64;
+extern uint16_t timer1_maxHzPrescaler256;
 
 
-
-
-int timer1_init();
-int timer1_fastPwm_icr1top_init();
-int timer1_fastPwm_ocr1atop_init();
-int timer1_start();
-int timer1_start(int _prescaler);
-int timer1_stop();
-int timer1_setPrescaler(int _prescaler);
-int timer1_Hz2top(int freqHz);
-int timer1_setFrequency(unsigned int freqHz);
-int timer1_setDuty(int val);
-unsigned int timer1_getFrequency();
-unsigned int timer1_getTop();
-int timer1_getDuty();
-int timer1_getPrescaler();
-void timer1_timer1_ovf_handler();
-
+// Functions
+int8_t timer1_init();
+int8_t timer1_fastPwm_icr1top_init();
+int8_t timer1_fastPwm_ocr1atop_init();
+void timer1_start();
+void timer1_stop();
+void timer1_getPrescalerMaxHz(void);
+uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz);
+uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top);
+uint16_t timer1_getPrescalerRequired(uint16_t Hz);
+int8_t timer1_setPrescaler(uint16_t _prescaler);
+int8_t timer1_setFrequency(uint16_t Hz);
+int8_t timer1_setTop(uint16_t top);
+int8_t timer1_setDuty(uint8_t duty);
+uint16_t timer1_getPrescaler(void);
+uint16_t timer1_getFrequency(void);
+uint16_t timer1_getTop(void);
+uint16_t timer1_getDuty(void);
+void timer1_timer1_ovf_handler(void);
 
 
 

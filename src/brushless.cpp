@@ -18,7 +18,6 @@ brushless::brushless() {
   rampAutomaFrequencyB.currentValue = 0;
   rampAutomaFrequencyB.end = 2800;
 
-
   // Get state machine ready for callbacks
   automa.init();
   setStartupState(startupState_MotorOff);
@@ -130,7 +129,7 @@ int brushless::setStartupState(int state) {
 
       TCCR1B &= (0 << CS12) | ~(1 << CS11)  | (0 << CS10);
 
-      automaSetPrescaler(1);
+      //automaSetPrescaler(1);
       automaSetFrequency(automaGetFrequency() + 1);
 
       debug("Starting Automa Ramp B");
@@ -235,13 +234,6 @@ int brushless::parseCommand(Command command) {
       automaSetDuty(command->value);
       free(command);
       log_info("automaGetDuty():%d", automaGetDuty());
-      return 0;
-
-      // Set prescaler value
-    case 'l':
-      automaSetPrescaler(command->value);
-      free(command);
-      log_info("automaGetPrescaler():%d", automaGetPrescaler());
       return 0;
 
       // Print angular speed

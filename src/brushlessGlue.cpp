@@ -25,11 +25,6 @@ int automaSetDuty(int val) {
   return 0;
 }
 
-int automaSetPrescaler(int prescaler) {
-  timer1_setPrescaler(prescaler);
-  return 0;
-}
-
 int automaGetFrequency() {
   return timer1_getFrequency();
 }
@@ -40,10 +35,6 @@ int automaGetDuty() {
 
 int automaGetTop() {
   return timer1_getTop();
-}
-
-int automaGetPrescaler() {
-  return timer1_getPrescaler();
 }
 
 int pwmInit() {
