@@ -83,7 +83,7 @@ uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz) {
 // used for calculating max TOP
 uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top) {
   //debug("%lu,%d,%d",F_CPU,prescaler,top);
-  return floor(F_CPU / ( (top + 1) * prescaler));
+  return F_CPU /  (top + 1) / prescaler + 1;
 }
 
 uint16_t timer1_getPrescalerRequired(uint16_t Hz) {

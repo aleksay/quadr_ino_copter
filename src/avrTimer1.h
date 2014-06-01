@@ -82,7 +82,7 @@
 
 
 #ifndef UINT16_MAX
-#define UINT16_MAX 65536
+#define UINT16_MAX 65000
 #endif
 
 
