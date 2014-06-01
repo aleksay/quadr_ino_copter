@@ -64,7 +64,8 @@ class brushless {
     // variables
     int starting;
     int startupState;
-    unsigned long startTime;
+    uint32_t startTime;
+    uint32_t TotStartupTime;
     int commandRead;
     Command latestCommand;
     ramp rampPWMDuty, rampAutomaFrequencyA, rampAutomaFrequencyB;

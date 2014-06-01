@@ -69,6 +69,7 @@ int brushless::setStartupState(int state) {
       automa.setState(DEFAULT_INITIAL_STATE);
       debug("PWM Started - Commencing rotor alignment");
       startTime = avrClock();
+      TotStartupTime = avrClock();
       startupState = startupState_RotorAligned;
       return  0;
 
@@ -101,24 +102,19 @@ int brushless::setStartupState(int state) {
       // increase frequency of automa and pwm duty until max duty value is reached
     case startupState_AutomaRampA:
       // raise duty until end duty
-      if (  pwmGetDuty() < rampPWMDuty.end )
+      if (  pwmGetDuty() < rampPWMDuty.end ){
         pwmSetDuty(getStartupOpenLoopValue(rampPWMDuty));
-
+      }
       // raise automa frequency until end frequency
-      if (  automaGetFrequency() < rampAutomaFrequencyA.end )
+      if (  automaGetFrequency() < rampAutomaFrequencyA.end ){
         automaSetFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
-
+      }
       // set next state once pwm and duty reach end value
       if (  pwmGetDuty() >= rampPWMDuty.end  &&  automaGetFrequency() >= rampAutomaFrequencyA.end  )
       {
         startupState = startupState_SetupAutomaRampB;
       }
       return  0;
-
-
-      /////////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////////
-
 
       // increase automa frequency until max automa frequency of ramp A
     case startupState_SetupAutomaRampB:
@@ -133,16 +129,11 @@ int brushless::setStartupState(int state) {
       startupState = startupState_AutomaRampB;
       return  0;
 
-      /////////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////////
-
       // continue increasing automa frequency until max automa frequency of ramp B
     case startupState_AutomaRampB:
       automaSetFrequency(getStartupOpenLoopValue(rampAutomaFrequencyB));
       if ( automaGetFrequency() >= rampAutomaFrequencyB.end)
       {
-
-
         startupState = startupState_StartupFinished;
       }
       return  0;
@@ -151,7 +142,7 @@ int brushless::setStartupState(int state) {
     case startupState_StartupFinished:
       // reduce duty for steady speed
       // pwmSetDuty(90);
-      debug("Startup Finished. Time is[ms]: %d", (int)(avrClock() - startTime));
+      debug("Startup Finished. Time is[ms]: %d", (int)(avrClock() - TotStartupTime));
       return  1;
 
 
