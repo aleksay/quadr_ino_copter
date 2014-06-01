@@ -35,7 +35,7 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   float ang = (float)ramp.gain * (float) (avrClock() - startTime) * 0.001;
   int OpenLoopValue = ang + ramp.offset;
 
-  debug("rampTime: %u, gain: %d, offset: %d, value: %d", (unsigned int) (avrClock() - startTime), ramp.gain, ramp.offset, OpenLoopValue);
+  //debug("rampTime: %u, gain: %d, offset: %d, value: %d", (unsigned int) (avrClock() - startTime), ramp.gain, ramp.offset, OpenLoopValue);
   //debug ("%d",OpenLoopValue);
   return OpenLoopValue;
 
@@ -127,9 +127,6 @@ int brushless::setStartupState(int state) {
       rampAutomaFrequencyB.offset = automaGetFrequency();
       startTime = avrClock();
 
-      TCCR1B &= (0 << CS12) | ~(1 << CS11)  | (0 << CS10);
-
-      //automaSetPrescaler(1);
       automaSetFrequency(automaGetFrequency() + 1);
 
       debug("Starting Automa Ramp B");

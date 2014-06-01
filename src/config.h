@@ -10,9 +10,9 @@
 #pragma warn F_CPU unset, setting to 8 MHz
 #define F_CPU 8000000UL  //Uncomment for arduino Fio
 //#define F_CPU 16000000UL  //Uncomment for arduino duemilanove
-#endif // F_CPU
+#endif
 
-#define BAUD 115200
+#define BAUD 57600
 /*
 =====================================================
  		           PARAMETRI MOTORE

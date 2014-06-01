@@ -53,6 +53,7 @@ int8_t timer1_fastPwm_ocr1atop_init() {
 
 void timer1_start() {
   timer1_setPrescaler(DEFAULT_T1_INIT_PRESCALER);
+  timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY);
 }
 
 //stop timer1 by removing the prescaler
@@ -82,7 +83,7 @@ uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz) {
 
 // used for calculating max TOP, min frequency
 uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top) {
-  debug("%lu,%u,%u", F_CPU, prescaler, top);
+  //debug("%lu,%u,%u", F_CPU, prescaler, top);
   return F_CPU /  (top + 1) / prescaler;
 }
 
