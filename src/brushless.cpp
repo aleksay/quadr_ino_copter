@@ -27,7 +27,7 @@ brushless::brushless() {
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
   
-  registerISRCallback ( automa.commutePole )
+  registerISRCallback ( automa.commutePole );
 }
 
 int brushless::getStartupOpenLoopValue(ramp ramp) {

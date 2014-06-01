@@ -54,7 +54,7 @@ int mosfetSequencecontroller::init() {
   setState(0);
 }
 
-int mosfetSequencecontroller::commutePole() {
+static void mosfetSequencecontroller::commutePole(void) {
   
   if (direction) {
     state = ++state % NUM_STATES;
@@ -66,7 +66,6 @@ int mosfetSequencecontroller::commutePole() {
     AUTOMA_ITERATE(state);
   }
   //debug("%d",state);
-  return 0;
 }
 
 //int mosfetSequencecontroller::setAutomaRate(int val) {

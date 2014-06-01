@@ -13,7 +13,7 @@
 #include "brushlessGlue.h"
 #include "avrUtils.h"
 #include "avrTime.h"
-
+#include "brushlessInterrupt.h"
 
 //TODO change to startupState_MotorOff with __UNDERSCORE__
 #define startupState_MotorOff 0
