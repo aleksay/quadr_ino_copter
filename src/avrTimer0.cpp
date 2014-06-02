@@ -6,6 +6,7 @@ unsigned int timer0_frequency;
 int timer0_duty;
 unsigned int timer0_dutyVal;
 int timer0_prescaler;
+uint32_t delaytime;
 
 
 int timer0_init(){
@@ -44,11 +45,13 @@ int timer0_start(int _prescaler) {
 
 //stop timer1 by removing the prescaler
 int timer0_stop(){ 
-  
+  delaytime = avrClock();
+  while ((avrClock() - delaytime)<10)
+  {
   timer0_setDuty(0);
-  // BISOGNA ASPETTARE DEL TEMPO UTILIZZANDO GET TIME IN TIME.CPP prima di settare questo
+  }// wait then clear the prescaler
 
-  //SET_TIMER0_STOP;
+  SET_TIMER0_STOP;
   return 0;
 }
 

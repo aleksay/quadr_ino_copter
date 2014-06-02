@@ -14,8 +14,7 @@ brushless::brushless() {
   rampAutomaFrequencyB.gain = 150;
   rampAutomaFrequencyB.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyB.currentValue = 0;
-  rampAutomaFrequencyB.end = 2800;
-
+  rampAutomaFrequencyB.end = 3800;
 
   // Get state machine ready for callbacks
   pins_init();
@@ -25,7 +24,6 @@ brushless::brushless() {
   // allocate buffer for char array
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
- 
 }
 
 int brushless::getStartupOpenLoopValue(ramp ramp) {
@@ -36,7 +34,7 @@ int brushless::getStartupOpenLoopValue(ramp ramp) {
   float ang = (float)ramp.gain * (float) (avrClock() - startTime) * 0.001;
   int OpenLoopValue = ang + ramp.offset;
 
-  debug("rampTime: %u, gain: %d, offset: %d, value: %d", (unsigned int) (avrClock() - startTime), ramp.gain, ramp.offset, OpenLoopValue);
+  //debug("rampTime: %u, gain: %d, offset: %d, value: %d", (unsigned int) (avrClock() - startTime), ramp.gain, ramp.offset, OpenLoopValue);
   //debug ("%d",OpenLoopValue);
   return OpenLoopValue;
 
@@ -58,9 +56,7 @@ int brushless::setStartupState(int state) {
     case startupState_MotorInit:
       pwmStart();
 
-      //TODO tirare giu tutti i pin logici setstate(OFF)
-
-      startupState = startupState_PWMStarted;
+	  startupState = startupState_PWMStarted;
       return  0;
 
 
@@ -70,6 +66,7 @@ int brushless::setStartupState(int state) {
       pins_setState(DEFAULT_INITIAL_STATE);
       debug("PWM Started - Commencing rotor alignment");
       startTime = avrClock();
+      TotStartupTime = avrClock();
       startupState = startupState_RotorAligned;
       return  0;
 
@@ -102,13 +99,13 @@ int brushless::setStartupState(int state) {
       // increase frequency of automa and pwm duty until max duty value is reached
     case startupState_AutomaRampA:
       // raise duty until end duty
-      if (  pwmGetDuty() < rampPWMDuty.end )
+      if (  pwmGetDuty() < rampPWMDuty.end ){
         pwmSetDuty(getStartupOpenLoopValue(rampPWMDuty));
-
+      }
       // raise automa frequency until end frequency
-      if (  getISRFrequency() < rampAutomaFrequencyA.end )
+      if (  getISRFrequency() < rampAutomaFrequencyA.end ){
         setISRFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
-
+}
       // set next state once pwm and duty reach end value
       if (  pwmGetDuty() >= rampPWMDuty.end  &&  getISRFrequency() >= rampAutomaFrequencyA.end  )
       {
@@ -126,12 +123,9 @@ int brushless::setStartupState(int state) {
 
       // set pwm offset and reset clock
       rampAutomaFrequencyB.offset = getISRFrequency();
+      setISRFrequency(rampAutomaFrequencyB.offset + 1);
       startTime = avrClock();
 
-      TCCR1B &= (0 << CS12) | ~(1 << CS11)  | (0 << CS10);
-
-      automaSetPrescaler(1);
-      setISRFrequency(getISRFrequency() + 1);
 
       debug("Starting Automa Ramp B");
       startupState = startupState_AutomaRampB;
@@ -155,7 +149,8 @@ int brushless::setStartupState(int state) {
     case startupState_StartupFinished:
       // reduce duty for steady speed
       // pwmSetDuty(90);
-      debug("Startup Finished. Time is[ms]: %d", (int)(avrClock() - startTime));
+      debug("Startup Finished. Time is[ms]: %u", (int)(avrClock() - TotStartupTime));
+	  startupState = startupState_MotorOff;
       return  1;
 
 
@@ -227,14 +222,14 @@ int brushless::parseCommand(Command command) {
     case 'a':
       setISRFrequency(command->value);
       free(command);
-      log_info("automaGetFrequency():%d", getISRFrequency());
+      log_info("getISRFrequency():%d", getISRFrequency());
       return 0;
 
 
       // Print angular speed
     case 'b':
       free(command);
-      //log_info("angSpeed():%d",angSpeed()); // BROKEN
+      angSpeed(); 
       return 0;
 
       // Print free RAM
@@ -370,10 +365,9 @@ int brushless::setStartupFreqGain (int val) {
 int brushless::manualMode() {
   pwmStart();
   startISR();
-  setISRFrequency(300);
   pins_setState(DEFAULT_INITIAL_STATE);
-
-
+  setISRFrequency(300);
+  automaSetFrequency(300);
   pwmSetDuty(90);
 
   return 0;
@@ -382,9 +376,6 @@ int brushless::manualMode() {
 
 brushless::~brushless() {
 }
-
-
-
 
 
 
