@@ -57,9 +57,7 @@ int brushless::setStartupState(int state) {
     case startupState_MotorInit:
       pwmStart();
 
-      //TODO tirare giu tutti i pin logici setstate(OFF)
-
-      startupState = startupState_PWMStarted;
+	  startupState = startupState_PWMStarted;
       return  0;
 
 
@@ -142,7 +140,8 @@ int brushless::setStartupState(int state) {
     case startupState_StartupFinished:
       // reduce duty for steady speed
       // pwmSetDuty(90);
-      debug("Startup Finished. Time is[ms]: %d", (int)(avrClock() - TotStartupTime));
+      debug("Startup Finished. Time is[ms]: %u", (int)(avrClock() - TotStartupTime));
+	  startupState = startupState_MotorOff;
       return  1;
 
 
