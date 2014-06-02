@@ -16,7 +16,7 @@ brushless::brushless() {
   rampAutomaFrequencyB.gain = 150;
   rampAutomaFrequencyB.offset = DEFAULT_T1_INIT_FREQUENCY;
   rampAutomaFrequencyB.currentValue = 0;
-  rampAutomaFrequencyB.end = 2800;
+  rampAutomaFrequencyB.end = 3800;
 
   // Get state machine ready for callbacks
   automa.init();
@@ -226,7 +226,7 @@ int brushless::parseCommand(Command command) {
       // Print angular speed
     case 'b':
       free(command);
-      //log_info("angSpeed():%d",angSpeed()); // BROKEN
+      angSpeed(); 
       return 0;
 
       // Print free RAM
