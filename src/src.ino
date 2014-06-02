@@ -25,7 +25,6 @@ void setup() {
   printAndClearResetSource(); // TODO broken
 
   // init timers
-  automaInit();
   pwmInit();
   avrClockInit();
 

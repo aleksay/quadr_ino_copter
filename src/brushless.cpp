@@ -19,13 +19,13 @@ brushless::brushless() {
 
   // Get state machine ready for callbacks
   pins_init();
+  
   setStartupState(startupState_MotorOff);
 
   // allocate buffer for char array
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
-  
-  registerISRCallback ( pins_commutePole );
+ 
 }
 
 int brushless::getStartupOpenLoopValue(ramp ramp) {
@@ -50,7 +50,7 @@ int brushless::setStartupState(int state) {
       // start pwm signal
     case startupState_MotorOff:
       pins_setOpenInverter(); //micro con tutti i pin logici low
-      automaStop();
+      stopISR();
       pwmSetDuty(DEFAULT_T0_INIT_DUTY);
       startupState = startupState_MotorInit;
       return  0;
@@ -89,7 +89,7 @@ int brushless::setStartupState(int state) {
     case startupState_SetupAutomaRampA:
 
       // start drive sequence
-      automaStart();
+      startISR();
 
       // set ramp duty offset and reset clock
       rampPWMDuty.offset = pwmGetDuty();
@@ -106,11 +106,11 @@ int brushless::setStartupState(int state) {
         pwmSetDuty(getStartupOpenLoopValue(rampPWMDuty));
 
       // raise automa frequency until end frequency
-      if (  automaGetFrequency() < rampAutomaFrequencyA.end )
-        automaSetFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
+      if (  getISRFrequency() < rampAutomaFrequencyA.end )
+        setISRFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
 
       // set next state once pwm and duty reach end value
-      if (  pwmGetDuty() >= rampPWMDuty.end  &&  automaGetFrequency() >= rampAutomaFrequencyA.end  )
+      if (  pwmGetDuty() >= rampPWMDuty.end  &&  getISRFrequency() >= rampAutomaFrequencyA.end  )
       {
         startupState = startupState_SetupAutomaRampB;
       }
@@ -125,13 +125,13 @@ int brushless::setStartupState(int state) {
     case startupState_SetupAutomaRampB:
 
       // set pwm offset and reset clock
-      rampAutomaFrequencyB.offset = automaGetFrequency();
+      rampAutomaFrequencyB.offset = getISRFrequency();
       startTime = avrClock();
 
       TCCR1B &= (0 << CS12) | ~(1 << CS11)  | (0 << CS10);
 
       automaSetPrescaler(1);
-      automaSetFrequency(automaGetFrequency() + 1);
+      setISRFrequency(getISRFrequency() + 1);
 
       debug("Starting Automa Ramp B");
       startupState = startupState_AutomaRampB;
@@ -142,8 +142,8 @@ int brushless::setStartupState(int state) {
 
       // continue increasing automa frequency until max automa frequency of ramp B
     case startupState_AutomaRampB:
-      automaSetFrequency(getStartupOpenLoopValue(rampAutomaFrequencyB));
-      if ( automaGetFrequency() >= rampAutomaFrequencyB.end)
+      setISRFrequency(getStartupOpenLoopValue(rampAutomaFrequencyB));
+      if ( getISRFrequency() >= rampAutomaFrequencyB.end)
       {
 
 
@@ -225,24 +225,11 @@ int brushless::parseCommand(Command command) {
 
       // Set automa frequency
     case 'a':
-      automaSetFrequency(command->value);
+      setISRFrequency(command->value);
       free(command);
-      log_info("automaGetFrequency():%d", automaGetFrequency());
+      log_info("automaGetFrequency():%d", getISRFrequency());
       return 0;
 
-      // Set automa frequency
-    case 'q':
-      automaSetDuty(command->value);
-      free(command);
-      log_info("automaGetDuty():%d", automaGetDuty());
-      return 0;
-
-      // Set prescaler value
-    case 'l':
-      automaSetPrescaler(command->value);
-      free(command);
-      log_info("automaGetPrescaler():%d", automaGetPrescaler());
-      return 0;
 
       // Print angular speed
     case 'b':
@@ -274,7 +261,7 @@ int brushless::parseCommand(Command command) {
       //Stop automa
     case 'x':
       free(command);
-      automaStop();
+      stopISR();
       //pins_setOpenInverter();
       //startupState = startupState_MotorOff;
       log_info("stop automa");
@@ -328,7 +315,7 @@ int brushless::parseCommand(Command command) {
       // Formatted print for parsing
     case 'p':
       free(command);
-      log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", automaGetFrequency(), automaGetTop() );
+      log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", getISRFrequency(), automaGetTop() );
       debug("OCR1A %u OCR1B %u OCR0A %u OCR0B %u", OCR1A, OCR1B, OCR0A, OCR0B);
       return  0;
 
@@ -354,7 +341,7 @@ int brushless::setCommand(Command command) {
 }
 
 int brushless::angSpeed() {
-  unsigned int RPM_e = floor( (automaGetFrequency() / PINS_NUM_STATES) * 60);
+  unsigned int RPM_e = floor( (getISRFrequency() / PINS_NUM_STATES) * 60);
   unsigned int RPM_m = floor(RPM_e / (NUM_POLES / 2));
   int rads_e = floor(RPM_e / 60 * 2 * M_PI);
   int rads_m = floor(RPM_m / 60 * 2 * M_PI);
@@ -382,10 +369,11 @@ int brushless::setStartupFreqGain (int val) {
 
 int brushless::manualMode() {
   pwmStart();
-  automaStart();
+  startISR();
+  setISRFrequency(300);
   pins_setState(DEFAULT_INITIAL_STATE);
 
-  automaSetFrequency(300);
+
   pwmSetDuty(90);
 
   return 0;

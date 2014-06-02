@@ -9,7 +9,9 @@ extern void (*myfunc)(void);
 
 // functions
 void registerISRCallback ( void(*func)(void) );
-void deregisterISRCallback ( void(*func)(void) );
-void scheduleISRCallback (uint16_t Hz);
+void startISR (void );
+void stopISR (void );
+void setISRFrequency (uint16_t Hz);
+uint16_t getISRFrequency (void);
 
 #endif //header brushlessinterrupt_h
