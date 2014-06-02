@@ -73,7 +73,6 @@ int timer1_start(int _prescaler) {
 //stop timer1 by removing the prescaler
 int timer1_stop(){ 
   SET_TIMER1_STOP;
-  AUTOMA_OPEN_INVERTER;
   return 0;
 }
 

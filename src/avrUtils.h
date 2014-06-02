@@ -53,28 +53,7 @@
 
 
 
-/*
-=====================================================
- 
- 		Mosfet Sequence Controller Section
- 
- =====================================================
- */
-//#define	automa_register_D
-#define automa_register_B
 
-
-#ifdef automa_register_D
-#define AUTOMA_PIN_INIT DDRD |= 0b00111111 
-#define AUTOMA_ITERATE(state) PORTD=states[state]
-#define AUTOMA_OPEN_INVERTER PORTD=0b00000000
-#endif
-
-#ifdef automa_register_B
-#define AUTOMA_PIN_INIT DDRB |= 0b00111111 
-#define AUTOMA_ITERATE(state) PORTB=states[state]
-#define AUTOMA_OPEN_INVERTER PORTB=0b00000000
-#endif
 
 
 /*

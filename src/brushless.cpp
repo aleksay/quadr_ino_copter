@@ -1,7 +1,5 @@
 #include "brushless.h"
 
-mosfetSequencecontroller automa;
-
 
 brushless::brushless() {
   debug("Entering constructor");
@@ -20,14 +18,14 @@ brushless::brushless() {
 
 
   // Get state machine ready for callbacks
-  automa.init();
+  pins_init();
   setStartupState(startupState_MotorOff);
 
   // allocate buffer for char array
   latestCommand = (Command)malloc(sizeof(_command));
   latestCommand->type = 'n';
   
-  registerISRCallback ( automa.commutePole );
+  registerISRCallback ( pins_commutePole );
 }
 
 int brushless::getStartupOpenLoopValue(ramp ramp) {
@@ -51,7 +49,7 @@ int brushless::setStartupState(int state) {
 
       // start pwm signal
     case startupState_MotorOff:
-      automa.setOpenInverter(); //micro con tutti i pin logici low
+      pins_setOpenInverter(); //micro con tutti i pin logici low
       automaStop();
       pwmSetDuty(DEFAULT_T0_INIT_DUTY);
       startupState = startupState_MotorInit;
@@ -69,7 +67,7 @@ int brushless::setStartupState(int state) {
       // Stop motor for aligning rotor
     case startupState_PWMStarted:
 
-      automa.setState(DEFAULT_INITIAL_STATE);
+      pins_setState(DEFAULT_INITIAL_STATE);
       debug("PWM Started - Commencing rotor alignment");
       startTime = avrClock();
       startupState = startupState_RotorAligned;
@@ -277,7 +275,7 @@ int brushless::parseCommand(Command command) {
     case 'x':
       free(command);
       automaStop();
-      //automa.setOpenInverter();
+      //pins_setOpenInverter();
       //startupState = startupState_MotorOff;
       log_info("stop automa");
       return 0;
@@ -285,7 +283,7 @@ int brushless::parseCommand(Command command) {
     case 'm':
       free(command);
       manualMode();
-      //automa.setOpenInverter();
+      //pins_setOpenInverter();
       //startupState = startupState_MotorOff;
       log_info("Manual mode");
       return 0;
@@ -295,7 +293,7 @@ int brushless::parseCommand(Command command) {
       free(command);
       pwmStop();
 
-      //automa.setOpenInverter();
+      //pins_setOpenInverter();
       //startupState = startupState_MotorOff;
       log_info("stop pwm");
       return 0;
@@ -335,9 +333,9 @@ int brushless::parseCommand(Command command) {
       return  0;
 
     case 'v':
-      automa.setDirection(command->value);
+      pins_setDirection(command->value);
       free(command);
-      log_info("automa.getDirection():%d", automa.getDirection());
+      log_info("pins_getDirection():%d", pins_getDirection());
       return 0;
 
 
@@ -356,7 +354,7 @@ int brushless::setCommand(Command command) {
 }
 
 int brushless::angSpeed() {
-  unsigned int RPM_e = floor( (automaGetFrequency() / NUM_STATES) * 60);
+  unsigned int RPM_e = floor( (automaGetFrequency() / PINS_NUM_STATES) * 60);
   unsigned int RPM_m = floor(RPM_e / (NUM_POLES / 2));
   int rads_e = floor(RPM_e / 60 * 2 * M_PI);
   int rads_m = floor(RPM_m / 60 * 2 * M_PI);
@@ -385,7 +383,7 @@ int brushless::setStartupFreqGain (int val) {
 int brushless::manualMode() {
   pwmStart();
   automaStart();
-  automa.setState(DEFAULT_INITIAL_STATE);
+  pins_setState(DEFAULT_INITIAL_STATE);
 
   automaSetFrequency(300);
   pwmSetDuty(90);

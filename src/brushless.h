@@ -9,7 +9,7 @@
 #include <Arduino.h>
 #include "comMessage.h"
 #include "comLogger.h"
-#include "mosfetSequencecontroller.h"
+#include "avrBrushlessPins.h"
 #include "brushlessGlue.h"
 #include "avrUtils.h"
 #include "avrTime.h"

@@ -1,18 +1,18 @@
 #include "brushlessInterrupt.h"
 
 // declare pointer
-void (*myfunc)();
+void (*myfunc)(void);
 
 
 
 // functions
-void registerISRCallback ( void (*func)(void) ){
+void registerISRCallback (  void(*func)(void) ){
 myfunc=func;
 timer1_start();
 //timer1_start(int _prescaler);
 }
 
-void deregisterISRCallback ( void (*func)(void) ){
+void deregisterISRCallback (  void(*func)(void) ){
 timer1_stop();
 }
 
@@ -22,6 +22,6 @@ timer1_setFrequency(Hz);
 }
 
 ISR(TIMER1_COMPA_vect) {
-  myfunc();
+  (*myfunc);
 }
 

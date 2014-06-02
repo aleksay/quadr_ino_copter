@@ -5,11 +5,11 @@
 #include "stdio.h"
 
 // pointers
-void (*myfunc);
+extern void (*myfunc)(void);
 
 // functions
-extern void registerISRCallback (void (*func)(void) );
-void deregisterISRCallback ( void (*func)(void) );
+void registerISRCallback ( void(*func)(void) );
+void deregisterISRCallback ( void(*func)(void) );
 void scheduleISRCallback (uint16_t Hz);
 
-#endif //header scheduler_h
+#endif //header brushlessinterrupt_h
