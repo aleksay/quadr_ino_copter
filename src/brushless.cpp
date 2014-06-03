@@ -18,7 +18,7 @@ brushless::brushless() {
 
   // Get state machine ready for callbacks
   pins_init();
-  
+  registerISRCallback(pins_commutePole);
   setStartupState(startupState_MotorOff);
 
   // allocate buffer for char array

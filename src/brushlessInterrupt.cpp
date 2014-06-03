@@ -35,7 +35,6 @@ return timer1_getFrequency();
 }
 
 ISR(TIMER1_COMPA_vect) {
-debug("ISR");
-  (*myfunc);
+  myfunc();
 }
 
