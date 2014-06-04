@@ -23,7 +23,17 @@ brushless::brushless() {
 
   // allocate buffer for char array
   latestCommand = (Command)malloc(sizeof(_command));
-  latestCommand->type = 'n';
+  //latestCommand->type = 'n';
+}
+
+int brushless::init(void) {
+  pins_init();
+  pwmInit();
+  registerISRCallback(pins_commutePole);
+  setStartupState(startupState_MotorOff);
+  startupState = startupState_MotorOff;
+  // allocate buffer for char array
+  latestCommand = (Command)malloc(sizeof(_command));
 }
 
 int brushless::getStartupOpenLoopValue(ramp ramp) {
@@ -47,7 +57,6 @@ int brushless::setStartupState(int state) {
 
       // start pwm signal
     case startupState_MotorOff:
-      pins_setOpenInverter(); //micro con tutti i pin logici low
       stopISR();
       pwmSetDuty(DEFAULT_T0_INIT_DUTY);
       startupState = startupState_MotorInit;
@@ -249,7 +258,6 @@ int brushless::parseCommand(Command command) {
     case 's':
       free(command);
       starting = 1;
-      //startupState = startupState_MotorOff;
       log_info("Starting...");
       return 0;
 

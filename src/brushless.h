@@ -45,6 +45,7 @@ class brushless {
     ~brushless();
 
     // methods
+	int init();
     int iterate();
     int setStartupFreqEnd (int val);
     int setStartupFreqGain (int val);

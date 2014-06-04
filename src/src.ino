@@ -24,9 +24,11 @@ void setup() {
 
   printAndClearResetSource(); // TODO broken
 
-  // init timers
-  pwmInit();
+  // init clock
   avrClockInit();
+  
+  //initialize brushless devices
+  brushless.init();
 
   debug("setup finished");
 }

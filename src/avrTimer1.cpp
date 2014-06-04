@@ -1,5 +1,6 @@
-
 #include "avrTimer1.h"
+#include "avrBrushlessPins.h"
+
 
 // Variables
 uint16_t timer1_prescaler;
@@ -19,9 +20,9 @@ int8_t timer1_init() {
   timer1_fastPwm_ocr1atop_init();
 
   // initialize timer1 global variable
-  timer1_prescaler = DEFAULT_T1_INIT_PRESCALER;
-  timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY); //also sets duty
-
+  /* timer1_prescaler = DEFAULT_T1_INIT_PRESCALER;
+  timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY); //also sets duty */
+   //timer1_stop();
 
   return 0;
 }
@@ -52,13 +53,14 @@ int8_t timer1_fastPwm_ocr1atop_init() {
 }
 
 void timer1_start() {
-  timer1_setPrescaler(DEFAULT_T1_INIT_PRESCALER);
+  //timer1_setPrescaler(DEFAULT_T1_INIT_PRESCALER);
   timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY);
 }
 
 //stop timer1 by removing the prescaler
 void timer1_stop() {
   SET_TIMER1_STOP;
+  pins_setOpenInverter();
 }
 
 void timer1_getPrescalerMinHz(void) {
