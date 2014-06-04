@@ -14,9 +14,9 @@ myfunc=func;
 
 
 // functions
-void startISR (  void ){
+void startISR (uint16_t Hz){
 debug("starting timer 1 ISR");
-timer1_start();
+timer1_start(Hz);
 //timer1_start(int _prescaler);
 }
 

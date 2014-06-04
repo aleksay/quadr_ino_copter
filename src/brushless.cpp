@@ -95,7 +95,7 @@ int brushless::setStartupState(int state) {
     case startupState_SetupAutomaRampA:
 
       // start drive sequence
-      startISR();
+      startISR(DEFAULT_T1_INIT_FREQUENCY);
 
       // set ramp duty offset and reset clock
       rampPWMDuty.offset = pwmGetDuty();
@@ -372,10 +372,8 @@ int brushless::setStartupFreqGain (int val) {
 
 int brushless::manualMode() {
   pwmStart();
-  startISR();
+  startISR(300);
   pins_setState(DEFAULT_INITIAL_STATE);
-  setISRFrequency(300);
-  automaSetFrequency(300);
   pwmSetDuty(90);
 
   return 0;

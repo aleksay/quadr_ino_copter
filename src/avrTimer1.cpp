@@ -52,9 +52,9 @@ int8_t timer1_fastPwm_ocr1atop_init() {
   return 0;
 }
 
-void timer1_start() {
+void timer1_start(uint16_t Hz) {
   //timer1_setPrescaler(DEFAULT_T1_INIT_PRESCALER);
-  timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY);
+  timer1_setFrequency(Hz);
 }
 
 //stop timer1 by removing the prescaler

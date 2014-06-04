@@ -5,8 +5,8 @@ int automaInit() {
   return 0;
 }
 
-int automaStart() {
-  timer1_start();
+int automaStart(uint16_t Hz) {
+  timer1_start(Hz);
   return 0;
 }
 

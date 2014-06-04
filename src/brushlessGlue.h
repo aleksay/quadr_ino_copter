@@ -5,7 +5,7 @@
 #include "avrTimer1.h"
 
 int automaInit();
-int automaStart();
+int automaStart(uint16_t Hz);
 int automaStop();
 int automaSetFrequency(int freqHz);
 int automaSetDuty(int val);

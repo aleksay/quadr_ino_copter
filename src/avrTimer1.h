@@ -98,7 +98,7 @@ extern uint16_t timer1_minHzPrescaler256;
 int8_t timer1_init();
 int8_t timer1_fastPwm_icr1top_init();
 int8_t timer1_fastPwm_ocr1atop_init();
-void timer1_start();
+void timer1_start(uint16_t Hz);
 void timer1_stop();
 void timer1_getPrescalerMinHz(void);
 uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz);

@@ -9,7 +9,7 @@ extern void (*myfunc)(void);
 
 // functions
 void registerISRCallback ( void(*func)(void) );
-void startISR (void );
+void startISR (uint16_t Hz);
 void stopISR (void );
 void setISRFrequency (uint16_t Hz);
 uint16_t getISRFrequency (void);
