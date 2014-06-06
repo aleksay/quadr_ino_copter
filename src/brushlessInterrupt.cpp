@@ -8,8 +8,9 @@ void (*myfunc)(void);
 // functions
 void registerISRCallback (  void(*func)(void) ){
 debug("registering timer 1 ISR");
-timer1_init();
+
 myfunc=func;
+timer1_init();
 }
 
 

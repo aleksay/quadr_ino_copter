@@ -16,20 +16,12 @@ brushless::brushless() {
   rampAutomaFrequencyB.currentValue = 0;
   rampAutomaFrequencyB.end = 3800;
 
-  // Get state machine ready for callbacks
-  pins_init();
-  registerISRCallback(pins_commutePole);
-  setStartupState(startupState_MotorOff);
-
-  // allocate buffer for char array
-  latestCommand = (Command)malloc(sizeof(_command));
-  //latestCommand->type = 'n';
 }
 
 int brushless::init(void) {
-  pins_init();
-  pwmInit();
+  pins_init(); 
   registerISRCallback(pins_commutePole);
+  pwmInit();
   setStartupState(startupState_MotorOff);
   startupState = startupState_MotorOff;
   // allocate buffer for char array
