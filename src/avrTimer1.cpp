@@ -1,5 +1,5 @@
 #include "avrTimer1.h"
-#include "avrBrushlessPins.h"
+
 
 
 // Variables
@@ -64,10 +64,10 @@ void timer1_stop() {
 }
 
 void timer1_getPrescalerMinHz(void) {
-  timer1_minHzPrescaler1 =   timer1_Top2Hz(1  , UINT16_MAX) + 1;
-  timer1_minHzPrescaler8 =   timer1_Top2Hz(8  , UINT16_MAX) + 1;
-  timer1_minHzPrescaler64 =  timer1_Top2Hz(64 , UINT16_MAX) + 1;
-  timer1_minHzPrescaler256 = timer1_Top2Hz(256, UINT16_MAX) + 1;
+  timer1_minHzPrescaler1 =   fastPWM_Top2Hz(1  , UINT16_MAX) + 1;
+  timer1_minHzPrescaler8 =   fastPWM_Top2Hz(8  , UINT16_MAX) + 1;
+  timer1_minHzPrescaler64 =  fastPWM_Top2Hz(64 , UINT16_MAX) + 1;
+  timer1_minHzPrescaler256 = fastPWM_Top2Hz(256, UINT16_MAX) + 1;
 
   debug("timer1_minHzPrescaler1:%u", timer1_minHzPrescaler1);
   debug("timer1_minHzPrescaler8:%u", timer1_minHzPrescaler8);
@@ -76,21 +76,9 @@ void timer1_getPrescalerMinHz(void) {
 
 }
 
-//convert to TOP value for calculating register value
-uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz) {
-  //debug("%lu,%u,%u",F_CPU,prescaler,Hz);
-  return floor(F_CPU / (prescaler * Hz) - 1);
-}
 
-// used for calculating max TOP, min frequency
-uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top) {
-  //debug("%lu,%u,%u", F_CPU, prescaler, top);
-  return F_CPU /  (top + 1) / prescaler;
-}
 
 uint16_t timer1_getPrescalerRequired(uint16_t Hz) {
-
-
 
   if (Hz >= timer1_minHzPrescaler1)
     return 1;
@@ -148,10 +136,10 @@ int8_t timer1_setFrequency(uint16_t Hz) {
   debug("Hz:%u, Required prescaler:%u", Hz, timer1_getPrescalerRequired(Hz));
 
   // convert Hz to register value TOP
-  ret = timer1_setTop( timer1_Hz2Top(timer1_getPrescaler(), Hz) );
+  ret = timer1_setTop( fastPWM_Hz2Top(timer1_getPrescaler(), Hz) );
   if (ret < 0) return ret;
 
-  //debug("Top:%u",timer1_Hz2Top(timer1_getPrescaler(),Hz));
+  //debug("Top:%u",fastPWM_Hz2Top(timer1_getPrescaler(),Hz));
 
   // set new duty, and return error code
   ret = timer1_setDuty(timer1_getDuty());
@@ -175,7 +163,7 @@ int8_t timer1_setTop(uint16_t top) {
 int8_t timer1_setDuty(uint8_t duty) {
 
   if (duty < 0 || duty > 100) {
-    log_err("bad duty");
+    log_err("bad duty: %d", duty);
     return -1;
   }
 
@@ -189,7 +177,7 @@ uint16_t timer1_getPrescaler(void) {
 }
 
 uint16_t timer1_getFrequency(void) {
-  return timer1_Top2Hz(timer1_getPrescaler(), timer1_getTop());
+  return fastPWM_Top2Hz(timer1_getPrescaler(), timer1_getTop());
 }
 
 uint16_t timer1_getTop(void) {

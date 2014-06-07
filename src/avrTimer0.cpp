@@ -1,31 +1,26 @@
 #include "avrTimer0.h"
 
 // GLOBALS
-
-unsigned int timer0_frequency;
-int timer0_duty;
-unsigned int timer0_dutyVal;
-int timer0_prescaler;
+uint8_t timer0_prescaler;
 uint32_t delaytime;
 
 
-int timer0_init(){
+// FUNCTIONS
+uint8_t timer0_init() {
   //configure timer0
   timer0_phasecorrect_ocr0atop_init();
 
-  //initialize timer1 global variable
-  timer0_duty = DEFAULT_T0_INIT_DUTY;
-  timer0_prescaler = DEFAULT_T0_INIT_PRESCALER;   
-  timer0_setFrequency(DEFAULT_T0_INIT_FREQUENCY);
+  timer0_prescaler = DEFAULT_T0_INIT_PRESCALER;
+  timer0_setFrequency(DEFAULT_T0_INIT_FREQUENCY); //also sets duty
   return 0 ;
 }
 
-void timer0_phasecorrect_ocr0atop_init(){
+void timer0_phasecorrect_ocr0atop_init() {
   //cli();
   SET_TIMER0_PINB;
   TIMER0_RESET;
 
-  SET_TIMER0_PINOUT(B);  
+  SET_TIMER0_PINOUT(B);
   SET_TIMER0_MODE_PHASE_CORRECT_OCR0A;
   SET_TIMER0_PINB_NOTINVERTING(0);
   //SET_TIMER0_INTERRUPT_OUTPUTCOMPARE_B;
@@ -33,111 +28,128 @@ void timer0_phasecorrect_ocr0atop_init(){
   //sei();
 }
 
-int timer0_start() {
+uint8_t timer0_start() {
   timer0_setPrescaler(timer0_prescaler);
 
   return 0;
 }
-int timer0_start(int _prescaler) {
+uint8_t timer0_start(uint8_t _prescaler) {
   timer0_setPrescaler(_prescaler);
   return 0;
 }
 
-//stop timer1 by removing the prescaler
-int timer0_stop(){ 
+//stop timer0 by removing the prescaler
+uint8_t timer0_stop() {
   delaytime = avrClock();
-  while ((avrClock() - delaytime)<10)
+  while ((avrClock() - delaytime) < 10)
   {
-  timer0_setDuty(0);
+    timer0_setDuty(0);
   }// wait then clear the prescaler
 
   SET_TIMER0_STOP;
   return 0;
 }
 
-int timer0_setPrescaler(int _prescaler){
+int8_t timer0_setPrescaler(uint8_t _prescaler) {
+  debug("prescaler set to: %d", _prescaler);
 
-  switch(_prescaler) {
+  switch (_prescaler) {
 
-  case 1:
-    SET_TIMER0_PRESCALER_1;
-    timer0_prescaler = 1;
-    debug("prescaler set to: %d",timer0_prescaler);
-    return 0;
-  case 8:
-    SET_TIMER0_PRESCALER_8;
-    timer0_prescaler = 8;
-    debug("prescaler set to: %d",timer0_prescaler);
-    return 0;
-  case 64:
-    SET_TIMER0_PRESCALER_64;
-    timer0_prescaler = 64;
-    debug("prescaler set to: %d",timer0_prescaler);
-    return 0;	
-  case 256:
-    SET_TIMER0_PRESCALER_256;
-    timer0_prescaler = 256;
-    debug("prescaler set to: %d",timer0_prescaler);
-    return 0;
-  case 1024:
-    SET_TIMER0_PRESCALER_1024;
-    timer0_prescaler = 1024;
-    debug("prescaler set to: %d",timer0_prescaler);
-    return 0;			
+    case 1:
+      SET_TIMER0_PRESCALER_1;
+      timer0_prescaler = 1;
+      return 0;
+    case 8:
+      SET_TIMER0_PRESCALER_8;
+      timer0_prescaler = 8;
+      return 0;
+    case 64:
+      SET_TIMER0_PRESCALER_64;
+      timer0_prescaler = 64;
+      return 0;
+    case 256:
+      SET_TIMER0_PRESCALER_256;
+      timer0_prescaler = 256;
+      return 0;
+    case 1024:
+      SET_TIMER0_PRESCALER_1024;
+      timer0_prescaler = 1024;
+
+      return 0;
   }
   return 1;
 }
 
-int timer0_getPrescaler(){
-  return timer0_prescaler;
-}
+
+int8_t timer0_setFrequency(uint8_t Hz) {
+
+  int8_t ret;
 
 
-int timer0_setFrequency(unsigned int val) {
-  if (val < 0 || val > 254){
-    log_err("invalid value:%u",val);
-    return -1;
-  }
-  if (val == timer0_frequency){
-    log_warn("value unchanged");
+  if (Hz == timer0_getFrequency()) {
+    log_warn("frequency unchanged!");
     return -1;
   }
 
-  int zDuty = -10;
-
-
-  timer0_frequency = val;       
-
-  SET_TIMER0_FREQUENCY(timer0_frequency);
-  zDuty = timer0_setDuty(timer0_duty);
-
-
-  return zDuty;
-}
-
-int timer0_setDuty(int val) {
-
-  if (val < 0 || val >= 100)
-  {
-    log_err("invalid value:%d",val);
+  if (Hz < 0 || Hz > 254) {
+    log_err("invalid frequency:%u", Hz);
     return -1;
   }
 
-  timer0_duty = val;
-  timer0_dutyVal = avrMap(timer0_duty, 0, 100, 0, timer0_frequency);
-  SET_TIMER0_DUTY(timer0_dutyVal);
+  // convert Hz to register value TOP
+  ret = timer0_setTop( phaseCorrectPWM_Hz2Top(timer0_getPrescaler(), Hz) );
+  if (ret < 0) return ret;
+
+  // set new duty, and return error code
+  ret = timer0_setDuty(timer0_getDuty());
+  if (ret < 0) return ret;
+
   return 0;
 }
 
-unsigned int timer0_getFrequency() {
-  return timer0_frequency;
+
+int8_t timer0_setTop(uint8_t top) {
+
+
+  if (timer0_getTop() == top) {
+    log_warn("top unchanged!");
+    return -1;
+  }
+
+  SET_TIMER0_DUTY( top );
+  return 0;
+
 }
-int timer0_getDuty() {
-  return timer0_duty;
+
+int8_t timer0_setDuty(uint8_t duty) {
+
+  if (duty < 0 || duty > 100) {
+    log_err("bad duty: %d", duty);
+    return -1;
+  }
+
+  SET_TIMER0_DUTY( avrMap(duty, 0, 100, 0, timer0_getTop()) );
+  return 0;
+
 }
 
 
+uint8_t timer0_getPrescaler(void) {
+  return timer0_prescaler;
+}
 
+uint8_t timer0_getFrequency(void) {
+  return phaseCorrectPWM_Top2Hz(timer0_getPrescaler(), timer0_getTop());
+}
+
+uint8_t timer0_getTop(void) {
+  //  return ICR1; // Depending on PWM type used
+  return OCR0A;
+}
+
+uint8_t timer0_getDuty(void) {
+  return avrMap(OCR0B, 0, 255, 0, 100);
+}
 
 
 

@@ -4,8 +4,10 @@
 #include "comLogger.h"
 #include "config.h"
 #include "avrUtils.h"
+#include "avrTimerFuncs.h"
 #include "math.h"
 #include "stdint.h"
+#include "avrBrushlessPins.h"
 
 /*
 =====================================================
@@ -101,8 +103,6 @@ int8_t timer1_fastPwm_ocr1atop_init();
 void timer1_start(uint16_t Hz);
 void timer1_stop();
 void timer1_getPrescalerMinHz(void);
-uint16_t timer1_Hz2Top(uint16_t prescaler, uint16_t Hz);
-uint16_t timer1_Top2Hz(uint16_t prescaler, uint16_t top);
 uint16_t timer1_getPrescalerRequired(uint16_t Hz);
 int8_t timer1_setPrescaler(uint16_t _prescaler);
 int8_t timer1_setFrequency(uint16_t Hz);

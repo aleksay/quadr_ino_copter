@@ -5,6 +5,7 @@
 #include "config.h"
 #include "avrUtils.h"
 #include "avrTime.h"
+#include "avrTimerFuncs.h"
 
 /*
 =====================================================
@@ -63,18 +64,26 @@ WGM02 WGM01 WGM00 Timer/Counter
 
 
 
-// FUNCTION DECLARATIONS
-int timer0_init();
+// Var declarations
+extern uint8_t timer0_prescaler;
+extern uint32_t delaytime;
+
+// function declarations
+uint8_t timer0_init();
 void timer0_phasecorrect_ocr0atop_init();
-int timer0_start();
-int timer0_start(int _prescaler) ;
-int timer0_stop();
-int timer0_setPrescaler(int _prescaler);
-int timer0_getPrescaler();
-int timer0_setFrequency(unsigned int val) ;
-int timer0_setDuty(int val) ;
-unsigned int timer0_getFrequency();
-int timer0_getDuty();
+uint8_t timer0_start();
+uint8_t timer0_start(uint8_t _prescaler);
+uint8_t timer0_stop();
+int8_t timer0_setPrescaler(uint8_t _prescaler);
+int8_t timer0_setFrequency(uint8_t Hz);
+int8_t timer0_setTop(uint8_t top);
+int8_t timer0_setDuty(uint8_t duty);
+uint8_t timer0_getPrescaler(void);
+uint8_t timer0_getFrequency(void);
+uint8_t timer0_getTop(void);
+uint8_t timer0_getDuty(void);
+
+
 
 #endif // header
 
