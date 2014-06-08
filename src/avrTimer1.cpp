@@ -60,7 +60,7 @@ void timer1_start(uint16_t Hz) {
 //stop timer1 by removing the prescaler
 void timer1_stop() {
   SET_TIMER1_STOP;
-  pins_setOpenInverter();
+  pins_setDriveOpenInverter(); // TODO remove me
 }
 
 void timer1_getPrescalerMinHz(void) {

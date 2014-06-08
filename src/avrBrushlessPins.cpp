@@ -3,62 +3,82 @@
 
 
 
-volatile int pins_state;
-volatile int pins_direction= 1;
+static volatile uint8_t driveState;
+static volatile uint8_t driveDirection = 1;
+static unsigned char driveTable[NUM_DRIVE_STATES];
 
 
-int pins_getState(){
-  return pins_state;
+static void pinsMakeTables(void)
+
+{
+
+  driveTable[0] = DRIVE_PATTERN_STEP1;
+  driveTable[1] = DRIVE_PATTERN_STEP2;
+  driveTable[2] = DRIVE_PATTERN_STEP3;
+  driveTable[3] = DRIVE_PATTERN_STEP4;
+  driveTable[4] = DRIVE_PATTERN_STEP5;
+  driveTable[5] = DRIVE_PATTERN_STEP6;
+
+
+  //  ADMUXTable[0] = ADMUX_W;
+  //  ADMUXTable[1] = ADMUX_V;
+  //  ADMUXTable[2] = ADMUX_U;
+  //  ADMUXTable[3] = ADMUX_W;
+  //  ADMUXTable[4] = ADMUX_V;
+  //  ADMUXTable[5] = ADMUX_U;
+}
+
+void pins_init(void) {
+
+  pinsMakeTables();
+
+  // Init DRIVE_DDR for motor driving.
+  DRIVE_DDR = (1 << UL_OFFSET) | (1 << UH_OFFSET) | (1 << VL_OFFSET) | (1 << VH_OFFSET) | (1 << WL_OFFSET) | (1 << WH_OFFSET);
+  pins_setDriveState(0);
 }
 
 
-int pins_setState(int _state){
-
-	if(_state < 0 || _state >= PINS_NUM_STATES+1){
-		
-		
-		return -1;
-	}
-
-	pins_state =_state;
-	AUTOMA_ITERATE(pins_state);
-
-	return 0;
+uint8_t pins_getDriveState(void) {
+  return driveState;
 }
 
-int pins_init() {
+int8_t pins_setDriveState(uint8_t _state) {
 
-  AUTOMA_PIN_INIT;
-  pins_setState(0);
+  if (_state < 0 || _state > NUM_DRIVE_STATES) {
+    return -1;
+  }
+
+  driveState = _state;
+  DRIVE_PORT = driveTable[_state];
+
+  return 0;
 }
 
-void pins_commutePole(void) {
-  
-  if (pins_direction) {
-    pins_state = ++pins_state % PINS_NUM_STATES;
-    AUTOMA_ITERATE(pins_state);
-  } 
+
+
+void pins_commuteDriveTable(void) {
+
+  if (driveDirection) {
+    driveState = ++driveState % NUM_DRIVE_STATES;
+    DRIVE_PORT = driveTable[driveState];
+  }
   else {
-    pins_state = (--pins_state + PINS_NUM_STATES)%PINS_NUM_STATES;
-    AUTOMA_ITERATE(pins_state);
+    driveState = (--driveState + NUM_DRIVE_STATES) % NUM_DRIVE_STATES;
+    DRIVE_PORT = driveTable[driveState];
   }
 }
 
 
-int pins_setDirection(int clockwise) {
-  pins_direction = clockwise;
+void pins_setDriveDirection(uint8_t clockwise) {
+  driveDirection = clockwise;
 }
-int pins_getDirection() {
-  return pins_direction;
-}
-
-void pins_setOpenInverter() {
-  AUTOMA_OPEN_INVERTER;
+uint8_t pins_getDriveDirection() {
+  return driveDirection;
 }
 
-
-
-
+void pins_setDriveOpenInverter() {
+  DRIVE_PATTERN_OPEN_INVERTER;
+}
 
 
 

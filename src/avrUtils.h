@@ -72,6 +72,12 @@
 #endif 
 
 
+//! Boolean FALSE value.
+#define FALSE     0
+
+//! Boolean TRUE expression. Can be used both for test and assignment.
+#define TRUE      (!FALSE)
+
 
 
 int freeRam () ;

@@ -20,7 +20,7 @@ brushless::brushless() {
 
 int brushless::init(void) {
   pins_init();
-  registerISRCallback(pins_commutePole);
+  registerISRCallback(pins_commuteDriveTable);
   pwmInit();
   setStartupState(startupState_MotorOff);
   startupState = startupState_MotorOff;
@@ -64,7 +64,7 @@ int brushless::setStartupState(int state) {
       // Stop motor for aligning rotor
     case startupState_PWMStarted:
 
-      pins_setState(DEFAULT_INITIAL_STATE);
+      pins_setDriveState(DEFAULT_INITIAL_STATE);
       debug("PWM Started - Commencing rotor alignment");
       startTime = avrClock();
       TotStartupTime = avrClock();
@@ -322,9 +322,9 @@ int brushless::parseCommand(Command command) {
       return  0;
 
     case 'v':
-      pins_setDirection(command->value);
+      pins_setDriveDirection(command->value);
       free(command);
-      log_info("pins_getDirection():%d", pins_getDirection());
+      log_info("pins_getDriveDirection():%d", pins_getDriveDirection());
       return 0;
 
 
@@ -343,7 +343,7 @@ int brushless::setCommand(Command command) {
 }
 
 int brushless::angSpeed() {
-  unsigned int RPM_e = floor( (getISRFrequency() / PINS_NUM_STATES) * 60);
+  unsigned int RPM_e = floor( (getISRFrequency() / NUM_DRIVE_STATES) * 60);
   unsigned int RPM_m = floor(RPM_e / (NUM_POLES / 2));
   int rads_e = floor(RPM_e / 60 * 2 * M_PI);
   int rads_m = floor(RPM_m / 60 * 2 * M_PI);
@@ -372,7 +372,7 @@ int brushless::setStartupFreqGain (int val) {
 int brushless::manualMode() {
   pwmStart();
   startISR(300);
-  pins_setState(DEFAULT_INITIAL_STATE);
+  pins_setDriveState(DEFAULT_INITIAL_STATE);
   pwmSetDuty(90);
   return 0;
 }
