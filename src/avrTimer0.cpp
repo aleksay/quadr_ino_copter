@@ -81,17 +81,18 @@ int8_t timer0_setPrescaler(uint8_t _prescaler) {
 }
 
 
-int8_t timer0_setFrequency(uint8_t Hz) {
+int8_t timer0_setFrequency(uint16_t Hz) {
 
   int8_t ret;
-
+  debug("new frequency is: %d", Hz);
 
   if (Hz == timer0_getFrequency()) {
     log_warn("frequency unchanged!");
     return -1;
   }
 
-  if (Hz < 0 || Hz > 254) {
+// 15700 is minimum frequency for prescaler 1 at 8 MHz.
+  if (Hz <= 15700 || Hz > 65000) {
     log_err("invalid frequency:%u", Hz);
     return -1;
   }
@@ -110,7 +111,8 @@ int8_t timer0_setFrequency(uint8_t Hz) {
 
 int8_t timer0_setTop(uint8_t top) {
 
-
+  debug("new top is: %d", top);
+  
   if (timer0_getTop() == top) {
     log_warn("top unchanged!");
     return -1;
@@ -122,7 +124,8 @@ int8_t timer0_setTop(uint8_t top) {
 }
 
 int8_t timer0_setDuty(uint8_t duty) {
-
+  debug("new duty is: %d", duty);
+  
   if (duty < 0 || duty > 100) {
     log_err("bad duty: %d", duty);
     return -1;
@@ -143,7 +146,7 @@ uint8_t timer0_getFrequency(void) {
 }
 
 uint8_t timer0_getTop(void) {
-  //  return ICR1; // Depending on PWM type used
+  //  return ICR0; // Depending on PWM type used
   return OCR0A;
 }
 

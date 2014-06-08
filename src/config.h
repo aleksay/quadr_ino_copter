@@ -27,7 +27,7 @@
 		           PARAMETRI Timer0
 =====================================================
 */
-#define DEFAULT_T0_INIT_FREQUENCY 200 //ancora in TOP
+#define DEFAULT_T0_INIT_FREQUENCY 20000 //ancora in TOP
 #define DEFAULT_T0_INIT_DUTY 1
 #define DEFAULT_T0_INIT_PRESCALER 1
 

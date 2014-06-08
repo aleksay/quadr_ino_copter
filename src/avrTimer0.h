@@ -75,7 +75,7 @@ uint8_t timer0_start();
 uint8_t timer0_start(uint8_t _prescaler);
 uint8_t timer0_stop();
 int8_t timer0_setPrescaler(uint8_t _prescaler);
-int8_t timer0_setFrequency(uint8_t Hz);
+int8_t timer0_setFrequency(uint16_t Hz);
 int8_t timer0_setTop(uint8_t top);
 int8_t timer0_setDuty(uint8_t duty);
 uint8_t timer0_getPrescaler(void);
