@@ -69,10 +69,10 @@ void timer1_getPrescalerMinHz(void) {
   timer1_minHzPrescaler64 =  fastPWM_Top2Hz(64 , UINT16_MAX) + 1;
   timer1_minHzPrescaler256 = fastPWM_Top2Hz(256, UINT16_MAX) + 1;
 
-  debug("timer1_minHzPrescaler1:%u", timer1_minHzPrescaler1);
-  debug("timer1_minHzPrescaler8:%u", timer1_minHzPrescaler8);
-  debug("timer1_minHzPrescaler64:%u", timer1_minHzPrescaler64);
-  debug("timer1_minHzPrescaler256:%u", timer1_minHzPrescaler256);
+  //  debug("timer1_minHzPrescaler1:%u", timer1_minHzPrescaler1);
+  //  debug("timer1_minHzPrescaler8:%u", timer1_minHzPrescaler8);
+  //  debug("timer1_minHzPrescaler64:%u", timer1_minHzPrescaler64);
+  //  debug("timer1_minHzPrescaler256:%u", timer1_minHzPrescaler256);
 
 }
 
@@ -124,8 +124,9 @@ int8_t timer1_setFrequency(uint16_t Hz) {
   int8_t ret;
 
   // check Hz
+  // TODO implement logging rate limiting
   if (Hz == timer1_getFrequency()) {
-    log_warn("frequency unchanged!");
+    log_warn("frequency unchanged! Hz:%u", Hz);
     return -1;
   }
 
@@ -133,7 +134,7 @@ int8_t timer1_setFrequency(uint16_t Hz) {
   if (timer1_getPrescalerRequired(Hz) != timer1_getPrescaler() ) {
     timer1_setPrescaler(timer1_getPrescalerRequired(Hz));
   }
-  debug("Hz:%u, Required prescaler:%u", Hz, timer1_getPrescalerRequired(Hz));
+  //debug("Hz:%u, Required prescaler:%u", Hz, timer1_getPrescalerRequired(Hz));
 
   // convert Hz to register value TOP
   ret = timer1_setTop( fastPWM_Hz2Top(timer1_getPrescaler(), Hz) );

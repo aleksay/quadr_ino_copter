@@ -84,7 +84,6 @@ int8_t timer0_setPrescaler(uint16_t _prescaler) {
 int8_t timer0_setFrequency(uint16_t Hz) {
 
   int8_t ret;
-  debug("new frequency is: %d", Hz);
 
   if (Hz == timer0_getFrequency()) {
     log_warn("frequency unchanged!");
@@ -110,9 +109,6 @@ int8_t timer0_setFrequency(uint16_t Hz) {
 
 
 int8_t timer0_setTop(uint8_t top) {
-
-  debug("new top is: %d", top);
-
   if (timer0_getTop() == top) {
     log_warn("top unchanged!");
     return -1;
@@ -120,12 +116,9 @@ int8_t timer0_setTop(uint8_t top) {
 
   SET_TIMER0_OCR0A( top );
   return 0;
-
 }
 
 int8_t timer0_setDuty(uint8_t duty) {
-  debug("new duty is: %d", duty);
-
   if (duty < 0 || duty > 100) {
     log_err("bad duty: %d", duty);
     return -1;
@@ -133,7 +126,6 @@ int8_t timer0_setDuty(uint8_t duty) {
 
   SET_TIMER0_OCR0B( avrMap(duty, 0, 100, 0, timer0_getTop()) );
   return 0;
-
 }
 
 
@@ -147,7 +139,6 @@ uint16_t timer0_getFrequency(void) {
 
 uint8_t timer0_getTop(void) {
   //  return ICR0; // Depending on PWM type used
-  debug("top is: %d", OCR0A);
   return OCR0A;
 }
 

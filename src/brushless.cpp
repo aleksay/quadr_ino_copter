@@ -19,7 +19,7 @@ brushless::brushless() {
 }
 
 int brushless::init(void) {
-  pins_init(); 
+  pins_init();
   registerISRCallback(pins_commutePole);
   pwmInit();
   setStartupState(startupState_MotorOff);
@@ -57,7 +57,7 @@ int brushless::setStartupState(int state) {
     case startupState_MotorInit:
       pwmStart();
 
-	  startupState = startupState_PWMStarted;
+      startupState = startupState_PWMStarted;
       return  0;
 
 
@@ -100,13 +100,13 @@ int brushless::setStartupState(int state) {
       // increase frequency of automa and pwm duty until max duty value is reached
     case startupState_AutomaRampA:
       // raise duty until end duty
-      if (  pwmGetDuty() < rampPWMDuty.end ){
+      if (  pwmGetDuty() < rampPWMDuty.end ) {
         pwmSetDuty(getStartupOpenLoopValue(rampPWMDuty));
       }
       // raise automa frequency until end frequency
-      if (  getISRFrequency() < rampAutomaFrequencyA.end ){
+      if (  getISRFrequency() < rampAutomaFrequencyA.end ) {
         setISRFrequency(getStartupOpenLoopValue(rampAutomaFrequencyA));
-}
+      }
       // set next state once pwm and duty reach end value
       if (  pwmGetDuty() >= rampPWMDuty.end  &&  getISRFrequency() >= rampAutomaFrequencyA.end  )
       {
@@ -151,7 +151,7 @@ int brushless::setStartupState(int state) {
       // reduce duty for steady speed
       // pwmSetDuty(90);
       debug("Startup Finished. Time is[ms]: %u", (int)(avrClock() - TotStartupTime));
-	  startupState = startupState_MotorOff;
+      startupState = startupState_MotorOff;
       return  1;
 
 
@@ -218,13 +218,13 @@ int brushless::parseCommand(Command command) {
       free(command);
       log_info("pwmGetDuty():%d", pwmGetDuty());
       return 0;
-      
-//      // Set pwm duty cycle
-//    case 'q':
-//      timer1_setDuty(command->value);
-//      free(command);
-//      log_info("timer1_setDuty():%d", timer1_getDuty());
-//      return 0;
+
+      //      // Set pwm duty cycle
+      //    case 'q':
+      //      timer1_setDuty(command->value);
+      //      free(command);
+      //      log_info("timer1_setDuty():%d", timer1_getDuty());
+      //      return 0;
 
       // Set automa frequency
     case 'a':
@@ -237,7 +237,7 @@ int brushless::parseCommand(Command command) {
       // Print angular speed
     case 'b':
       free(command);
-      angSpeed(); 
+      angSpeed();
       return 0;
 
       // Print free RAM
@@ -317,7 +317,7 @@ int brushless::parseCommand(Command command) {
       // Formatted print for parsing
     case 'p':
       free(command);
-      log_info("--QUERY--\nf_t1 %d Hz\n TOP_t1 :%u", getISRFrequency(), automaGetTop() );
+      log_info("--QUERY--\nISRFrequency: %u,pwmFrequency: %u, pwmDuty: %d\n", getISRFrequency(), pwmGetFrequency(), pwmGetDuty() );
       debug("OCR1A %u OCR1B %u OCR0A %u OCR0B %u", OCR1A, OCR1B, OCR0A, OCR0B);
       return  0;
 

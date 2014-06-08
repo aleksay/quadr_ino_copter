@@ -6,7 +6,6 @@
 #include "comLogger.h"
 #include "MsTimer2.h"
 #include "comDeviceUSART.h"
-#include "brushlessGlue.h"
 #include "avrTime.h"
 
 

@@ -10,10 +10,10 @@
 #include "comMessage.h"
 #include "comLogger.h"
 #include "avrBrushlessPins.h"
-#include "brushlessGlue.h"
 #include "avrUtils.h"
 #include "avrTime.h"
 #include "brushlessInterrupt.h"
+#include "brushlessPWM.h"
 
 //TODO change to startupState_MotorOff with __UNDERSCORE__
 #define startupState_MotorOff 0
