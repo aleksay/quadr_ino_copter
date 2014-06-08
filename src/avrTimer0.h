@@ -43,8 +43,8 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER0_MODE_PHASE_CORRECT_OCR0A     TCCR0B |= (1 << WGM02);TCCR0A |= (0 << WGM01) | (1 << WGM00)
 #define SET_TIMER0_MODE_FASTPWM_OCR0A           TCCR0B |= (1 << WGM02);TCCR0A |= (1 << WGM01) | (1 << WGM00)
 
-#define SET_TIMER0_FREQUENCY(val) OCR0A = val
-#define SET_TIMER0_DUTY(val)      OCR0B = val
+#define SET_TIMER0_OCR0A(val)      OCR0A = val // TOP
+#define SET_TIMER0_OCR0B(val)      OCR0B = val // DUTY
 
 #define SET_TIMER0_PINB DDRD = DDRD | 0b00100000
 #define SET_TIMER0_PINA DDRD = DDRD | 0b01000000

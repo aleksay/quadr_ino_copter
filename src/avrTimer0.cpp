@@ -118,7 +118,7 @@ int8_t timer0_setTop(uint8_t top) {
     return -1;
   }
 
-  SET_TIMER0_FREQUENCY( top );
+  SET_TIMER0_OCR0A( top );
   return 0;
 
 }
@@ -131,7 +131,7 @@ int8_t timer0_setDuty(uint8_t duty) {
     return -1;
   }
 
-  SET_TIMER0_DUTY( avrMap(duty, 0, 100, 0, timer0_getTop()) );
+  SET_TIMER0_OCR0B( avrMap(duty, 0, 100, 0, timer0_getTop()) );
   return 0;
 
 }
@@ -152,7 +152,7 @@ uint8_t timer0_getTop(void) {
 }
 
 uint8_t timer0_getDuty(void) {
-  return avrMap(OCR0B, 0, 255, 0, 100);
+  return avrMap(OCR0B, 0, timer0_getTop(), 0, 100);
 }
 
 
