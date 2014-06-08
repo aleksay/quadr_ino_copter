@@ -366,9 +366,7 @@ int brushless::manualMode() {
   pwmStart();
   startISR(300);
   pins_setState(DEFAULT_INITIAL_STATE);
-  debug("asdf");
   pwmSetDuty(90);
-  debug("WEEE!!!!");
   return 0;
 }
 

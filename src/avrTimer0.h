@@ -1,5 +1,5 @@
 #ifndef AVRTIMER0_H
-#define AVRTIMER0_H 
+#define AVRTIMER0_H
 
 #include "comLogger.h"
 #include "config.h"
@@ -9,9 +9,9 @@
 
 /*
 =====================================================
- 
+
  		           Timer 0 Section
- 
+
  =====================================================
  */
 #define TIMER0_RESET TCCR0B=0;TCCR0A=0;TCNT0=0
@@ -35,7 +35,7 @@
 #define SET_TIMER0_PRESCALER_1024 TCCR0B |= (1 << CS02) | (0 << CS01) | (1 << CS00)
 
 /*
-WGM02 WGM01 WGM00 Timer/Counter 
+WGM02 WGM01 WGM00 Timer/Counter
  1 0 1 PWM, Phase Correct OCRA TOP BOTTOM
  1 1 1 Fast PWM OCRA BOTTOM TOP
  */
@@ -50,7 +50,7 @@ WGM02 WGM01 WGM00 Timer/Counter
 #define SET_TIMER0_PINA DDRD = DDRD | 0b01000000
 /*COM1A1/COM1B1 COM1A0/COM1B0*/
 #define SET_TIMER0_PINOUT(pin)   TCCR0A |= 1 << COM0##pin##1
-#define UNSET_TIMER0_PINOUT(pin) TCCR0A &= ~(1 << COM0##pin##1) 
+#define UNSET_TIMER0_PINOUT(pin) TCCR0A &= ~(1 << COM0##pin##1)
 
 #define SET_TIMER0_PINB_NOTINVERTING(notInverting) TCCR0A |= notInverting << COM0B0
 #define SET_TIMER0_PINA_NOTINVERTING(notInverting) TCCR0A |= notInverting << COM0A0
@@ -72,14 +72,14 @@ extern uint32_t delaytime;
 uint8_t timer0_init();
 void timer0_phasecorrect_ocr0atop_init();
 uint8_t timer0_start();
-uint8_t timer0_start(uint8_t _prescaler);
+uint8_t timer0_start(uint16_t _prescaler);
 uint8_t timer0_stop();
-int8_t timer0_setPrescaler(uint8_t _prescaler);
+int8_t timer0_setPrescaler(uint16_t _prescaler);
 int8_t timer0_setFrequency(uint16_t Hz);
 int8_t timer0_setTop(uint8_t top);
 int8_t timer0_setDuty(uint8_t duty);
-uint8_t timer0_getPrescaler(void);
-uint8_t timer0_getFrequency(void);
+uint16_t timer0_getPrescaler(void);
+uint16_t timer0_getFrequency(void);
 uint8_t timer0_getTop(void);
 uint8_t timer0_getDuty(void);
 

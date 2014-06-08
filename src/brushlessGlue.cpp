@@ -37,45 +37,39 @@ int automaGetTop() {
   return timer1_getTop();
 }
 
-int pwmInit() {
-  timer0_init();
-  return 0;
+int8_t pwmInit() {
+  return timer0_init();
 }
 
-int pwmStart() {
-  timer0_start() ;
-  return 0;
+int8_t pwmStart() {
+  return timer0_start() ;
 }
 
-int pwmStop() {
-  timer0_stop();
-  return 0;
+int8_t pwmStop() {
+  return timer0_stop();
 }
 
-int pwmSetFrequency(unsigned int val) {
-  timer0_setFrequency(val);
-  return 0;
+int8_t pwmSetFrequency(uint16_t Hz) {
+  return timer0_setFrequency(Hz);
 }
 
-int pwmSetDuty(int val) {
-  timer0_setDuty(val);
-  return 0;
+int8_t pwmSetDuty(uint8_t duty) {
+  return timer0_setDuty(duty);
 }
 
-int pwmSetPrescaler(int prescaler) {
-  timer0_setPrescaler(prescaler);
-  return 0;
+int8_t pwmSetPrescaler(uint16_t prescaler) {
+  return timer0_setPrescaler(prescaler);
 }
 
-unsigned int pwmGetFrequency() {
+uint16_t pwmGetFrequency() {
   return timer0_getFrequency();
 }
 
-int pwmGetDuty() {
+uint8_t pwmGetDuty() {
   return timer0_getDuty();
 }
 
-int pwmGetPrescaler() {
+uint16_t pwmGetPrescaler() {
   return timer0_getPrescaler();
 }
 

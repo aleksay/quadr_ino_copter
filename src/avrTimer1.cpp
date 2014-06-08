@@ -22,7 +22,7 @@ int8_t timer1_init() {
   // initialize timer1 global variable
   /* timer1_prescaler = DEFAULT_T1_INIT_PRESCALER;
   timer1_setFrequency(DEFAULT_T1_INIT_FREQUENCY); //also sets duty */
-   //timer1_stop();
+  //timer1_stop();
 
   return 0;
 }
