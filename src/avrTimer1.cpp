@@ -186,7 +186,7 @@ uint16_t timer1_getTop(void) {
 }
 
 uint16_t timer1_getDuty(void) {
-  return avrMap(OCR1B, 0, 255, 0, 100);
+  return avrMap(OCR1B, 0, timer1_getTop(), 0, 100);
 }
 
 void timer1_timer1_ovf_handler(void) {

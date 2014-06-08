@@ -218,6 +218,13 @@ int brushless::parseCommand(Command command) {
       free(command);
       log_info("pwmGetDuty():%d", pwmGetDuty());
       return 0;
+      
+//      // Set pwm duty cycle
+//    case 'q':
+//      timer1_setDuty(command->value);
+//      free(command);
+//      log_info("timer1_setDuty():%d", timer1_getDuty());
+//      return 0;
 
       // Set automa frequency
     case 'a':
