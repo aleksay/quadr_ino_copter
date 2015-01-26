@@ -50,7 +50,8 @@ int brushless::setStartupState(int state) {
       // start pwm signal
     case startupState_MotorOff:
       stopISR();
-      pwmSetDuty(DEFAULT_T0_INIT_DUTY);
+      pwmSetDuty(DEFAULT_T0_INIT_DUTY); 
+      // probabily missing pins_setDriveOpenInverter()
       startupState = startupState_MotorInit;
       return  0;
 
