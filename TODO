@@ -1,30 +1,33 @@
-BRANCH Strartup->Code_revision TODO List:
-
-1) Interfaccia Brushless -> chip -> atmega328pFamily
-
-	  automa_init
-		automa_iterate (for manual iteraction)
-		timerNumMode_init
-		startup_iterate
-		get/setFrequency (if supported)
-		get/setDuty
-		get/setAutomaRate
-
-	internal:
-
-		_writeRegister (handler for XXX sync writing) 
-		_automa_iterate (for automated iteraction bemf/startup )
+Todo list 05 November 2025
+$ find -type d
 
 
-2) Iterazioni
+./src
+./src/brushless 
+	1) finire di importare il codice brushless
+./src/comunicator  TESTED OK prod ready
+./src/Time         TESTED OK prod ready 
+./src/avr
+./src/avr/Timers
+	2) Timer2 ok in time.h -> completare implementazioni delle varie modalita' di tutti i timer
+	3) interfacciare all'esterno della libreria le ISR, testato in Timer2
+./src/avr/Usart    TESTED OK prod ready
+./src/avr/sequenceEncoder
 
-		Brushless prende un comando e lo analizza.
-  	Restituisce delle stringhe di messaggio (log level solo in skentch)
-  
-  	Semaforo: quando il motore e in ramp-mode 
-  	non esegue i comandi di set e da un messaggio di errore
 
-  	Iterazione: 
-    	quando il motore e in ramp-mode esegue i calcoli per fare la rampa
-    	quando il motore e in bemf-mode elabora i comandi (set/get) 
+./tests
+./tests/brushless
+./tests/Time        DONE
+./tests/comunicator DONE
+./tests/avr
+./tests/avr/sequenceEncoder
+./tests/avr/Timers
+	1) Timer2 tested funztional, compaibility needed
+	2) Timer0   TODO
+	3) Timer1   TODO
+./tests/avr/Usart   DONE
+./tools             DONE
+
+
+
 

@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dipendenza C/C++</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #mynetwork { width: 100%; height: 800px; border: 1px solid #ccc; }
+        .legend { margin: 20px 0; padding: 10px; background: #f5f5f5; border-radius: 5px; }
+        .legend-item { display: inline-block; margin-right: 20px; }
+        .color-box { display: inline-block; width: 20px; height: 20px; margin-right: 5px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <h1>Analisi Dipendenze C/C++</h1>
+    <div class="legend">
+        <div class="legend-item"><div class="color-box" style="background-color:#E1F5FE;"></div>File Sorgente</div>
+        <div class="legend-item"><div class="color-box" style="background-color:#E8F5E8;"></div>Header File</div>
+        <div class="legend-item"><div class="color-box" style="background-color:#FFEBEE;"></div>Contiene Main</div>
+    </div>
+    <div id="mynetwork"></div>
+    
+    <script type="text/javascript">
+        var nodes = new vis.DataSet([
+            {id: '/home/ale/git/quadr_ino_copter/lib/MsTimer2/MsTimer2.cpp', label: 'MsTimer2.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'MsTimer2.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/lib/MsTimer2/MsTimer2.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTimerFuncs.cpp', label: 'avrTimerFuncs.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'avrTimerFuncs.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTimerFuncs.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/brushless.h', label: 'brushless.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'brushless.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/brushless.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/brushlessPWM.cpp', label: 'brushlessPWM.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'brushlessPWM.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/brushlessPWM.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/brushlessPWM.h', label: 'brushlessPWM.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'brushlessPWM.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/brushlessPWM.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTime.h', label: 'avrTime.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'avrTime.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTime.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTimer0.cpp', label: 'avrTimer0.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'avrTimer0.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTimer0.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrUtils.h', label: 'avrUtils.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'avrUtils.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/avrUtils.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/brushless.cpp', label: 'brushless.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'brushless.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/brushless.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTimer0.h', label: 'avrTimer0.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'avrTimer0.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTimer0.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTimer1.cpp', label: 'avrTimer1.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'avrTimer1.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTimer1.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/comDeviceUSART.h', label: 'comDeviceUSART.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'comDeviceUSART.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/comDeviceUSART.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/brushlessInterrupt.cpp', label: 'brushlessInterrupt.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'brushlessInterrupt.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/brushlessInterrupt.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrUtils.cpp', label: 'avrUtils.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'avrUtils.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/avrUtils.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTime.cpp', label: 'avrTime.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'avrTime.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTime.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/brushlessInterrupt.h', label: 'brushlessInterrupt.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'brushlessInterrupt.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/brushlessInterrupt.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/comMessage.h', label: 'comMessage.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'comMessage.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/comMessage.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/comMessage.cpp', label: 'comMessage.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'comMessage.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/comMessage.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrTimer1.h', label: 'avrTimer1.h', color: {background: '#E8F5E8', border: '#4CAF50'}, title: 'avrTimer1.h\nHeader file\nPercorso: /home/ale/git/quadr_ino_copter/src/avrTimer1.h'},
+            {id: '/home/ale/git/quadr_ino_copter/src/comDeviceUSART.cpp', label: 'comDeviceUSART.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'comDeviceUSART.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/comDeviceUSART.cpp'},
+            {id: '/home/ale/git/quadr_ino_copter/src/avrBrushlessPins.cpp', label: 'avrBrushlessPins.cpp', color: {background: '#E1F5FE', border: '#2196F3'}, title: 'avrBrushlessPins.cpp\nFile sorgente\nPercorso: /home/ale/git/quadr_ino_copter/src/avrBrushlessPins.cpp'}
+        ]);
+
+        var edges = new vis.DataSet([
+            {from: '/home/ale/git/quadr_ino_copter/src/brushless.h', to: '/home/ale/git/quadr_ino_copter/src/comMessage.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushless.h', to: '/home/ale/git/quadr_ino_copter/src/avrUtils.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushless.h', to: '/home/ale/git/quadr_ino_copter/src/avrTime.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushless.h', to: '/home/ale/git/quadr_ino_copter/src/brushlessInterrupt.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushless.h', to: '/home/ale/git/quadr_ino_copter/src/brushlessPWM.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushlessPWM.cpp', to: '/home/ale/git/quadr_ino_copter/src/brushlessPWM.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushlessPWM.h', to: '/home/ale/git/quadr_ino_copter/src/avrTimer0.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrTimer0.cpp', to: '/home/ale/git/quadr_ino_copter/src/avrTimer0.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushless.cpp', to: '/home/ale/git/quadr_ino_copter/src/brushless.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrTimer0.h', to: '/home/ale/git/quadr_ino_copter/src/avrUtils.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrTimer0.h', to: '/home/ale/git/quadr_ino_copter/src/avrTime.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrTimer1.cpp', to: '/home/ale/git/quadr_ino_copter/src/avrTimer1.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/comDeviceUSART.h', to: '/home/ale/git/quadr_ino_copter/src/avrUtils.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushlessInterrupt.cpp', to: '/home/ale/git/quadr_ino_copter/src/brushlessInterrupt.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrUtils.cpp', to: '/home/ale/git/quadr_ino_copter/src/avrUtils.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrTime.cpp', to: '/home/ale/git/quadr_ino_copter/src/avrTime.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/brushlessInterrupt.h', to: '/home/ale/git/quadr_ino_copter/src/avrTimer1.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/comMessage.cpp', to: '/home/ale/git/quadr_ino_copter/src/comMessage.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/avrTimer1.h', to: '/home/ale/git/quadr_ino_copter/src/avrUtils.h', arrows: 'to'},
+            {from: '/home/ale/git/quadr_ino_copter/src/comDeviceUSART.cpp', to: '/home/ale/git/quadr_ino_copter/src/comDeviceUSART.h', arrows: 'to'}
+        ]);
+
+        var container = document.getElementById('mynetwork');
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            layout: {
+                hierarchical: {
+                    direction: 'UD',
+                    sortMethod: 'directed'
+                }
+            },
+            physics: {
+                enabled: true
+            },
+            interaction: {
+                dragNodes: true,
+                dragView: true,
+                zoomView: true
+            }
+        };
+        var network = new vis.Network(container, data, options);
+    </script>
+</body>
+</html>
