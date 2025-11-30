@@ -184,7 +184,7 @@ void _timer0_setPrescaler(uint16_t _prescaler) {
 
 void timer0_setPrescaler(uint16_t _prescaler) {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer0_allowedPrescalersLenght; i++) {
     if (_prescaler == timer0_allowedPrescalers[i]) {
       timer0_prescaler = _prescaler;
@@ -197,7 +197,7 @@ void timer0_setPrescaler(uint16_t _prescaler) {
 
 uint16_t timer0_getPrevPrescaler() {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer0_allowedPrescalersLenght; i++) {
     if (timer0_prescaler == timer0_allowedPrescalers[i]) {
       return timer0_allowedPrescalers[(i - 1) % timer0_allowedPrescalersLenght];
@@ -207,7 +207,7 @@ uint16_t timer0_getPrevPrescaler() {
 
 uint16_t timer0_getNextPrescaler() {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer0_allowedPrescalersLenght; i++) {
     if (timer0_prescaler == timer0_allowedPrescalers[i]) {
       return timer0_allowedPrescalers[(i + 1) % timer0_allowedPrescalersLenght];
@@ -224,7 +224,7 @@ void timer0_decreasePrescaler() {
 
 uint16_t timer0_getRequiredPrescaler(uint32_t Hz) {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer0_allowedPrescalersLenght; i++) {
     if (Hz >= prescalerMinHz(timer0_mode, timer0_allowedPrescalers[i], 8)) {
       return timer0_allowedPrescalers[i];
@@ -272,8 +272,9 @@ void timer0_stop() {
   }
   if (timer0_mode == FASTPWM_OCRA) {
   }
-  _timer0_setPrescaler(0);
+  
   timer0_running = 0;
+  _timer0_setPrescaler(0);
 }
 
 void timer0_setTop(uint16_t _top) {

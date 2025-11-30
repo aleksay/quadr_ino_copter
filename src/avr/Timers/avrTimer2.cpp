@@ -190,7 +190,7 @@ void _timer2_setPrescaler(uint16_t _prescaler) {
 
 void timer2_setPrescaler(uint16_t _prescaler) {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer2_allowedPrescalersLenght; i++) {
     if (_prescaler == timer2_allowedPrescalers[i]) {
       timer2_prescaler = _prescaler;
@@ -203,7 +203,7 @@ void timer2_setPrescaler(uint16_t _prescaler) {
 
 uint16_t timer2_getPrevPrescaler() {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer2_allowedPrescalersLenght; i++) {
     if (timer2_prescaler == timer2_allowedPrescalers[i]) {
       return timer2_allowedPrescalers[(i - 1) % timer2_allowedPrescalersLenght];
@@ -213,7 +213,7 @@ uint16_t timer2_getPrevPrescaler() {
 
 uint16_t timer2_getNextPrescaler() {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer2_allowedPrescalersLenght; i++) {
     if (timer2_prescaler == timer2_allowedPrescalers[i]) {
       return timer2_allowedPrescalers[(i + 1) % timer2_allowedPrescalersLenght];
@@ -230,7 +230,7 @@ void timer2_decreasePrescaler() {
 
 uint16_t timer2_getRequiredPrescaler(uint32_t Hz) {
 
-  int i;
+  uint8_t i;
   for (i = 0; i < timer2_allowedPrescalersLenght; i++) {
     if (Hz >= prescalerMinHz(timer2_mode, timer2_allowedPrescalers[i], 8)) {
       return timer2_allowedPrescalers[i];

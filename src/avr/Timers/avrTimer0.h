@@ -185,13 +185,14 @@ extern uint8_t timer0_allowedPrescalersLenght;
 // function declarations
 
 void timer0_init(void);
-void timer0_init(timer_mode mode, uint16_t _prescaler);
+void timer0_init(timer_mode _mode, uint16_t _prescaler);
 void timer0_mode_normal_init(void);
 void timer0_mode_phasecorrect_ocra_init(void);
 void timer0_mode_ctc_ocra_init(void);
 void timer0_mode_phasecorrect_top_init(void);
 void timer0_mode_fastpwm_top_init(void);
 void timer0_mode_fastpwm_ocra_init(void);
+
 void timer0_setPin(char _pin, timer_pin_mode _mode);
 void timer0_clearPin(char _pin);
 
