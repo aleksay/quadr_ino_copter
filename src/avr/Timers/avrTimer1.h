@@ -351,14 +351,16 @@ uint16_t timer1_getPrevPrescaler(void);
 //void timer1_getPrescalerMinHz (void);
 //uint16_t timer1_getPrescalerRequired (uint32_t Hz);
 //int8_t timer1_setPrescaler (uint16_t _prescaler);
-int8_t timer1_setFrequency (uint32_t Hz);
-int8_t timer1_setTop (uint16_t top);
+
+void timer1_setTop (uint16_t top);
 void timer1_setBottom(uint8_t _bottom);
-int8_t timer1_setDuty (uint8_t duty);
+void timer1_setDuty (uint8_t duty);
+
+void timer1_setFrequency (uint32_t Hz);
 uint16_t timer1_getPrescaler (void);
-uint16_t timer1_getFrequency (void);
+uint32_t timer1_getFrequency (void);
 uint16_t timer1_getTop (void);
-uint16_t timer1_getDuty (void);
+uint8_t timer1_getDuty (void);
 
 void timer1_timer1_ovf_handler (void);
 

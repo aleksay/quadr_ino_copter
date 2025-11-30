@@ -431,8 +431,8 @@ void timer1_stop() {
 
 
 
-int8_t timer1_setFrequency(uint32_t Hz) {
-
+void timer1_setFrequency(uint32_t Hz) {
+/*
   int8_t ret;
 
   // check Hz
@@ -449,59 +449,110 @@ int8_t timer1_setFrequency(uint32_t Hz) {
   // debug("Hz:%u, Required prescaler:%u", Hz, timer1_getPrescalerRequired(Hz));
 
   // convert Hz to register value TOP
-  ret = timer1_setTop(fastPWM_Hz2Top(timer1_getPrescaler(), Hz));
-  if (ret < 0)
-    return ret;
+  timer1_setTop(fastPWM_Hz2Top(timer1_getPrescaler(), Hz));
+  //if (ret < 0)
+  //  return ret;
 
   // debug("Top:%u",fastPWM_Hz2Top(timer1_getPrescaler(),Hz));
 
   // set new duty, and return error code
-  ret = timer1_setDuty(timer1_getDuty());
-  if (ret < 0)
-    return ret;
+  timer1_setDuty(timer1_getDuty());
+  //if (ret < 0)
+  //  return ret;
 
   return 0;
+  */
+  if (timer1_mode == FASTPWM_OCRA || timer1_mode == FASTPWM_ICR || timer1_mode == FASTPWM_TOP) {
+  	timer1_setPrescaler(timer1_getRequiredPrescaler(Hz));
+  	timer1_setTop(fastPWM_Hz2Top(timer1_getPrescaler(), Hz));
+  }
+  if (timer1_mode == PHASE_CORRECT_OCRA || timer1_mode == PHASE_CORRECT_TOP) {
+  	timer1_setPrescaler(timer1_getRequiredPrescaler(Hz));
+  	timer1_setTop(phaseCorrectPWM_Hz2Top(timer1_getPrescaler(), Hz));
+  
+  }
+  
+  
 }
 
-int8_t timer1_setTop(uint16_t top) {
+void timer1_setTop(uint16_t _top) {
 
-  if (timer1_getTop() == top) {
-    //    log_warn("top unchanged!");
-    return -1;
+ if (_top <= 2)
+    timer1_top = 2;
+  else
+    timer1_top = _top;
+
+
+  if (timer1_mode == NORMAL){
+  	timer1_top = 65535;
   }
+  if( timer1_mode == FASTPWM_TOP || timer1_mode == PHASE_CORRECT_TOP){
+  	timer1_top = 255;
+  }
+  
+  if (timer1_mode == FASTPWM_ICR ) {
+    SET_TIMER1_ICR(timer1_top);
+    timer1_setDuty(timer1_duty);
+  }
+  if (timer1_mode == PHASE_CORRECT_OCRA || timer1_mode == CTC_OCRA || timer1_mode == FASTPWM_OCRA) {
 
-  // set new TOP value in register
-  SET_TIMER1_OCRA(top);
-  return 0;
+    SET_TIMER1_OCRA(timer1_top);
+    timer1_setDuty(timer1_duty);
+  }
 }
 
 void timer1_setBottom(uint8_t _bottom) { timer1_bottom = _bottom; }
 
-int8_t timer1_setDuty(uint8_t duty) {
+void timer1_setDuty(uint8_t _duty) {
+ 
+  uint8_t dutyMapped;
+  
+  if (_duty >= 100)
+    _duty = 99;
 
-  if (duty <= 0 || duty > 100) {
-    //    log_err("bad duty: %d", duty);
-    return -1;
+  timer1_duty = _duty;
+
+  if (timer1_mode == PHASE_CORRECT_OCRA || timer1_mode == FASTPWM_OCRA || timer1_mode == CTC_OCRA){
+
+	  if(timer1_getTop() % 2 != 0){
+	  	dutyMapped = avrMap(timer1_duty, 0, 100, 0, timer1_getTop()-1);
+	  }else{
+		dutyMapped = avrMap(timer1_duty, 0, 100, 0, timer1_getTop());
+	  }
+
+	  if (dutyMapped <= 0) {
+	    SET_TIMER1_OCRB(1);
+	  }  
+	  if (dutyMapped >= 255){
+	    SET_TIMER1_OCRB(254);
+	  }
+	  else {
+	    SET_TIMER1_OCRB(dutyMapped);
+	  }
   }
-
-  SET_TIMER1_OCRB(avrMap(duty, 0, 100, 0, timer1_getTop()));
-  // SET_TIMER1_DUTY_CHAN_B( map(duty, 1, 100, 1, timer1_getTop()) );
-  return 0;
+ 
 }
 
 uint16_t timer1_getPrescaler(void) { return timer1_prescaler; }
 
-uint16_t timer1_getFrequency(void) {
-  return fastPWM_Top2Hz(timer1_getPrescaler(), timer1_getTop());
+uint32_t timer1_getFrequency(void) {
+	if (timer1_mode == FASTPWM_OCRA || timer1_mode == FASTPWM_ICR || timer1_mode == FASTPWM_TOP) {
+		return fastPWM_Top2Hz(timer1_getPrescaler(), timer1_getTop());
+	}
+	if (timer1_mode == PHASE_CORRECT_OCRA || timer1_mode == PHASE_CORRECT_TOP) {
+		return phaseCorrectPWM_Top2Hz(timer1_getPrescaler(), timer1_getTop());
+	}
 }
 
 uint16_t timer1_getTop(void) {
   //  return ICR1; // Depending on PWM type used
-  return GET_TIMER1_OCRA();
+  return timer1_top;
 }
 
-uint16_t timer1_getDuty(void) {
-  return avrMap(GET_TIMER1_OCRB(), 0, timer1_getTop(), 0, 100);
+uint8_t timer1_getDuty(void) {
+  
+  return timer1_duty;
+  //return avrMap(GET_TIMER1_OCRB(), 0, timer1_getTop(), 0, 100);
   //      return map(OCR1B, 0, timer1_getTop(), 0, 100);
 }
 

@@ -288,7 +288,8 @@ void timer0_setTop(uint16_t _top) {
 
   // IF mode: normal -> timer0_top represent the maximum number of
   // TIMER0_OVF_vect before executing timer0_ovf_handler
-  if (timer0_mode == NORMAL) {
+  if (timer0_mode == NORMAL || timer0_mode == FASTPWM_TOP || timer0_mode == PHASE_CORRECT_TOP){
+  	timer0_top = 255;
   }
   if (timer0_mode == PHASE_CORRECT_OCRA || timer0_mode == CTC_OCRA || timer0_mode == FASTPWM_OCRA) {
 
