@@ -3,12 +3,17 @@
 
 #include <avrTimer.h>
 
+
+// Timer0 Reset
+
 #define TIMER0_RESET                                                           \
   TCCR0B = 0;                                                                  \
   TCCR0A = 0;                                                                  \
   TCNT0 = 0;                                                                   \
   TIMSK0 = 0;                                                                  \
   TIFR0 = 0
+
+// Timer0 Prescaler
 
 /*
 0 0 0 No clock source (Timer/Counter stopped).
@@ -52,6 +57,10 @@
 // CS00) #define SET_TIMER0_PRESCALER_256  TCCR0B |= (1 << CS02) | (1 <<
 // CS01);TCCR0B &= ~(1 << CS00) #define SET_TIMER0_PRESCALER_1024 TCCR0B |= (1
 // << CS02) | (1 << CS01) | (1 << CS00)
+
+
+//   Timer0 Mode
+
 
 /*
 
@@ -98,8 +107,11 @@ BOTTOM              TOP
   TCCR0B |= (1 << WGM02);                                                      \
   TCCR0A |= (1 << WGM01) | (1 << WGM00)
 
+
 #define SET_TIMER0_OCRA(val) OCR0A = val // TOP
 #define SET_TIMER0_OCRB(val) OCR0B = val // DUTY
+
+// Timer0 Pins
 
 #define SET_TIMER0_PINA DDRD |= (1 << PD6) // digital pin 6
 #define SET_TIMER0_PINB DDRD |= (1 << PD5) // digital pin  5
@@ -124,10 +136,10 @@ BOTTOM              TOP
 // COM0A1=0, COM0A0=1 per TIMER1 valido solo in NORMAL e CTC
 #define SET_TIMER0_PINA_TOGGLE_ONCOMPARE                                       \
   TCCR0A &= ~(1 << COM0A1);                                                    \
-  TCCR0A |= 1 << COM0A0
+  TCCR0A |= (1 << COM0A0)
 // COM0A1=1, COM0A0=0
 #define SET_TIMER0_PINA_CLEAR_ONCOMPARE                                        \
-  TCCR0A |= 1 << COM0A1;                                                       \
+  TCCR0A |= (1 << COM0A1);                                                     \
   TCCR0A &= ~(1 << COM0A0)
 // COM0A1=1, COM0A0=1
 #define SET_TIMER0_PINA_SET_ONCOMPARE TCCR0A |= (1 << COM0A1) | (1 << COM0A0)
@@ -143,6 +155,10 @@ BOTTOM              TOP
   TCCR0A &= ~(1 << COM0B0)
 // COM0B1=1, COM0B0=1
 #define SET_TIMER0_PINB_SET_ONCOMPARE TCCR0A |= (1 << COM0B1) | (1 << COM0B0)
+
+
+// Timer0 Interrupts
+
 
 #define SET_TIMER0_INTERRUPT_OUTPUTCOMPARE_A TIMSK0 |= (1 << OCIE0A)
 #define SET_TIMER0_INTERRUPT_OUTPUTCOMPARE_B TIMSK0 |= (1 << OCIE0B)

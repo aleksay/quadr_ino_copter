@@ -27,12 +27,15 @@ int8_t timer1_init() {
 
 int8_t timer1_fastPwm_icrtop_init() {
   SET_TIMER1_PINB;
-  SET_TIMER1_FREQUENCY_ICRTOP(DEFAULT_T1_INIT_FREQUENCY);
-  SET_TIMER1_DUTY_CHAN_B(DEFAULT_T1_INIT_DUTY);
+  SET_TIMER1_ICR(DEFAULT_T1_INIT_FREQUENCY);
+  SET_TIMER1_OCRB(DEFAULT_T1_INIT_DUTY);
   TIMER1_RESET;
-  SET_TIMER1_PINOUT(B);
+  //SET_TIMER1_PINOUT(B);
+  //SET_TIMER1_PINB_NOTINVERTING(0);
+  SET_TIMER1_PINB_CLEAR_ONCOMPARE;
+  
   SET_TIMER1_MODE_FASTPWM_ICR;
-  SET_TIMER1_PINB_NOTINVERTING(0);
+  
   SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
   // SET_TIMER1_PRESCALER_1;
   return 0;
@@ -46,8 +49,11 @@ int8_t timer1_fastPwm_ocratop_init() {
 
   SET_TIMER1_PINB;
   //  TIMER1_RESET;
-  SET_TIMER1_PINOUT(B);
-  SET_TIMER1_PINB_NOTINVERTING(0);
+  
+  //SET_TIMER1_PINOUT(B);
+  //SET_TIMER1_PINB_NOTINVERTING(0);
+  SET_TIMER1_PINB_CLEAR_ONCOMPARE;
+   
 
   SET_TIMER1_MODE_FASTPWM_OCRA;
   // SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
@@ -159,7 +165,7 @@ int8_t timer1_setTop(uint16_t top) {
   }
 
   // set new TOP value in register
-  SET_TIMER1_FREQUENCY_OCRATOP(top);
+  SET_TIMER1_OCRA(top);
   return 0;
 }
 
@@ -170,7 +176,7 @@ int8_t timer1_setDuty(uint8_t duty) {
     return -1;
   }
 
-  SET_TIMER1_DUTY_CHAN_B(avrMap(duty, 0, 100, 0, timer1_getTop()));
+  SET_TIMER1_OCRB(avrMap(duty, 0, 100, 0, timer1_getTop()));
   // SET_TIMER1_DUTY_CHAN_B( map(duty, 1, 100, 1, timer1_getTop()) );
   return 0;
 }
@@ -192,8 +198,8 @@ uint16_t timer1_getDuty(void) {
 }
 
 void timer1_timer1_ovf_handler(void) {
-  SET_TIMER1_FREQUENCY_OCRATOP(timer1_getFrequency());
-  SET_TIMER1_DUTY_CHAN_B(timer1_getDuty());
+  SET_TIMER1_OCRA(timer1_getFrequency());
+  SET_TIMER1_OCRB(timer1_getDuty());
 }
 
 ISR(TIMER1_COMPA_vect) { myfunc(); }
