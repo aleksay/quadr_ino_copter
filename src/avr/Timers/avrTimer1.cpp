@@ -32,10 +32,22 @@ void (*timer1_compb_handler)();
 //void timer1_register_COMPA_callback(void (*func)(void)) { myfunc = func; }
 
 
-void timer1_register_INCMP_callback (void (*func) (void)) { timer1_incmp_handler = func; }
-void timer1_register_COMPA_callback(void (*func)(void))   { timer1_compa_handler = func; }
-void timer1_register_COMPB_callback(void (*func)(void))   { timer1_compb_handler = func; }
-void timer1_register_OVF_callback(void (*func)(void))     { timer1_ovf_handler = func;   }
+void timer1_register_INCMP_callback (void (*func) (void)) { 
+  SET_TIMER1_INTERRUPT_INPUTCAPTURE;
+  timer1_incmp_handler = func; 
+}
+void timer1_register_COMPA_callback(void (*func)(void))   { 
+  SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
+  timer1_compa_handler = func; 
+}
+void timer1_register_COMPB_callback(void (*func)(void))   { 
+  SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_B;
+  timer1_compb_handler = func; 
+}
+void timer1_register_OVF_callback(void (*func)(void))     { 
+  SET_TIMER1_INTERRUPT_OVERFLOW;
+  timer1_ovf_handler = func;   
+}
 
 
 ISR(TIMER1_COMPA_vect) { (*timer1_compa_handler)(); }
@@ -53,7 +65,8 @@ int8_t timer1_init() {
 
   // configure timer1
   timer1_mode_fastpwm_ocra_init();
-  //set Pin B ONCOMPARE
+  //set Pin B CLEAR_ONCOMPARE
+  timer1_setPin('B',CLEAR);
 
   return 0;
 }
@@ -88,6 +101,8 @@ void timer1_init(timer_mode _mode, uint16_t _prescaler){
     timer1_mode = _mode;
     timer1_mode_fastpwm_ocra_init();
     // set pin B
+    
+    
     timer1_setPrescaler(_prescaler);
   
   }
@@ -96,6 +111,7 @@ void timer1_init(timer_mode _mode, uint16_t _prescaler){
     timer1_mode_fastpwm_icr_init();
     // set interrupt
     // set pin B 
+    //timer1_setPin('B',CLEAR);
     // initial values
     timer1_setPrescaler(_prescaler);
   }
@@ -134,8 +150,19 @@ void timer1_mode_ctc_ocra_init(){
   SET_TIMER1_MODE_CTC_OCRA;
 
 }
-void timer1_mode_phasecorrect_top_init(){}
-void timer1_mode_fastpwm_top_init(){}
+void timer1_mode_phasecorrect_top_init(){
+  UNSET_TIMER1_PINA;
+  UNSET_TIMER1_PINB;
+  TIMER1_RESET;
+  SET_TIMER1_MODE_PHASE_CORRECT_TOP;
+  
+}
+void timer1_mode_fastpwm_top_init(){
+  UNSET_TIMER1_PINA;
+  UNSET_TIMER1_PINB;
+  TIMER1_RESET;
+  SET_TIMER1_MODE_FASTPWM_TOP;
+}
 
 
 
@@ -267,6 +294,9 @@ uint16_t timer1_getPrescalerRequired(uint32_t Hz) {
 
 void _timer1_setPrescaler(uint16_t _prescaler) {
   switch (_prescaler) {
+  case 0:
+    SET_TIMER1_PRESCALER_0;
+    return;
   case 1:
     SET_TIMER1_PRESCALER_1;
     return;
@@ -301,10 +331,6 @@ void timer1_setPrescaler(uint16_t _prescaler) {
 }
 
 
-
-
-
-
 uint16_t timer1_getPrevPrescaler() {
 
   uint8_t i;
@@ -336,7 +362,7 @@ uint16_t timer1_getRequiredPrescaler(uint32_t Hz) {
 
   uint8_t i;
   for (i = 0; i < timer1_allowedPrescalersLenght; i++) {
-    if (Hz >= prescalerMinHz(timer1_mode, timer1_allowedPrescalers[i], 16)) {
+    if (Hz >= prescalerMinHz(timer1_mode, timer1_allowedPrescalers[i], TIMER_REGISTER_SIZE)) {
       return timer1_allowedPrescalers[i];
     }
   }
@@ -346,15 +372,21 @@ void timer1_resetCounter() {
 
 // FASTPWM_ICR,FASTPWM_TOP,PHASE_CORRECT_TOP
 
-  if (timer1_mode == NORMAL || timer1_mode == FASTPWM_ICR || timer1_mode == FASTPWM_TOP || timer1_mode == PHASE_CORRECT_TOP) {
+  if (timer1_mode == NORMAL || timer1_mode == FASTPWM_TOP || timer1_mode == PHASE_CORRECT_TOP) {
     cli();
     TCNT1 = timer1_bottom;
     sei();
   }
-  if (timer1_mode == CTC_OCRA || timer1_mode == FASTPWM_OCRA || timer1_mode == PHASE_CORRECT_OCRA) {
+  if (timer1_mode == CTC_OCRA || timer1_mode == FASTPWM_OCRA || timer1_mode == PHASE_CORRECT_OCRA || timer1_mode == PHASEFREQ_CORRECT_OCRA) {
     cli();
     TCNT1 = 0;
     sei();
+  }
+  if (timer1_mode == PHASEFREQ_CORRECT_ICR || timer1_mode == PHASE_CORRECT_ICR || timer1_mode == CTC_ICR || timer1_mode == FASTPWM_ICR){
+    cli();
+    TCNT1 = 0;
+    sei();
+  
   }
 }
 
@@ -369,15 +401,15 @@ void timer1_start(uint32_t Hz) {
 void timer1_start() { timer1_start(timer1_prescaler); }
 
 void timer1_start(uint16_t _prescaler) {
-  timer1_resetCounter();
+  //timer1_resetCounter();
 
   if (timer1_mode == NORMAL) {
     
-    SET_TIMER1_INTERRUPT_OVERFLOW;
+//    SET_TIMER1_INTERRUPT_OVERFLOW;
   }
   if (timer1_mode == CTC_OCRA) {
     
-    SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
+//    SET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;
   }
   if (timer1_mode == FASTPWM_OCRA) {
   }
@@ -403,10 +435,10 @@ void timer1_stop() {
   //  pins_setDriveOpenInverter(); // TODO remove me
   
   if (timer1_mode == NORMAL) {
-    UNSET_TIMER1_INTERRUPT_OVERFLOW;    
+ //   UNSET_TIMER1_INTERRUPT_OVERFLOW;    
   }
   if (timer1_mode == CTC_OCRA) {
-    UNSET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;    
+//   UNSET_TIMER1_INTERRUPT_OUTPUTCOMPARE_A;    
   }
   if (timer1_mode == FASTPWM_OCRA) {
   }

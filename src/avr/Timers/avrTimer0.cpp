@@ -226,7 +226,7 @@ uint16_t timer0_getRequiredPrescaler(uint32_t Hz) {
 
   uint8_t i;
   for (i = 0; i < timer0_allowedPrescalersLenght; i++) {
-    if (Hz >= prescalerMinHz(timer0_mode, timer0_allowedPrescalers[i], 8)) {
+    if (Hz >= prescalerMinHz(timer0_mode, timer0_allowedPrescalers[i], TIMER_REGISTER_SIZE)) {
       return timer0_allowedPrescalers[i];
     }
   }
@@ -379,12 +379,15 @@ uint8_t timer0_getDuty(void) {
 }
 
 void timer0_register_COMPA_callback(void (*func)(void)) {
+  SET_TIMER0_INTERRUPT_OUTPUTCOMPARE_A;
   timer0_compa_handler = func;
 }
 void timer0_register_COMPB_callback(void (*func)(void)) {
+  SET_TIMER0_INTERRUPT_OUTPUTCOMPARE_B;
   timer0_compb_handler = func;
 }
 void timer0_register_OVF_callback(void (*func)(void)) {
+  SET_TIMER0_INTERRUPT_OVERFLOW;
   timer0_ovf_handler = func;
 }
 

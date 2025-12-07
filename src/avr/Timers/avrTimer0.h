@@ -13,6 +13,8 @@
   TIMSK0 = 0;                                                                  \
   TIFR0 = 0
 
+#define TIMER_REGISTER_SIZE 8
+
 // Timer0 Prescaler
 
 /*

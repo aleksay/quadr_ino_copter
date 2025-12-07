@@ -232,7 +232,7 @@ uint16_t timer2_getRequiredPrescaler(uint32_t Hz) {
 
   uint8_t i;
   for (i = 0; i < timer2_allowedPrescalersLenght; i++) {
-    if (Hz >= prescalerMinHz(timer2_mode, timer2_allowedPrescalers[i], 8)) {
+    if (Hz >= prescalerMinHz(timer2_mode, timer2_allowedPrescalers[i], TIMER_REGISTER_SIZE)) {
       return timer2_allowedPrescalers[i];
     }
   }
@@ -252,11 +252,11 @@ void timer2_start() { timer2_start(timer2_prescaler); }
 void timer2_start(uint16_t _prescaler) {
   if (timer2_mode == NORMAL) {
     timer2_resetCounter();
-    SET_TIMER2_INTERRUPT_OVERFLOW;
+//    SET_TIMER2_INTERRUPT_OVERFLOW;
   }
   if (timer2_mode == CTC_OCRA) {
     timer2_resetCounter();
-    SET_TIMER2_INTERRUPT_OUTPUTCOMPARE_A;
+//    SET_TIMER2_INTERRUPT_OUTPUTCOMPARE_A;
   }
   if (timer2_mode == PHASE_CORRECT_OCRA) {
   }
@@ -269,10 +269,10 @@ void timer2_start(uint16_t _prescaler) {
 
 void timer2_stop() {
   if (timer2_mode == NORMAL) {
-    UNSET_TIMER2_INTERRUPT_OVERFLOW;    
+ //   UNSET_TIMER2_INTERRUPT_OVERFLOW;    
   }
   if (timer2_mode == CTC_OCRA) {
-    UNSET_TIMER2_INTERRUPT_OUTPUTCOMPARE_A;    
+//    UNSET_TIMER2_INTERRUPT_OUTPUTCOMPARE_A;    
   }
   if (timer2_mode == PHASE_CORRECT_OCRA) {    
   }
@@ -382,12 +382,15 @@ uint8_t timer2_getDuty(void) {
 }
 
 void timer2_register_COMPA_callback(void (*func)(void)) {
+  SET_TIMER2_INTERRUPT_OUTPUTCOMPARE_A;
   timer2_compa_handler = func;
 }
 void timer2_register_COMPB_callback(void (*func)(void)) {
+  SET_TIMER2_INTERRUPT_OUTPUTCOMPARE_B;
   timer2_compb_handler = func;
 }
 void timer2_register_OVF_callback(void (*func)(void)) {
+  SET_TIMER2_INTERRUPT_OVERFLOW;
   timer2_ovf_handler = func;
 }
 

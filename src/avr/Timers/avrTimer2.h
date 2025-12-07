@@ -17,6 +17,8 @@
   TIMSK2 = 0;                                                                  \
   TIFR2 = 0
 
+#define TIMER_REGISTER_SIZE 8
+
 /*
 0 0 0 No clock source (Timer/Counter stopped).
 0 0 1 clkT2S/(no prescaling)
