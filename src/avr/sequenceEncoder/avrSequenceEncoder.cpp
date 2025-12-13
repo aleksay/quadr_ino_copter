@@ -1,6 +1,8 @@
 #include <avrSequenceEncoder.h>
 
-void setSequenceTable(unsigned char *_sequenceTable) {
+void
+setSequenceTable (unsigned char *_sequenceTable)
+{
   sequenceTable = _sequenceTable;
 }
 
@@ -25,37 +27,62 @@ static void pinsMakeTables(void)
   //  ADMUXTable[5] = ADMUX_U;
 }
 */
-void sequence_init(void) {
+void
+sequence_init (void)
+{
   direction = 1;
   // pinsMakeTables();
 
   // Init DRIVE_DDR for motor driving.
-  SEQUENCE_DDR = (1 << UL_OFFSET) | (1 << UH_OFFSET) | (1 << VL_OFFSET) |
-                 (1 << VH_OFFSET) | (1 << WL_OFFSET) | (1 << WH_OFFSET);
+  SEQUENCE_DDR = (1 << UL_OFFSET) | (1 << UH_OFFSET) | (1 << VL_OFFSET)
+                 | (1 << VH_OFFSET) | (1 << WL_OFFSET) | (1 << WH_OFFSET);
 
-  sequence_setState(0);
+  sequence_setState (0);
 }
 
-uint8_t sequence_getState() { return state; }
+uint8_t
+sequence_getState ()
+{
+  return state;
+}
 
-void sequence_setState(uint8_t _state) {
+void
+sequence_setState (uint8_t _state)
+{
 
   state = _state;
   SEQUENCE_PORT = sequenceTable[_state];
 }
 
-void sequence_nextState(void) {
+void
+sequence_nextState (void)
+{
 
-  if (direction) {
-    state = ++state % SEQUENCE_SIZE;
-    SEQUENCE_PORT = sequenceTable[state];
-  } else {
-    state = (--state + SEQUENCE_SIZE) % SEQUENCE_SIZE;
-    SEQUENCE_PORT = sequenceTable[state];
-  }
+  if (direction)
+    {
+      state = ++state % SEQUENCE_SIZE;
+      SEQUENCE_PORT = sequenceTable[state];
+    }
+  else
+    {
+      state = (--state + SEQUENCE_SIZE) % SEQUENCE_SIZE;
+      SEQUENCE_PORT = sequenceTable[state];
+    }
 }
 
-void sequence_setDirection(uint8_t clockwise) { direction = clockwise; }
-uint8_t sequence_getDirection() { return direction; }
+void
+sequence_setDirection (uint8_t clockwise)
+{
+  direction = clockwise;
+}
+uint8_t
+sequence_getDirection ()
+{
+  return direction;
+}
 
-void sequence_erase() { SEQUENCE_ERASE; }
+void
+sequence_erase ()
+{
+  SEQUENCE_ERASE;
+}

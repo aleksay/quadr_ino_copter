@@ -4,12 +4,18 @@
 #include <brushless.h>
 #include <comunicator.h>
 
-void handlerA(uint8_t v) { // toggle pin 13
+void
+handlerA (uint8_t v)
+{ // toggle pin 13
 }
-void handlerB(uint8_t v) { // toggle pin v
+void
+handlerB (uint8_t v)
+{ // toggle pin v
 }
 
-int main(void) {
+int
+main (void)
+{
 
   /*
   //case 't': log_info("%lums", timeClock());
@@ -34,8 +40,8 @@ int main(void) {
   rampAutomaFrequencyA.end);
   //case 'p':
         log_info("--QUERY--\nISRFrequency: %u,pwmFrequency: %u, pwmDuty: %d\n",
-  getISRFrequency(), pwmGetFrequency(), pwmGetDuty() ); debug("OCR1A %u OCR1B %u
-  OCR0A %u OCR0B %u", OCR1A, OCR1B, OCR0A, OCR0B);
+  getISRFrequency(), pwmGetFrequency(), pwmGetDuty() ); debug("OCR1A %u OCR1B
+  %u OCR0A %u OCR0B %u", OCR1A, OCR1B, OCR0A, OCR0B);
 
 
 
@@ -44,46 +50,48 @@ int main(void) {
 
   // brushless myMotor;
 
-  init();
+  init ();
 
   char commands[] = {
-      // 'f',
-      // 'd',
-      // 'y',
-      // 'k',
-      // 'a',
-      'b',
-      // 'R',
-      's',
-      // 'x',
-      'm' //,
-          // 'u',
-          // 'i',
-          // 'v'
+    // 'f',
+    // 'd',
+    // 'y',
+    // 'k',
+    // 'a',
+    'b',
+    // 'R',
+    's',
+    // 'x',
+    'm' //,
+        // 'u',
+        // 'i',
+        // 'v'
   };
 
-  void (*handlers[])(uint8_t) = {
-      // myMotor.pwmSetFrequency,
-      // myMotor.pwmSetDuty,
-      // myMotor.pwmStop,
-      // myMotor.pwmSetPrescaler,
-      // myMotor.setISRFrequency,
-      angSpeed,        // X
-                       // myMotor.wdt_sw_reset,
-      setStartupState, // X
-      // myMotor.stopISR,
-      manualMode //, // X
-                 // myMotor.rampAutomaFrequencyA.end,
-                 // myMotor.rampAutomaFrequencyA.gain,
-                 // myMotor.pins_setDriveDirection
+  void (*handlers[]) (uint8_t) = {
+    // myMotor.pwmSetFrequency,
+    // myMotor.pwmSetDuty,
+    // myMotor.pwmStop,
+    // myMotor.pwmSetPrescaler,
+    // myMotor.setISRFrequency,
+    angSpeed,        // X
+                     // myMotor.wdt_sw_reset,
+    setStartupState, // X
+    // myMotor.stopISR,
+    manualMode //, // X
+               // myMotor.rampAutomaFrequencyA.end,
+               // myMotor.rampAutomaFrequencyA.gain,
+               // myMotor.pins_setDriveDirection
 
   };
 
-  comunicator myComunicator = comunicator(commands, handlers, sizeof(commands));
+  comunicator myComunicator
+      = comunicator (commands, handlers, sizeof (commands));
 
-  while (1) {
-    myComunicator.read();
-  }
+  while (1)
+    {
+      myComunicator.read ();
+    }
   /*
       int manualMode(int val);
      int angSpeed();

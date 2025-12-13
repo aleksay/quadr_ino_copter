@@ -14,12 +14,12 @@
 #define NUM_DRIVE_STATES 6
 #define DEFAULT_INITIAL_STATE 0
 
-void pins_init(void);
-uint8_t pins_getDriveState(void);
-void pins_setDriveState(uint8_t _state);
-void pins_commuteDriveTable(void);
-void pins_setDriveDirection(uint8_t clockwise);
-uint8_t pins_getDriveDirection();
-void pins_setDriveOpenInverter();
+void pins_init (void);
+uint8_t pins_getDriveState (void);
+void pins_setDriveState (uint8_t _state);
+void pins_commuteDriveTable (void);
+void pins_setDriveDirection (uint8_t clockwise);
+uint8_t pins_getDriveDirection ();
+void pins_setDriveOpenInverter ();
 
 #endif

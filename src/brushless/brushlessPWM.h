@@ -9,14 +9,14 @@
 
 #define RAMP_FIN_DUTY_T0 90
 
-void pwmInit(void);
-void pwmStart(void);
-void pwmStop(void);
-void pwmSetFrequency(uint32_t Hz);
-void pwmSetDuty(uint8_t duty);
-void pwmSetPrescaler(uint16_t prescaler);
-uint16_t pwmGetFrequency(void);
-uint8_t pwmGetDuty(void);
-uint16_t pwmGetPrescaler(void);
+void pwmInit (void);
+void pwmStart (void);
+void pwmStop (void);
+void pwmSetFrequency (uint32_t Hz);
+void pwmSetDuty (uint8_t duty);
+void pwmSetPrescaler (uint16_t prescaler);
+uint16_t pwmGetFrequency (void);
+uint8_t pwmGetDuty (void);
+uint16_t pwmGetPrescaler (void);
 
 #endif // HEADER

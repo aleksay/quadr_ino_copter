@@ -27,7 +27,8 @@
 #define startupState_AutomaRampB 7
 #define startupState_StartupFinished 8
 
-typedef struct _ramp {
+typedef struct _ramp
+{
   int offset;
   int gain;
   int currentValue;
@@ -42,23 +43,23 @@ typedef struct _ramp {
 //   ~brushless();
 
 // methods
-int init();
-int iterate();
-int setStartupFreqEnd(int val);
-int setStartupFreqGain(int val);
+int init ();
+int iterate ();
+int setStartupFreqEnd (int val);
+int setStartupFreqGain (int val);
 // int setCommand(Command command);
-void manualMode(uint8_t val);
-void angSpeed(uint8_t val);
+void manualMode (uint8_t val);
+void angSpeed (uint8_t val);
 
 // private:
-void ramp_init();
+void ramp_init ();
 
 // methods
 // int parseCommand(Command command);
 
-int getStartupOpenLoopValue(ramp ramp);
-void setStartupState(uint8_t state);
-int startupCallback();
+int getStartupOpenLoopValue (ramp ramp);
+void setStartupState (uint8_t state);
+int startupCallback ();
 
 //};
 

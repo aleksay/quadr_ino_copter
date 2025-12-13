@@ -26,9 +26,9 @@
 //! Data direction register for drive pattern output.
 #define SEQUENCE_DDR DDRB
 
-#define SEQUENCE_ERASE                                                         \
-  PORTB |= (0 << PORTB0) | (0 << PORTB1) | (0 << PORTB2) | (0 << PORTB3) |     \
-           (0 << PORTB4) | (0 << PORTB5)
+#define SEQUENCE_ERASE                                                        \
+  PORTB |= (0 << PORTB0) | (0 << PORTB1) | (0 << PORTB2) | (0 << PORTB3)      \
+           | (0 << PORTB4) | (0 << PORTB5)
 
 /*
 #define SEQUENCE_PATTERN_STEP1      ((1 << UL_OFFSET) | (1 << VH_OFFSET))
@@ -42,16 +42,16 @@
 //! Macro that cuts all power to the motor.
 // #define DISABLE_DRIVING               (SEQUENCE_PORT = 0x00)
 
-void setSequenceTable(unsigned char *_sequenceTable);
+void setSequenceTable (unsigned char *_sequenceTable);
 
-void sequence_init(void);
-uint8_t sequence_getState(void);
-void sequence_setState(uint8_t _state);
-void sequence_setDirection(uint8_t clockwise);
-uint8_t sequence_getDirection();
-void sequence_erase();
+void sequence_init (void);
+uint8_t sequence_getState (void);
+void sequence_setState (uint8_t _state);
+void sequence_setDirection (uint8_t clockwise);
+uint8_t sequence_getDirection ();
+void sequence_erase ();
 
-void sequence_nextState(void);
+void sequence_nextState (void);
 
 static volatile uint8_t state;
 static volatile uint8_t direction;

@@ -1,19 +1,55 @@
 #include <brushlessPWM.h>
 
-void pwmInit() { timer0_init(); }
+void
+pwmInit ()
+{
+  timer0_init ();
+}
 
-void pwmStart() { timer0_start(); }
+void
+pwmStart ()
+{
+  timer0_start ();
+}
 
-void pwmStop() { timer0_stop(); }
+void
+pwmStop ()
+{
+  timer0_stop ();
+}
 
-void pwmSetFrequency(uint32_t Hz) { timer0_setFrequency(Hz); }
+void
+pwmSetFrequency (uint32_t Hz)
+{
+  timer0_setFrequency (Hz);
+}
 
-void pwmSetDuty(uint8_t duty) { timer0_setDuty(duty); }
+void
+pwmSetDuty (uint8_t duty)
+{
+  timer0_setDuty (duty);
+}
 
-void pwmSetPrescaler(uint16_t prescaler) { timer0_setPrescaler(prescaler); }
+void
+pwmSetPrescaler (uint16_t prescaler)
+{
+  timer0_setPrescaler (prescaler);
+}
 
-uint16_t pwmGetFrequency() { return timer0_getFrequency(); }
+uint16_t
+pwmGetFrequency ()
+{
+  return timer0_getFrequency ();
+}
 
-uint8_t pwmGetDuty() { return timer0_getDuty(); }
+uint8_t
+pwmGetDuty ()
+{
+  return timer0_getDuty ();
+}
 
-uint16_t pwmGetPrescaler() { return timer0_getPrescaler(); }
+uint16_t
+pwmGetPrescaler ()
+{
+  return timer0_getPrescaler ();
+}

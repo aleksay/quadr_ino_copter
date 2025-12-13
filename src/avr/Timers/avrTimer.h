@@ -7,7 +7,6 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-
 #ifndef F_CPU
 #define F_CPU 16000000UL
 #endif
@@ -29,12 +28,13 @@ FASTPWM_ICR			x
 PHASE_CORRECT_TOP_9BIT,
 PHASE_CORRECT_TOP_10BIT         x
 FASTPWM_TOP_9BIT      ,
-FASTPWM_TOP_10BIT               x 
+FASTPWM_TOP_10BIT               x
 
 
 */
 
-enum timer_mode {
+enum timer_mode
+{
   NORMAL,
   PHASE_CORRECT_TOP,
   CTC_OCRA,
@@ -49,10 +49,15 @@ enum timer_mode {
   PHASE_CORRECT_TOP_9BIT,
   PHASE_CORRECT_TOP_10BIT,
   FASTPWM_TOP_9BIT,
-  FASTPWM_TOP_10BIT               
+  FASTPWM_TOP_10BIT
 };
 
-enum timer_pin_mode { TOGGLE, CLEAR, SET };
+enum timer_pin_mode
+{
+  TOGGLE,
+  CLEAR,
+  SET
+};
 
 /*
 enum timer_prescaler
@@ -68,13 +73,14 @@ enum timer_prescaler
 };
 */
 
-uint16_t fastPWM_Hz2Top(uint16_t prescaler, uint32_t Hz);
-uint32_t fastPWM_Top2Hz(uint16_t prescaler, uint16_t top);
-uint16_t phaseCorrectPWM_Hz2Top(uint16_t prescaler, uint32_t Hz);
-uint32_t phaseCorrectPWM_Top2Hz(uint16_t prescaler, uint16_t top);
-uint16_t prescalerMinHz(timer_mode _mode, uint16_t _prescaler,
-                        uint8_t _timerSize);
+uint16_t fastPWM_Hz2Top (uint16_t prescaler, uint32_t Hz);
+uint32_t fastPWM_Top2Hz (uint16_t prescaler, uint16_t top);
+uint16_t phaseCorrectPWM_Hz2Top (uint16_t prescaler, uint32_t Hz);
+uint32_t phaseCorrectPWM_Top2Hz (uint16_t prescaler, uint16_t top);
+uint16_t prescalerMinHz (timer_mode _mode, uint16_t _prescaler,
+                         uint8_t _timerSize);
 
-long avrMap(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
+long avrMap (uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min,
+             uint16_t out_max);
 
 #endif

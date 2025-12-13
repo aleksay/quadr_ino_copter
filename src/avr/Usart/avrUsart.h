@@ -22,15 +22,15 @@ static volatile uint8_t tx_tail = 0;
 // --------------------
 // Funzioni statiche locali
 // --------------------
-static int uart_putchar(char c, FILE *stream);
-static int uart_getchar(FILE *stream);
+static int uart_putchar (char c, FILE *stream);
+static int uart_getchar (FILE *stream);
 
-int uart_putchar(char c);
-int uart_getchar(void);
+int uart_putchar (char c);
+int uart_getchar (void);
 
-void uart_flush_rx_buffer(void);
+void uart_flush_rx_buffer (void);
 
-void uart_init(uint16_t baud = 9600);
+void uart_init (uint16_t baud = 9600);
 
 /**
  * Stream globale associato alla UART,
