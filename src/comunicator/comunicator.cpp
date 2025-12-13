@@ -5,6 +5,7 @@ comunicator::comunicator (uint16_t _baud)
 
   commandMap = NULL;
   commandMapSize = DEFAULT_COMMAND_MAP_SIZE;
+  lastCommand = (Command)malloc (sizeof (_command));
 
 #ifdef AVRUSART_H
   uart_init (_baud);
@@ -90,7 +91,7 @@ comunicator::readCommand ()
   char read_buffer[MAX_RAW_MESSAGE_SIZE];
   char inputStringValue[MAX_RAW_MESSAGE_SIZE - 1];
   uint16_t i = 1;
-  Command recivedCommand;
+  //Command recivedCommand;
 
   if (fgets (read_buffer, sizeof (read_buffer), stdin) == NULL)
     {
@@ -117,10 +118,14 @@ comunicator::readCommand ()
       i++;
     }
 
-  recivedCommand = (Command)malloc (sizeof (_command));
-  recivedCommand->type = read_buffer[0];
-  recivedCommand->value = strtol (inputStringValue, NULL, 0);
-  return recivedCommand;
+  //recivedCommand = (Command)malloc (sizeof (_command));
+  //recivedCommand->type = read_buffer[0];
+  //recivedCommand->value = strtol (inputStringValue, NULL, 0);
+  //return recivedCommand;
+  lastCommand->type = read_buffer[0];
+  lastCommand->value = strtol (inputStringValue, NULL, 0);
+  return lastCommand;
+  
 }
 
 void

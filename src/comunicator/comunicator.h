@@ -44,14 +44,16 @@ public:
   void read (); // main iteration loop
 
 private:
-  void runCommand (Command _recivedCommand);
-  int8_t isCommandRegistered (Command _recivedCommand);
+  CommandEntry *commandMap;
+  Command lastCommand;
+  int8_t commandMapSize;
 
   Command readCommand ();
-
+  void runCommand (Command _recivedCommand);
+  int8_t isCommandRegistered (Command _recivedCommand);
   // variables
-  CommandEntry *commandMap;
-  int8_t commandMapSize;
+  
+  
 };
 
 #endif
