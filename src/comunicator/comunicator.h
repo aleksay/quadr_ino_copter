@@ -15,33 +15,39 @@
 #define DEFAULT_COMMAND_MAP_SIZE 100
 #define MAX_RAW_MESSAGE_SIZE 6
 
-typedef struct _commandEntry {
+#define DEFAULT_BAUDRATE 9600
+
+typedef struct _commandEntry
+{
   char key;
-  void (*handler)(uint8_t args);
+  void (*handler) (uint8_t args);
 } *CommandEntry;
 
-typedef struct _command {
+typedef struct _command
+{
   char type;
   uint8_t value;
 } *Command;
 
-class comunicator {
+class comunicator
+{
 
 public:
-  comunicator();
-  comunicator(CommandEntry *_commandMap, int8_t _commandMapSize);
-  comunicator(char *commands, void (**handlers)(uint8_t),
-              int8_t commandMapSize);
-  ~comunicator();
+  comunicator (uint16_t _baud = DEFAULT_BAUDRATE);
+  comunicator (CommandEntry *_commandMap, int8_t _commandMapSize,
+               uint16_t _baud = DEFAULT_BAUDRATE);
+  comunicator (char *commands, void (**handlers) (uint8_t),
+               int8_t commandMapSize, uint16_t _baud = DEFAULT_BAUDRATE);
+  ~comunicator ();
 
-  void setCommandMap(CommandEntry *_commandMap, int8_t commandMapSize);
-  void read(); // main iteration loop
+  void setCommandMap (CommandEntry *_commandMap, int8_t commandMapSize);
+  void read (); // main iteration loop
 
 private:
-  void runCommand(Command _recivedCommand);
-  int8_t isCommandRegistered(Command _recivedCommand);
+  void runCommand (Command _recivedCommand);
+  int8_t isCommandRegistered (Command _recivedCommand);
 
-  Command readCommand();
+  Command readCommand ();
 
   // variables
   CommandEntry *commandMap;
